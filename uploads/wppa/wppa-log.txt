@@ -1,0 +1,2 @@
+{b}Obs{/b}: on:15.08.2020 12:31:54: rk: {b}WPPA cache{/b} cleared by wppa_fix_gutenberg_shortcodes() 
+{b}Obs{/b}: on:24.09.2020 04:27:48: rk: {b}WPPA cache{/b} cleared by wppa_setup() 
