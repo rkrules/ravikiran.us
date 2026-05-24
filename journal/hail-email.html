@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hail Email - Ravi Kiran</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1><a href="/">Ravi Kiran</a></h1>
+      <p class="tagline">Product, tech, and life</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <article>
+      <header class="post-header">
+        <h2>Hail Email</h2>
+        <time datetime="2005-07-22 16:04:54">July 22, 2005</time>
+      <div class="post-tags"><span class="tag">Tech</span></div>
+      </header>
+      <div class="post-content">
+<p align="justify">
+I have been an email freak, by choice or by no-choice. It had a setback during college days, when <a href="http://mail.yahoo.com">Yahoo!</a> decided to stop free POP access. Also , I tore my hairs when <a href="http://www.hotmail.com">Hotmail</a> deleted all my mails after a brief inaction or when the size limit of the mailbox   and the attach size seemed to bother.
+</p><p align="justify">
+All sorrows were put to end by <a href="http://www.gmail.com">Gmail</a>, which gave not only ample space but also great   features  like free pop and auto forward!
+</p><p align="justify">
+"Internet is going to be reduced to just emailing. There is no better use of Internet anyways and this is all hype", so    predicted or rather, affirmed one of our lecturers few years ago. If anything, I knew he was <b>wrong</b>.
+</p><p align="justify">
+A post about emailing is complete out-of-date, it is not about that. I am too ignorant to speak about the great features of Internet of which email is just a part. Yet, the irony of my situation results in the post (and its title).
+</p><p align="justify">
+<b>Whatever you <i>wish</i>, so shall you <i>get</i></b>.
+</p><p align="justify">
+Some time back, I felt the <b>need</b> of posting to my blog via email. I knew it was possible as there is an option in  <a href="http://wordpress.org">Wordpress</a> administration, and tried to use it. Any mail sent to the <i>secret address</i>,   will be posted to the blog.
+</p><p align="justify">
+First, there are some shortcomings in the original wp-mail. We can not post under a particular category(the main reason why I have shifted to Wordpress), some time zone related issues, and formatting issues. But all these are already cured by some  of   the users-developers and some workaround is in place.
+</p><p align="justify">
+Second I used Gmail, but there was problem. <a href="http://wordpress.org/support/topic.php?id=20403">Gmail has secure POP port</a> and wp-mail uses normal POP. But wait, many fellows have already faced the problem and whats more, one good person has even posted <a href="http://www.audiolicious.com/weblog/2005/03/wordpress-gmail-mobile-blog">a solution</a> for it.   But with that too I faced  issue (related to<i>_imap()</i> call), for which too there was already a solution posted there itself. Somehow I could not implement it, as I don't have control over the  server side upgrade.
+So now I wanted a email account with free POP access, <a href="http://www.hotpop.com">hotpop</a> comes to my rescue.
+</p><p align="justify">
+Third, a cron job has to be run on the server. There are scripts and <a href="http://weblogtoolscollection.com/pluginblog/2005/06/06/update-wp-cron-with-wp-cron-mail">plugin</a> available for   this too. But again, I had to do something on  server side on which I don't have control. But wait, there is a <a href="http://www.skippy.net/blog/2005/05/26/plugin-wp-cron/">simple and great plugin</a> that will do the job for me. Though  this uses the original wp-mail(and thus the shortcomings), it is the only available option for me.
+There is no issue of date problem as this periodically (configurable to once in 15min,30min,hourly etc) fetches the mails and  posts it. It should not be difficult to fix the categorization issue.(Hope someone who reads this post does it for me :) )
+</p><p align="justify">
+So there, I can post via email with the combination of  <a href="http://wordpress.org">Wordpress</a>,<a href="http://www.skippy.net/blog/2005/05/26/plugin-wp-cron/">WP-Cron plugin</a> and <a href="http://www.hotpop.com">Hotpop</a>.</p><p align="justify">
+<u>Now, how about getting to read the blogs via inbox ?</u>
+</p><p align="justify">
+If the blog owners themselves provided a way to subscribe to their blog via email then there is no problem. To do that there are lot of available options. But all blogs do not give me that option.
+</p><p align="justify">
+Again I just had to know what I had to look for. People have already faced the need and some good soul might have provided a solution as well. A simple search for RSS to email threw up the results.(Just for the kicks, a search for email to RSS also throws up results)
+</p><p align="justify">
+There are <a href="http://rss.weblogsinc.com/entry/1234000863046658/">some</a> <a href="https://fetchrss.dev.java.net/">scri</a> <a href="http://www.aaronsw.com/2002/rss2email/">pts</a> developed for the
+purpose. I can not go with that.</p><p align="justify">
+So I looked for some services. There are 3-4 very good possibilities. I will just highlight why I chose few, ahead of others.</p><p align="justify">
+<a href="http://www.botablog.com/index.php">Bot a blog</a>, <a href="http://www.kbcafe.com/rss/rss2smtp.aspx">Rmail</a>, <a href="http://rails.yanime.org/rssfwd/index">RSSFwd</a> and <a href="http://feednation.com">Feednation</a>.
+</p><p align="justify">
+Rmail and bot a blog are wonderful services. Bot a blog supports atom feed given by <a href="http://blogger.com">Blogspot</a>   but I am not sure if they support <a href="http://www.livejournal.com">Live journal</a> and other types of blogs.
+Bot a blog, I guess, mails the update of the blog immediately.
+Rmail is an hourly update. But few drawbacks are that it would send <i>only
+the latest update</i> in the previous hour. Also there would be a separate mail for each of the feed. I am not sure of the support for the atom and livejournal feeds.
+Update: It supports.
+</p><p align="justify">
+But one important factor that made me not to go for these is that, they would only send a part of the blog and then there is a link to for the full post.
+Well, as a blog owner even I am fond of my blog hits, but I can't use the internet and that is why I am going through the whole exercise.
+</p><p align="justify">
+For just an update, <a href="http://bloglines.com">Bloglines</a> is a great tool any day. But, for blog owners and those who are not aware of the existence of/using Bloglines(intention behind the creation), Rmail is an useful service.
+</p><p align="justify">
+RSSFwd is based on Ruby on rails, and is a neat service. It has support for Atom too. Periodically the updates would be sent. Among the drawbacks, an
+email per update would result in mail flood if I have subscribed to frequently updated blogs. Also, filtering would have been easier if the from address were only one.
+</p><p align="justify">
+Feednation is also good with all the control panel options where one can configure the frequency of emails, grouping of feeds etc. It can be used like a Bloglines account on the net as well as configured to be sent as email updates. The user interface is still improving. Other drawback is the support for Blogspot,LiveJournal and other blogs (like Bloglines provides). One  good thing about Feednation, apart from the flexibility to schedule the updates/mails is that, it serves all the feeds in single mail.
+</p><p align="justify">
+And for the conversion of other kind of feeds (Atom), and any update capturing, RSS feed can be created using many tools of    which I use <a href="http://feedburner.com">Feedburner</a>.
+</p><p align="justify">
+What's more, they both send me the complete posts (unless the blog owners have restricted it, in which case what can I say other than that, it is their loss that, forget the hits, their posts will not even, at least, be read, by me :) )
+</p><p align="justify">
+So with the combination of <a href="http://feednation.com">Feednation</a>(or
+<a href="http://rails.yanime.org/rssfwd/index">RSSFwd</a>),<a href="http://feedburner.com">Feedburner</a> I can now read the blogs from my Inbox(auto forwarded from <a href="http://www.gmail.com">Gmail</a>).
+</p>
+      </div>
+      <nav class="post-nav">
+        <a href="/journal/">&larr; Back to Journal</a>
+      </nav>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2005 Ravi Kiran</p>
+    </div>
+  </footer>
+</body>
+</html>

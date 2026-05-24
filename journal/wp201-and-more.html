@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WP201 and more - Ravi Kiran</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1><a href="/">Ravi Kiran</a></h1>
+      <p class="tagline">Product, tech, and life</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <article>
+      <header class="post-header">
+        <h2>WP201 and more</h2>
+        <time datetime="2006-03-06 15:59:57">March 06, 2006</time>
+      <div class="post-tags"><span class="tag">Tech</span></div>
+      </header>
+      <div class="post-content">
+I reluctantly, finally upgraded to WP20 (201 to be accurate). It proved to be much seamless contrary to my apprehensions(I was mainly concerned about the breaking of plugins). Even though I use DB backup plugin, I also download the backup. To my shock, the database has grown thrice in size since previous backup, and with weak connection it meant I had to wait long time before I could proceed (that would be next time I am free at home in Blore...)
+Problems:
+
+All my plugins worked just fine except the Adhesive which required an upgrade. But the page redirect that was fine earlier broke down now. I tried all possible solutions on .htaccess side but later came to know that the problem lies in the way the pages' url treated in wp201 which is different from earlier. I am yet to fix this.
+
+I wanted to change the way the <a target="_blank" href="http://ravikiran.us/blog/2006/02/13/please-tell-me/trackback" rel="noopener noreferrer">link posts are treated</a> - to disappear from main page but to be present in main feed. I wanted to do the fix in main index.php and after many trials I found a workable solution that worked fine on a wp201 in my another test blog but it failed here. The posts either appeared at both places or disappeared from both places, both the times failing the logic of the code.  After much hairloss, as it stands today, the link posts will not appear in main page as well as in main feed. So if you are interested, you need to go <a href="http://ravikiran.us/blog/categories/links">here</a> for the link posts, and <a target="_blank" href="http://ravikiran.us/blog/category/links/feed" rel="noopener noreferrer">this</a> will be the feed only for links posts. But I intend to make it work the way I want (either using a plugin that was all the way with me from beginning but I did not make use of it or by using Asides or taming the index.php itself) but not immediately.
+
+Another major nagging issue is that theme switching requires one additional F5 (refresh). Since there is no update of the <a target="_blank" href="http://boren.nu/archives/2004/10/13/theme-switcher-plugin/trackback" rel="noopener noreferrer">Theme Switcher</a> plugin for WP20 and since it is already present at "<a target="_blank" href="http://codex.wordpress.org/User:Matt/2.0_Plugin_Compatibility" rel="noopener noreferrer">Plugins that work for WP20</a>" list, I do not know if I am facing the issue for some other reason or it is an issue with plugin/wp20.
+Along with the upgrade few other changes are installed on blog such as few new plugins/themes which should give me/you more power/ease and make this place look prettier.
+
+Before I finish, <a target="_blank" href="http://www.semiologic.com/software/" rel="noopener noreferrer">Semiologic</a> and <a target="_blank" href="http://binarybonsai.com/" rel="noopener noreferrer">K2 </a>  and <a target="_blank" href="http://www.skippy.net/blog/plugins" rel="noopener noreferrer">Skippy plugins</a> are just great. <a target="_blank" href="http://binarybonsai.com/" rel="noopener noreferrer">
+</a>
+
+Till later ...
+
+Update: Let me know if something is broken
+
+Update2: More issues. I am facing issue with sidebar when ThemeSwitcher is activated along with Semiologic and even otherwise in other themes. Some strange behaviour. So no theme switcher :(
+      </div>
+      <nav class="post-nav">
+        <a href="/journal/">&larr; Back to Journal</a>
+      </nav>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2006 Ravi Kiran</p>
+    </div>
+  </footer>
+</body>
+</html>

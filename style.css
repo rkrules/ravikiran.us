@@ -1,18 +1,96 @@
-/* Minimal placeholder stylesheet to make the generated static site readable locally. */
-html,body{height:100%;}
-body{font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;line-height:1.6;margin:0;background:#fff;color:#111}
-.container{max-width:760px;margin:0 auto;padding:24px}
-header{background:#f8f8f8;border-bottom:1px solid #eee}
-header .container{display:flex;flex-direction:column;align-items:flex-start}
-header h1{margin:12px 0 0;font-size:22px}
-header .tagline{margin:0 0 12px;color:#666;font-size:14px}
-a{color:#0366d6;text-decoration:none}
-a:hover{text-decoration:underline}
-.post-list{list-style:none;padding:0;margin:0}
-.post-list li{padding:8px 0;border-bottom:1px solid #f0f0f0}
-time{display:block;color:#888;font-size:13px}
-img{max-width:100%;height:auto}
-footer{border-top:1px solid #eee;padding:24px;text-align:center;color:#666;font-size:13px}
+/* ravikiran.us — site stylesheet */
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  line-height: 1.6; margin: 0; background: #fff; color: #111;
+}
+.container { max-width: 760px; margin: 0 auto; padding: 24px; }
 
-/* Small responsive tweaks */
-@media (min-width:760px){header .container{flex-direction:row;justify-content:space-between;align-items:center}}
+/* ── Header ── */
+header { background: #f8f8f8; border-bottom: 1px solid #eee; }
+header .container { display: flex; flex-direction: column; align-items: flex-start; }
+header h1 { margin: 12px 0 0; font-size: 22px; }
+header h1 a { color: #111; text-decoration: none; }
+header .tagline { margin: 0 0 12px; color: #666; font-size: 14px; }
+@media (min-width: 760px) {
+  header .container { flex-direction: row; justify-content: space-between; align-items: center; }
+}
+
+/* ── Links ── */
+a { color: #0366d6; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Post lists ── */
+.post-list { list-style: none; padding: 0; margin: 0; }
+.post-list li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+time { display: block; color: #888; font-size: 13px; }
+.section-note { color: #888; font-style: italic; font-size: 14px; margin-bottom: 16px; }
+
+/* ── Post pages ── */
+.post-header h2 { margin-bottom: 4px; }
+.post-tags { margin-top: 6px; }
+.tag {
+  display: inline-block; background: #f0f0f0; color: #555;
+  border-radius: 3px; padding: 2px 8px; font-size: 12px; margin-right: 4px;
+}
+.post-content { margin: 24px 0; }
+.post-nav { margin-top: 32px; padding-top: 16px; border-top: 1px solid #eee; font-size: 14px; }
+img { max-width: 100%; height: auto; }
+
+/* ── Footer ── */
+footer { border-top: 1px solid #eee; padding: 24px; text-align: center; color: #666; font-size: 13px; }
+
+/* ── Profile page — About ── */
+.section-about { padding-top: 32px; padding-bottom: 8px; }
+.bio { font-size: 17px; line-height: 1.7; max-width: 640px; color: #333; }
+.cta-links { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  display: inline-block; padding: 9px 18px; border-radius: 5px;
+  background: #0366d6; color: #fff; font-size: 14px; font-weight: 500;
+  text-decoration: none; transition: background 0.15s;
+}
+.btn:hover { background: #0256b9; text-decoration: none; }
+.btn-outline {
+  background: #fff; color: #0366d6; border: 1px solid #0366d6;
+}
+.btn-outline:hover { background: #f0f6ff; }
+
+/* ── Profile page — Work ── */
+.section-work { padding-top: 40px; }
+.section-work h2 { margin-bottom: 20px; }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.card {
+  border: 1px solid #e1e4e8; border-radius: 6px;
+  padding: 18px 20px; background: #fafafa;
+}
+.card h3 { margin: 0 0 8px; font-size: 15px; }
+.card p { margin: 0; font-size: 14px; color: #555; line-height: 1.5; }
+.section-more { font-size: 14px; margin-top: 8px; }
+
+/* ── Profile page — Writing ── */
+.section-writing { padding-top: 40px; padding-bottom: 48px; }
+.section-writing h2 { margin-bottom: 20px; }
+.writing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+.writing-card {
+  display: block; border: 1px solid #e1e4e8; border-radius: 6px;
+  padding: 16px 18px; text-decoration: none; color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.writing-card:hover {
+  border-color: #0366d6; box-shadow: 0 2px 8px rgba(3,102,214,0.1);
+  text-decoration: none;
+}
+.writing-card h3 { margin: 0 0 6px; font-size: 15px; color: #0366d6; }
+.writing-card p { margin: 0; font-size: 13px; color: #666; line-height: 1.4; }
+
+/* ── Nav home link ── */
+.nav-home { font-size: 14px; }

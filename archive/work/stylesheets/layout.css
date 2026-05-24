@@ -1,0 +1,221 @@
+/*
+* Skeleton V1.2
+* Copyright 2011, Dave Gamache
+* www.getskeleton.com
+* Free to use under the MIT license.
+* http://www.opensource.org/licenses/mit-license.php
+* 6/20/2012
+*/
+
+/* Table of Content
+==================================================
+	#Site Styles
+	#Header
+	#Portfolio
+	#Footer
+	#Media Queries
+	#Font-Face */
+
+/* #Site Styles
+================================================== */
+/* apply a natural box layout model to all elements */
+* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+/* #Header
+================================================== */
+header{margin: 35px 0; display: block; float: left;}
+.logo {
+	font-family: 'Yellowtail', cursive;
+	text-decoration: none;
+	font-size: 42px;
+	line-height: 49px;
+}
+.subheader {display: inline-block; padding-left: 14px;}
+
+nav ul {float: right; padding-top: 21px;}
+nav ul li {display: inline;}
+nav ul li a {
+	background: #9b9b9b; 
+	padding:3px; 
+	color: #fff !important; 
+	text-decoration: none;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+nav ul li a:hover,
+nav ul li a.active {background: #ff8828;}
+
+
+/* #Portfolio
+================================================== */
+.portfolio-section{float: left; margin:0; padding:0;}
+.portfolio-section li{
+	float: left;
+	text-align: left;
+	margin: 10px 10px;
+	padding: 0;
+	color: #555555;
+	display: block;
+}
+.projdesc{
+	width:660px;
+	height:179px;
+}
+
+.portfolio-item {
+	display:block;
+	position: relative;
+	line-height: 0;
+	height: 100%;
+
+	-webkit-box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, .2);
+    box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, .2);
+}
+.portfolio-bg{
+	display: block;
+	position: absolute;
+	background: #ff8828;
+	opacity: 0;
+}
+.portfolio-zoom{ 
+	display:block;
+	position: absolute;
+	width: 28px;
+	height: 28px;
+	z-index: 100;
+	opacity: 0;
+	background: url(../images/icons-portfolio.png) #525252;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+.portfolio-zoom:hover {background:url(../images/icons-portfolio.png) #ff8828;}
+.portfolio-item:hover .portfolio-bg {opacity: 0.3; border:10px solid #bf5a09;}
+
+.project-title{
+	display: block;
+	position: absolute;
+	color: #fff !important;
+	background: #525252;
+	padding: 14px 7px;
+	text-decoration: none;
+	text-transform: uppercase;
+	bottom: -1px;
+	opacity: 0;
+}
+.project-title:hover{color: #fff; background: #ff8828;}
+.project-title,
+.portfolio-zoom,
+.portfolio-bg {
+	transition:all 0.3s;
+	-webkit-transition:all 0.3s;
+	-o-transition:all 0.3s;
+	-moz-transition:all 0.3s;
+	-ms-transition:all 0.3s;
+}
+
+/* Portfolio 4 Column */
+.portfolio-4col {width:220px; padding-bottom: 14px !important;}
+.portfolio-4col p {padding:0 7px; margin: 0;}
+.portfolio-4col .portfolio-bg {width: 100%; height: 100%;}
+.portfolio-4col .portfolio-zoom {bottom:45%; left:43%;}
+.portfolio-4col .portfolio-item:hover .portfolio-zoom{opacity: 1; bottom:76px;}
+.portfolio-4col .portfolio-item:hover .project-title{opacity: 1;}
+
+/* Portfolio Flickr */
+.flickr-portfolio li {line-height: 0; padding:0; width:220px; height: 180px; display: block; overflow: hidden; position: relative; -webkit-box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, .2);
+    box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, .2);}
+.flickr-portfolio li img {width:350px; line-height: 0; position: absolute; top: 0; left: 0;}
+.flickr-portfolio .portfolio-4col .portfolio-bg {width: 220px; height: 180px; z-index: 10;}
+.flickr-portfolio .portfolio-4col .portfolio-zoom {top:66px; left:95px;}
+.flickr-portfolio .portfolio-4col .portfolio-item:hover .portfolio-zoom {opacity: 1; top:76px;}
+
+/* Portfolio Dribbble */
+.dribble {line-height: 0;}
+.dribbble .portfolio-4col .portfolio-bg {width: 100%; height: 100%;}
+.dribbble .portfolio-4col .portfolio-zoom {bottom:35%; left:43%;}
+.dribbble .portfolio-4col .portfolio-item:hover .portfolio-zoom {opacity: 1; bottom:45%;}
+
+/* Portfolio Instagram */
+.instagram li {line-height: 0; padding:0;}
+.instagram li img {width:220px; line-height: 0; -webkit-box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, .2);
+    box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, .2);}
+.instagram li:hover img {opacity: 0.8}
+
+
+/* #Footer
+================================================== */
+footer{margin:35px 0; float: left;}
+footer .avatar img {
+	-webkit-box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, .2);
+    box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, .2);
+}
+
+
+/* #Media Queries
+================================================== */
+
+	/* Smaller than standard 960 (devices and browsers) */
+	@media only screen and (max-width: 959px) {}
+
+	/* Tablet Portrait size to standard 960 (devices and browsers) */
+	@media only screen and (min-width: 768px) and (max-width: 959px) {
+
+	/* Portfolio */
+	.portfolio-sort ul li {margin-left: 7px;}
+
+	/* Portfolio 4 Column */
+	.portfolio-4col {width:172px;}
+	.portfolio-4col .portfolio-item {width:172px; height:141px;}
+	.portfolio-4col .portfolio-zoom {bottom:67px; left:53px;}
+	.portfolio-4col .portfolio-item:hover .portfolio-zoom{bottom:57px;}
+
+	/* Portfolio Dribbble */
+	.dribbble .portfolio-4col .portfolio-zoom {bottom:40%; left:40%;}
+
+	/* Portfolio Flickr */
+	.flickr-portfolio li {width:172px; height: 141px;}
+	.flickr-portfolio li img {width:200px;}
+	.flickr-portfolio .portfolio-4col .portfolio-bg {width:172px; height: 141px;}
+	.flickr-portfolio .portfolio-4col .portfolio-zoom {top:66px; left:71px;}
+	.flickr-portfolio .portfolio-4col .portfolio-item:hover .portfolio-zoom {opacity: 1; top:56px;}
+
+	/* Portfolio Instagram */
+	.instagram li img {width:172px;}
+	}
+
+	/* All Mobile Sizes (devices and browser) */
+	@media only screen and (max-width: 767px) {
+
+	/* Navigation */
+	.heading {text-align: center;}
+	nav ul {display: block; width: 100%; text-align: center; float: none;}
+
+	/* Portfolio */
+	.portfolio-section {margin-bottom: 21px;}
+	.portfolio-section li {padding: 0; margin: 7px 0;}
+	}
+
+	/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
+	@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+	/* Portfolio 4 Columns */
+	.portfolio-4col{width:400px;}
+	.portfolio-4col .portfolio{margin-bottom: 21px !important;}
+	.portfolio-4col .portfolio-item{width:400px; height:327px;}
+	.portfolio-4col .portfolio-zoom{bottom:160px; left:166px;}
+	.portfolio-4col .portfolio-item:hover .portfolio-zoom{bottom:150px;}
+
+	/* Portfolio Flickr */
+	.flickr-portfolio li {width:400px; height: 327px;}
+	.flickr-portfolio li img {width:400px;}
+	.flickr-portfolio .portfolio-4col .portfolio-bg {width:400px; height: 327px;}
+	.flickr-portfolio .portfolio-4col .portfolio-zoom {top:139px; left:185px;}
+	.flickr-portfolio .portfolio-4col .portfolio-item:hover .portfolio-zoom {opacity: 1; top:149px;}
+
+	/* Portfolio Instagram */
+	.instagram li img {width:400px;}
+
+	/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+	@media only screen and (max-width: 479px) {
+
+	}
