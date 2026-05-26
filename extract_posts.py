@@ -330,13 +330,13 @@ def generate_html(post, blog_type='main'):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{title} - Ravi Kiran</title>
+  <title>{title} - Ravikiran Rajagopal</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <header>
     <div class="container">
-      <h1><a href="/">Ravi Kiran</a></h1>
+      <h1><a href="/">Ravikiran Rajagopal</a></h1>
       <p class="tagline">Product, tech, and life</p>
     </div>
   </header>
@@ -358,7 +358,7 @@ def generate_html(post, blog_type='main'):
 
   <footer>
     <div class="container">
-      <p>&copy; {year} Ravi Kiran</p>
+      <p>&copy; {year} Ravikiran Rajagopal</p>
     </div>
   </footer>
 </body>
@@ -382,13 +382,13 @@ def generate_index(posts, title, description, show_back=False, note=None):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{html.escape(title)} - Ravi Kiran</title>
+  <title>{html.escape(title)} - Ravikiran Rajagopal</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <header>
     <div class="container">
-      <h1><a href="/">Ravi Kiran</a></h1>
+      <h1><a href="/">Ravikiran Rajagopal</a></h1>
       <p class="tagline">{html.escape(description)}</p>
     </div>
   </header>
@@ -404,7 +404,7 @@ def generate_index(posts, title, description, show_back=False, note=None):
 
   <footer>
     <div class="container">
-      <p>&copy; 2024 Ravi Kiran</p>
+      <p>&copy; 2024 Ravikiran Rajagopal</p>
     </div>
   </footer>
 </body>

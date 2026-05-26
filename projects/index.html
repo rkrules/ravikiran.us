@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Ravikiran Rajagopal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Analytical Warmth Design System ── */
+    :root {
+      --aw-ink:           #0D1F1E;
+      --aw-ink-2:         #1E3A38;
+      --aw-ink-muted:     #4A6865;
+      --aw-ink-faint:     #8AABA8;
+
+      --aw-teal-deep:     #0B3D39;
+      --aw-teal:          #0F5C57;
+      --aw-teal-mid:      #1A8077;
+      --aw-teal-bright:   #23A89C;
+      --aw-teal-pale:     #D4EFED;
+      --aw-teal-ghost:    #EAF6F5;
+
+      --aw-amber:         #C97C1A;
+      --aw-amber-bright:  #E8A030;
+      --aw-amber-pale:    #FDF0DC;
+
+      --aw-paper:         #F4F2EE;
+      --aw-surface:       #F0F4F3;
+      --aw-white:         #FAFAFA;
+      --aw-line:          #D8D5CC;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--aw-paper);
+      color: var(--aw-ink);
+      font-family: 'Outfit', -apple-system, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--aw-teal-deep);
+      color: #fff;
+      padding: 36px 24px 32px;
+    }
+    .header-inner {
+      max-width: 880px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .header-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 32px;
+      font-weight: 400;
+      margin: 0 0 4px;
+      letter-spacing: -0.3px;
+    }
+    .header-sub {
+      margin: 0;
+      font-size: 15px;
+      color: var(--aw-teal-pale);
+      font-weight: 300;
+    }
+    .header-back {
+      font-size: 13px;
+      color: var(--aw-teal-pale);
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      opacity: 0.8;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+    .header-back:hover { opacity: 1; }
+
+    /* ── Tab bar ── */
+    .tab-bar-wrap {
+      background: var(--aw-teal-deep);
+      border-bottom: 1px solid var(--aw-teal);
+    }
+    .tab-bar {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 4px;
+    }
+    .tab-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--aw-teal-pale);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: #fff; }
+    .tab-btn[aria-selected="true"] {
+      color: #fff;
+      border-bottom-color: var(--aw-amber-bright);
+    }
+
+    /* ── Main content ── */
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    .tab-section { display: block; }
+    .tab-section[hidden] { display: none; }
+
+    .section-intro {
+      font-size: 15px;
+      color: var(--aw-ink-muted);
+      margin: 0 0 28px;
+      max-width: 580px;
+    }
+
+    /* ── Card grid ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--aw-white);
+      border: 1px solid var(--aw-line);
+      border-radius: 8px;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .card:hover {
+      border-color: var(--aw-teal-bright);
+      box-shadow: 0 4px 16px rgba(11,61,57,0.08);
+    }
+    .card[data-hidden] { display: none; }
+    .card[data-hidden].revealed { display: flex; }
+
+    /* faint marker on revealed hidden cards */
+    .card[data-hidden].revealed {
+      border-style: dashed;
+      border-color: var(--aw-line);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--aw-ink);
+      margin: 0;
+      line-height: 1.3;
+    }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 2px;
+    }
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      background: var(--aw-teal-ghost);
+      color: var(--aw-teal);
+      white-space: nowrap;
+    }
+    .tag.amber {
+      background: var(--aw-amber-pale);
+      color: var(--aw-amber);
+    }
+    .card-desc {
+      font-size: 14px;
+      color: var(--aw-ink-muted);
+      margin: 0;
+      line-height: 1.5;
+      flex: 1;
+    }
+    .card-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--aw-teal-mid);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: auto;
+      transition: color 0.15s;
+    }
+    .card-link:hover { color: var(--aw-teal-deep); text-decoration: underline; }
+
+    /* ── Show hidden button ── */
+    .show-hidden-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: 1px dashed var(--aw-line);
+      border-radius: 6px;
+      background: none;
+      color: var(--aw-ink-muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      margin-top: 4px;
+    }
+    .show-hidden-btn:hover {
+      color: var(--aw-ink);
+      border-color: var(--aw-ink-muted);
+    }
+    .show-hidden-btn .icon { font-size: 14px; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--aw-line);
+      padding: 24px;
+      text-align: center;
+      color: var(--aw-ink-faint);
+      font-size: 13px;
+    }
+    footer a { color: var(--aw-teal-mid); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .header-title { font-size: 26px; }
+      .card-grid { grid-template-columns: 1fr; }
+      main { padding: 28px 16px 48px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <h1 class="header-title">AI-Assisted Projects</h1>
+      <p class="header-sub">A directory of things built with Claude — work tools, personal projects, and experiments.</p>
+    </div>
+    <a class="header-back" href="../">← ravikiran.us</a>
+  </div>
+</header>
+
+<div class="tab-bar-wrap">
+  <div class="tab-bar" role="tablist">
+    <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-work" id="btn-work">Work</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-personal" id="btn-personal">Personal</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- ── Work Tab ── -->
+  <section class="tab-section" id="tab-work" role="tabpanel" aria-labelledby="btn-work">
+    <p class="section-intro">Dashboards, tools, and systems built with AI to support product and analytics work.</p>
+
+    <div class="card-grid" id="work-grid">
+
+      <div class="card">
+        <div>
+          <h3 class="card-title">Work Index — AI Products</h3>
+          <div class="card-tags">
+            <span class="tag amber">AI-assisted</span>
+            <span class="tag">Dashboards</span>
+          </div>
+        </div>
+        <p class="card-desc">Index of dashboards, reports, and reusable apps built for work — analytics hub, SEO/VOC reports, checkout error tools, weekly funnels, and onboarding guides.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/work/cloud/ai-products/index.html">View index →</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h3 class="card-title">GA4 Scripts</h3>
+          <div class="card-tags">
+            <span class="tag">Analytics</span>
+            <span class="tag">Python</span>
+          </div>
+        </div>
+        <p class="card-desc">Google Analytics 4 automation and reporting scripts. Extracts and transforms GA4 data for custom reporting outside the GA interface.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/GA4scripts/">View project →</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h3 class="card-title">GSC + GA4 SEO Analysis</h3>
+          <div class="card-tags">
+            <span class="tag">SEO</span>
+            <span class="tag">Analytics</span>
+            <span class="tag">Python</span>
+          </div>
+        </div>
+        <p class="card-desc">Analysis scripts combining Google Search Console and Google Analytics 4 to surface traffic trends, keyword opportunities, and content performance insights.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/gsc_ga_seo/">View project →</a>
+      </div>
+
+      <!-- Hidden by default — toggle to reveal -->
+
+      <div class="card" data-hidden>
+        <div>
+          <h3 class="card-title">Résumé System</h3>
+          <div class="card-tags">
+            <span class="tag amber">AI-assisted</span>
+            <span class="tag">Job search</span>
+          </div>
+        </div>
+        <p class="card-desc">Customizable resume templates with a bullet bank organized by employer, ATS optimization checklists, and job-fit scoring. Version-controlled for full history.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/resumes/">View project →</a>
+      </div>
+
+      <div class="card" data-hidden>
+        <div>
+          <h3 class="card-title">EB-1A Green Card</h3>
+          <div class="card-tags">
+            <span class="tag amber">AI-assisted</span>
+            <span class="tag">Immigration</span>
+          </div>
+        </div>
+        <p class="card-desc">Petition drafting toolkit for the EB-1A employment-based immigration pathway. Stores drafts, attorney feedback, and evidence exhibits in a structured workflow.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/green card/">View project →</a>
+      </div>
+
+      <div class="card" data-hidden>
+        <div>
+          <h3 class="card-title">Visa-Jobs</h3>
+          <div class="card-tags">
+            <span class="tag">Python</span>
+            <span class="tag">Job search</span>
+          </div>
+        </div>
+        <p class="card-desc">H1B visa sponsorship job finder. Scrapes and analyzes PM role listings in Connecticut that offer visa sponsorship, with structured JSON output.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/visa-jobs/">View project →</a>
+      </div>
+
+      <div class="card" data-hidden>
+        <div>
+          <h3 class="card-title">Arlo's Pet Care</h3>
+          <div class="card-tags">
+            <span class="tag">Web</span>
+            <span class="tag">HTML</span>
+          </div>
+        </div>
+        <p class="card-desc">Marketing site specification and static HTML build for a local pet care business. Uses Tailwind CSS + DaisyUI with a themeable color system; deploys to GitHub Pages.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/arlospetcare/">View project →</a>
+      </div>
+
+    </div>
+
+    <button class="show-hidden-btn" id="work-toggle" onclick="toggleHidden('work-grid', 'work-toggle', 4)">
+      <span class="icon">○</span> Show hidden projects (4)
+    </button>
+  </section>
+
+  <!-- ── Personal Tab ── -->
+  <section class="tab-section" id="tab-personal" role="tabpanel" aria-labelledby="btn-personal" hidden>
+    <p class="section-intro">Side projects, games, and tools built for personal use, family, and curiosity.</p>
+
+    <div class="card-grid" id="personal-grid">
+
+      <div class="card">
+        <div>
+          <h3 class="card-title">ravikiran.us</h3>
+          <div class="card-tags">
+            <span class="tag amber">AI-assisted</span>
+            <span class="tag">Python</span>
+            <span class="tag">Web</span>
+          </div>
+        </div>
+        <p class="card-desc">This site. A static personal site generated from a WordPress SQL dump via a single Python script — no build tools, no framework. Hosted on GitHub Pages.</p>
+        <a class="card-link" href="../">View site →</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h3 class="card-title">Heart Talk</h3>
+          <div class="card-tags">
+            <span class="tag amber">AI-assisted</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">Web</span>
+          </div>
+        </div>
+        <p class="card-desc">63-chapter cardiovascular health education site authored by Dr. Keshava Aithal. Bilingual (English/Kannada) with Google Translate integration and PDF generation via Puppeteer.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/hralth/">View project →</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h3 class="card-title">Walk Challenge</h3>
+          <div class="card-tags">
+            <span class="tag amber">AI-assisted</span>
+            <span class="tag">React</span>
+            <span class="tag">PWA</span>
+          </div>
+        </div>
+        <p class="card-desc">Mobile-first PWA for logging daily activities and competing in collaborative challenges with friends. Streak tracking, leaderboards, and shareable streak cards. Built with React + Supabase.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/oda/walk-challenge/">View project →</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h3 class="card-title">Journal</h3>
+          <div class="card-tags">
+            <span class="tag amber">AI-assisted</span>
+            <span class="tag">React</span>
+            <span class="tag">Web app</span>
+          </div>
+        </div>
+        <p class="card-desc">Personal journaling web app with collaborative features. Built with React, TypeScript, and Supabase for data storage.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/oda/myjournal-oda/">View project →</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h3 class="card-title">Aadu-Huli</h3>
+          <div class="card-tags">
+            <span class="tag amber">AI-assisted</span>
+            <span class="tag">Web app</span>
+          </div>
+        </div>
+        <p class="card-desc">A digital version of the traditional South Indian board game Aadu-Huli (Goats and Tigers). Built with Lovable as a fun project to preserve and share a classic game.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/oda/aadu-huli/">View project →</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h3 class="card-title">ABK Math</h3>
+          <div class="card-tags">
+            <span class="tag amber">AI-assisted</span>
+            <span class="tag">Web app</span>
+          </div>
+        </div>
+        <p class="card-desc">Math practice app — interactive exercises to build number sense and arithmetic fluency.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/abk-math/">View project →</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h3 class="card-title">Multiply Game</h3>
+          <div class="card-tags">
+            <span class="tag amber">AI-assisted</span>
+            <span class="tag">Web app</span>
+          </div>
+        </div>
+        <p class="card-desc">Interactive multiplication practice game built with Lovable. A fun side project for learning math facts through gameplay — synced to GitHub.</p>
+        <a class="card-link" href="file:///Users/ravikiran/Apps/claude/multiply game/">View project →</a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Built with Claude · <a href="../">ravikiran.us</a></p>
+</footer>
+
+<script>
+  // Tab switching
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-section');
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+      panels.forEach(p => p.hidden = true);
+      btn.setAttribute('aria-selected', 'true');
+      document.getElementById(btn.getAttribute('aria-controls')).hidden = false;
+    });
+  });
+
+  // Show/hide toggle per grid
+  function toggleHidden(gridId, btnId, count) {
+    const grid = document.getElementById(gridId);
+    const btn = document.getElementById(btnId);
+    const hidden = grid.querySelectorAll('[data-hidden]');
+    const allRevealed = [...hidden].every(c => c.classList.contains('revealed'));
+
+    if (allRevealed) {
+      hidden.forEach(c => c.classList.remove('revealed'));
+      btn.innerHTML = `<span class="icon">○</span> Show hidden projects (${count})`;
+    } else {
+      hidden.forEach(c => c.classList.add('revealed'));
+      btn.innerHTML = `<span class="icon">●</span> Hide ${count} projects`;
+    }
+  }
+</script>
+
+</body>
+</html>
