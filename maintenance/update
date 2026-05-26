@@ -1,0 +1,26 @@
+Completed:
+
+  1. Name fixed everywhere — "Ravi Kiran" → "Ravikiran Rajagopal" across all
+  850+ HTML files, extract_posts.py templates, and the homepage. Zero remaining
+  occurrences outside /archive/.
+  2. Homepage writing section — Now shows only the Newsletter card ("The Lens")
+  with a subtle More writing → link to /writing/.
+  3. Hidden writing archive — /writing/index.html lists all 6 sections
+  (Newsletter, Blog, Notes, Journal, Wedding, Status). Unlisted — no link from
+  main nav.
+  4. HTML Resume — /resume/ with full career history: Prudential (700K
+  downloads, 1.8→4.6 satisfaction, $10B client wins, Alexa integration),
+  AccuWeather (1M→35M users, 150% revenue growth, 25+ products), education,
+  skills, awards, and 7 real images downloaded from your old blog. Resume button
+   on homepage now links to /resume/ instead of the PDF directly.
+  5. Post audit CSV — post-audit.csv with all 850 posts across 6 sections.
+  Rating columns match the 6-parameter writing rubric (originality, imagery,
+  philosophical depth, structure, sentence control, voice) plus audience, PM
+  shareability, relevance, and action.
+  6. 31 posts rated — All 11 Newsletter editions and the 20 oldest Journal
+  posts. Newsletter: all Public/PM-shareable, mostly "Keep" (Edition 3 flagged
+  for Revise due to dated Fleets content). Journal 2004 batch: all
+  Archive/Family, one see-me.html flagged for Delete (empty photo placeholder).
+
+  819 posts still pending — continue rating in future sessions by running
+  audit_posts.py to regenerate the CSV or editing it directly.
