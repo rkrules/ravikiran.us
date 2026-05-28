@@ -9,14 +9,35 @@
     .resume-section { margin-bottom: 2.5rem; }
     .resume-section h2 { border-bottom: 1px solid #e1e4e8; padding-bottom: 0.4rem; margin-bottom: 1.2rem; }
     .resume-role { margin-bottom: 2rem; }
-    .resume-role-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.4rem; }
+    .resume-role-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.25rem; }
     .resume-role-header h3 { margin: 0; font-size: 1rem; }
     .resume-role-meta { color: #586069; font-size: 0.9rem; white-space: nowrap; }
-    .resume-role > p.role-title { margin: 0 0 0.5rem; color: #586069; font-size: 0.9rem; }
+    .resume-role > p.role-subtitle { margin: 0 0 0.5rem; color: #586069; font-size: 0.88rem; font-style: italic; }
     .resume-role ul { margin: 0.3rem 0 0; padding-left: 1.3rem; color: #444; font-size: 0.95rem; }
     .resume-role ul li { margin-bottom: 0.3rem; }
-    .role-images { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem; }
-    .role-images img { border-radius: 4px; border: 1px solid #e1e4e8; object-fit: cover; }
+    .role-images {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      align-items: flex-end;
+    }
+    .role-images img {
+      border-radius: 4px;
+      border: 1px solid #e1e4e8;
+      object-fit: contain;
+      max-height: 180px;
+      width: auto;
+      background: #f6f8fa;
+    }
+    .role-images img.img-narrow {
+      max-height: 200px;
+      max-width: 100px;
+    }
+    .role-images img.img-small {
+      max-height: 120px;
+      max-width: 120px;
+    }
     .skills-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
     .skills-list li { background: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 3px; padding: 0.2rem 0.6rem; font-size: 0.9rem; }
     .resume-cta { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.75rem; }
@@ -27,13 +48,14 @@
     .award-list li { padding: 0.2rem 0; color: #444; font-size: 0.95rem; }
     .award-list li::before { content: "🏆 "; }
     .metric { font-weight: 600; }
+    .images-placeholder { margin-top: 0.75rem; color: #8a9bb0; font-size: 0.88rem; font-style: italic; }
   </style>
 </head>
 <body>
   <header>
     <div class="container">
       <h1><a href="/">Ravikiran Rajagopal</a></h1>
-      <p class="tagline">Product Manager &middot; Mobile &middot; Consumer Apps &middot; Connected Platforms</p>
+      <p class="tagline">Product Management Leader &middot; eCommerce &middot; Mobile &middot; Consumer Platforms</p>
     </div>
   </header>
 
@@ -42,14 +64,17 @@
 
     <section class="resume-section">
       <p class="bio">
-        Product Manager with a track record of shipping at scale &mdash; <span class="metric">$10B+ in client revenue generated</span>,
-        <span class="metric">700K app downloads</span> at Prudential, and <span class="metric">1M to 35M users</span> at AccuWeather.
-        Focused on consumer mobile, voice, and connected platforms. MBA from Penn State Smeal College of Business.
+        Product Management Leader with a track record of driving revenue at scale &mdash;
+        <span class="metric">$30M+ annual revenue lifts</span> via funnel optimization and experimentation at SeaWorld,
+        <span class="metric">700K app downloads</span> and <span class="metric">$10B in client growth</span> at Prudential, and
+        <span class="metric">1M to 35M users</span> at AccuWeather.
+        Focused on consumer eCommerce, mobile, voice, and connected platforms.
+        MBA from Penn State Smeal College of Business.
       </p>
       <div class="resume-cta">
         <a href="https://www.linkedin.com/in/ravikiranrajagopal" class="btn" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="/static_assets/resume.pdf" class="btn btn-outline" target="_blank">Download PDF</a>
-        <a href="mailto:rkrules@gmail.com" class="btn btn-outline">Email</a>
+        <a href="/resume/" class="btn btn-outline">Download PDF</a>
+        <a href="mailto:ravikiran.rajagopal@gmail.com" class="btn btn-outline">Email</a>
       </div>
     </section>
 
@@ -58,45 +83,67 @@
 
       <div class="resume-role">
         <div class="resume-role-header">
-          <h3>Product Manager, Digital Product Development &mdash; <a href="https://www.prudential.com" target="_blank" rel="noopener">Prudential Financial</a></h3>
-          <span class="resume-role-meta">2015 &ndash; Present &middot; Newark, NJ</span>
+          <h3>Director, Product Management &mdash; <a href="https://seaworld.com" target="_blank" rel="noopener">SeaWorld Parks &amp; Entertainment</a></h3>
+          <span class="resume-role-meta">Mar 2021 &ndash; Present &middot; Remote</span>
         </div>
+        <p class="role-subtitle">Large-scale consumer eCommerce platform spanning 12 park websites and driving hundreds of millions in annual ticketing revenue</p>
         <ul>
-          <li>Directed first consumer-facing mobile app for Prudential Retirement — <span class="metric">700K downloads in 2 years</span>, <span class="metric">100K+ monthly active users</span>.</li>
-          <li>Improved customer satisfaction from <span class="metric">1.8 to 4.6</span> stars through user research and iterative design.</li>
-          <li>Led industry-first retirement account integration with <strong>Amazon Alexa</strong>; won industry award for the campaign.</li>
-          <li>Contributed to <span class="metric">$10B in client wins</span> and <span class="metric">$350M AUM retention</span>.</li>
-          <li>Oversaw <span class="metric">$6M+ annual product development budget</span>.</li>
-          <li>Founded internal usability testing practice; managed website accessibility compliance updates.</li>
-          <li>Won Prudential Business Value Award for Innovation (2018).</li>
+          <li>Drove <span class="metric">$20M+ annual revenue increase</span> by identifying drop-off points across the purchase funnel and deploying a structured experimentation program to optimize product pages, cart, and checkout flows.</li>
+          <li>Increased customer satisfaction scores from <span class="metric">4.0 to 6.0 (+50%)</span> by leading a user-centric redesign across 12 high-traffic consumer websites, addressing usability, findability, and clarity.</li>
+          <li>Drove <span class="metric">~$10M in incremental annual revenue</span> by improving site performance &mdash; cutting page load times by 15%, accelerating key user actions by 44%, and reducing checkout failure rates from ~20% to 6%.</li>
+          <li>Generated <span class="metric">$3&ndash;5M in incremental revenue</span> by building and executing an SEO growth strategy that increased qualified organic traffic through technical optimization, content prioritization, and search intent alignment.</li>
+          <li>Drove higher business impact across five specialized teams (product, engineering, experimentation, content, SEO) by enforcing shared prioritization and focusing capacity on the highest-ROI initiatives.</li>
+          <li>Won <span class="metric">2 industry awards</span> for UX excellence and experimentation-driven growth practices.</li>
         </ul>
-        <div class="role-images">
-          <img src="/resume/images/prudential-app.png" alt="Prudential retirement app" height="120">
-          <img src="/resume/images/prudential-alexa.jpg" alt="Alexa integration" height="120">
-        </div>
+        <p class="images-placeholder">Product screenshots coming soon.</p>
+        <p style="margin-top:0.75rem"><a href="/work/seaworld/">View SeaWorld case study &rarr;</a></p>
       </div>
 
       <div class="resume-role">
         <div class="resume-role-header">
-          <h3>Product Manager &mdash; <a href="https://www.accuweather.com" target="_blank" rel="noopener">AccuWeather</a></h3>
-          <span class="resume-role-meta">2011 &ndash; 2015 &middot; State College, PA</span>
+          <h3>Product Manager, Digital Product Development &mdash; <a href="https://www.prudential.com" target="_blank" rel="noopener">Prudential Financial</a></h3>
+          <span class="resume-role-meta">Apr 2015 &ndash; Mar 2021 &middot; Newark, NJ</span>
         </div>
+        <p class="role-subtitle">Fortune 100 financial services company; regulated retirement &amp; investment platforms</p>
         <ul>
-          <li>Grew users from <span class="metric">1M to 35M</span> (10M monthly active); improved app rating from <span class="metric">3.1 to 4.4</span> with ~500K ratings.</li>
-          <li>Increased advertising revenue by <span class="metric">150% in one year</span>; contributed ~<span class="metric">$10M annual revenue</span> to organization.</li>
+          <li>Led the launch of Prudential Retirement&#8217;s first consumer-facing mobile app, retaining <span class="metric">$350M in AUM</span> while contributing to <span class="metric">$10B in new client asset growth</span>.</li>
+          <li>Reversed poor app performance, increasing ratings from <span class="metric">1.8 to 4.8</span>, driving <span class="metric">700K downloads</span> and sustaining <span class="metric">100K monthly active users</span> through product improvements and go-to-market execution.</li>
+          <li>Pioneered the retirement industry&#8217;s first authenticated <strong>Amazon Alexa</strong> experience, earning external innovation awards and expanding secure, voice-based account access.</li>
+          <li>Modernized retirement account management and transactional workflows by rebuilding core features with a mobile-first and accessibility-driven approach.</li>
+          <li>Founded internal usability testing practice; oversaw <span class="metric">$6M+ annual product development budget</span>.</li>
+          <li>Won Prudential Business Value Award for Innovation (2018).</li>
+        </ul>
+        <div class="role-images">
+          <img src="/resume/images/prudential-app.png" alt="Prudential retirement app">
+          <img src="/resume/images/prudential-alexa.jpg" alt="Alexa integration">
+        </div>
+        <p style="margin-top:0.75rem"><a href="/work/prudential/">View Prudential case study &rarr;</a></p>
+      </div>
+
+      <div class="resume-role">
+        <div class="resume-role-header">
+          <h3>Senior Product Manager &mdash; <a href="https://www.accuweather.com" target="_blank" rel="noopener">AccuWeather</a></h3>
+          <span class="resume-role-meta">Aug 2011 &ndash; Apr 2015 &middot; State College, PA</span>
+        </div>
+        <p class="role-subtitle">Global consumer mobile platform with 35M+ users and multi-channel advertising revenue</p>
+        <ul>
+          <li>Led the strategy and launch of <span class="metric">25+ mobile products</span> over three years, redesigning core app experiences to drive a <span class="metric">150% increase in advertising revenue</span>, contributing <span class="metric">~$10M in incremental annual revenue</span>.</li>
+          <li>Scaled mobile apps to category leadership &mdash; improving ratings from <span class="metric">3.0 to 4.4</span> across <span class="metric">500K+ reviews</span>, growing the user base from <span class="metric">1M to 35M</span>, and increasing retention to <span class="metric">10M+ monthly active users</span>.</li>
           <li>Generated <span class="metric">$1M profit</span> from paid app model over three years.</li>
           <li>Achieved #1 search result for &#8220;weather&#8221;, ranked #2 among 500+ weather apps on Google Play.</li>
-          <li>Launched <span class="metric">25+ products</span> across Android, iOS, BlackBerry, Nokia, Amazon, Connected TVs, and wearables.</li>
-          <li>Managed vendor relationships with Google, Amazon, BlackBerry, and other platform partners.</li>
+          <li>Launched across Android, iOS, BlackBerry, Amazon, Nokia, Connected TVs, and wearables.</li>
           <li>Won W3 Silver Awards for Design (2013, 2014).</li>
         </ul>
         <div class="role-images">
-          <img src="/resume/images/accuweather-android.png" alt="AccuWeather Android" height="160">
-          <img src="/resume/images/accuweather-bb10.png" alt="AccuWeather on BlackBerry 10" width="150" height="150">
-          <img src="/resume/images/accuweather-sony.jpg" alt="AccuWeather on Sony Smartwatch" width="150" height="150">
-          <img src="/resume/images/accuweather-tv.png" alt="AccuWeather on Connected TV" width="150" height="150">
+          <img src="/resume/images/accuweather-android.png" alt="AccuWeather Android" class="img-narrow">
+          <img src="/resume/images/accuweather-bb10.png" alt="AccuWeather on BlackBerry 10" class="img-small">
+          <img src="/resume/images/accuweather-sony.jpg" alt="AccuWeather on Sony Smartwatch" class="img-small">
+          <img src="/resume/images/accuweather-tv.png" alt="AccuWeather on Connected TV" class="img-small">
         </div>
-        <p style="margin-top:0.75rem"><a href="/archive/work/">View interactive portfolio &rarr;</a></p>
+        <p style="margin-top:0.75rem">
+          <a href="/work/accuweather/">View AccuWeather case study &rarr;</a> &nbsp;&middot;&nbsp;
+          <a href="/archive/work/">Interactive portfolio &rarr;</a>
+        </p>
       </div>
 
       <div class="resume-role">
@@ -111,9 +158,12 @@
 
       <div class="resume-role">
         <div class="resume-role-header">
-          <h3>Internship &mdash; Schneider Electric</h3>
-          <span class="resume-role-meta">2010</span>
+          <h3>Lead Software Engineer &mdash; Various Companies</h3>
+          <span class="resume-role-meta">2003 &ndash; 2009</span>
         </div>
+        <ul>
+          <li>Earlier career in software engineering across multiple companies before transitioning to product management.</li>
+        </ul>
       </div>
     </section>
 
@@ -121,36 +171,31 @@
       <h2>Education</h2>
 
       <div class="education-item">
-        <h3>MBA &mdash; Penn State Smeal College of Business</h3>
-        <p>Marketing &amp; Supply Chain Management &middot; GPA 3.6 &middot; 2009&ndash;2011</p>
+        <h3>MBA, Marketing &mdash; Penn State Smeal College of Business</h3>
+        <p>2011</p>
       </div>
 
       <div class="education-item">
-        <h3>BE, Telecommunication Engineering &mdash; PESIT, Bangalore</h3>
-        <p>Distinction &middot; 1999&ndash;2003</p>
-      </div>
-
-      <div class="education-item">
-        <h3>Professional Diploma, Web Computing &amp; Programming &mdash; NIIT</h3>
-        <p>Distinction &middot; 1999&ndash;2001</p>
+        <h3>Bachelor of Engineering, Telecommunication &mdash; PESIT, Bangalore</h3>
+        <p>2003</p>
       </div>
     </section>
 
     <section class="resume-section">
       <h2>Skills</h2>
       <ul class="skills-list">
-        <li>Product strategy</li>
-        <li>Roadmapping</li>
+        <li>Product strategy &amp; prioritization</li>
+        <li>Experimentation &amp; A/B testing</li>
+        <li>Conversion &amp; funnel optimization</li>
         <li>Consumer mobile</li>
+        <li>Web &amp; eCommerce</li>
         <li>Voice (Alexa)</li>
         <li>Connected TV</li>
-        <li>Wearables</li>
-        <li>Android</li>
+        <li>Analytics &amp; data-driven decisions</li>
         <li>User research &amp; usability</li>
-        <li>Analytics</li>
+        <li>SEO &amp; performance optimization</li>
         <li>OKRs</li>
         <li>Agile / Scrum</li>
-        <li>Go-to-market</li>
         <li>Cross-functional leadership</li>
         <li>Vendor management</li>
       </ul>
@@ -159,10 +204,11 @@
     <section class="resume-section">
       <h2>Awards</h2>
       <ul class="award-list">
+        <li>Industry Award for UX Excellence (2024)</li>
+        <li>Industry Award for Experimentation-Driven Growth (2023)</li>
         <li>Prudential Business Value Award for Innovation (2018)</li>
         <li>W3 Silver Award for Design (2014)</li>
         <li>W3 Silver Award for Design (2013)</li>
-        <li>AccuWeather Team of the Month (2014)</li>
       </ul>
     </section>
 
@@ -177,7 +223,7 @@
 
   <footer>
     <div class="container">
-      <p>&copy; 2024 Ravikiran Rajagopal &middot; <a href="mailto:rkrules@gmail.com">rkrules@gmail.com</a></p>
+      <p>&copy; 2024 Ravikiran Rajagopal &middot; <a href="mailto:ravikiran.rajagopal@gmail.com">ravikiran.rajagopal@gmail.com</a></p>
     </div>
   </footer>
 </body>

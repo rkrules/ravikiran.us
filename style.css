@@ -92,5 +92,9 @@ footer { border-top: 1px solid #eee; padding: 24px; text-align: center; color: #
 .writing-card h3 { margin: 0 0 6px; font-size: 15px; color: #0366d6; }
 .writing-card p { margin: 0; font-size: 13px; color: #666; line-height: 1.4; }
 
+/* ── Profile page — AI Projects ── */
+.section-projects { padding-top: 40px; padding-bottom: 48px; }
+.section-projects h2 { margin-bottom: 20px; }
+
 /* ── Nav home link ── */
 .nav-home { font-size: 14px; }
