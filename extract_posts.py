@@ -5,6 +5,7 @@ import re
 import html
 import os
 from datetime import datetime
+import markdown as md_lib
 
 SQL_FILE = "wp_rkblogs_2023_04_04.sql"
 
@@ -283,17 +284,8 @@ def read_md_posts(directory):
             except ValueError:
                 pass
 
-        # Basic markdown → HTML
-        content = re.sub(r'^## (.+)$', r'<h2>\1</h2>', content, flags=re.MULTILINE)
-        content = re.sub(r'^# (.+)$', r'<h1>\1</h1>', content, flags=re.MULTILINE)
-        content = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', content)
-        content = re.sub(r'\*(.+?)\*', r'<em>\1</em>', content)
-        content = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', r'<img src="\2" alt="\1" loading="lazy">', content)
-        content = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', content)
-        paras = [p.strip() for p in content.split('\n\n') if p.strip()]
-        content = '\n'.join(
-            f'<p>{p}</p>' if not p.startswith('<') else p for p in paras
-        )
+        content = md_lib.markdown(content, extensions=['extra', 'smarty'])
+        content = content.replace('<img ', '<img loading="lazy" ')
 
         slug = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-') or fn.replace('.md', '')
         posts.append({
