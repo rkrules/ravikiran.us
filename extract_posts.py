@@ -252,8 +252,8 @@ def extract_wp_posts(sql_text, categories):
     return posts
 
 
-def read_newsletter_mds(directory='newsletter'):
-    """Read .md files from newsletter/ as posts (for future Substack imports)."""
+def read_md_posts(directory):
+    """Read .md files from a directory and return as post dicts."""
     posts = []
     if not os.path.isdir(directory):
         return posts
@@ -288,6 +288,7 @@ def read_newsletter_mds(directory='newsletter'):
         content = re.sub(r'^# (.+)$', r'<h1>\1</h1>', content, flags=re.MULTILINE)
         content = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', content)
         content = re.sub(r'\*(.+?)\*', r'<em>\1</em>', content)
+        content = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', r'<img src="\2" alt="\1" loading="lazy">', content)
         content = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', content)
         paras = [p.strip() for p in content.split('\n\n') if p.strip()]
         content = '\n'.join(
@@ -316,6 +317,7 @@ def generate_html(post, blog_type='main'):
         'notes':      ('/notes/', 'Notes'),
         'journal':    ('/journal/', 'Journal'),
         'newsletter': ('/newsletter/', 'Newsletter'),
+        'abk':        ('/abk/', 'ABK'),
     }
     back_link, section = links.get(blog_type, ('/blog/', 'Blog'))
 
@@ -436,13 +438,17 @@ def main():
     journal_posts = extract_wp_posts(sql_text, wp_cats)
 
     print("\nReading newsletter .md files...")
-    newsletter_posts = read_newsletter_mds('newsletter')
+    newsletter_posts = read_md_posts('newsletter')
     print(f"  {len(newsletter_posts)} newsletter posts")
 
-    for lst in [main_posts, notes_posts, status_posts, wedding_posts, journal_posts, newsletter_posts]:
+    print("\nReading ABK .md files...")
+    abk_posts = read_md_posts('abk')
+    print(f"  {len(abk_posts)} ABK posts")
+
+    for lst in [main_posts, notes_posts, status_posts, wedding_posts, journal_posts, newsletter_posts, abk_posts]:
         lst.sort(key=lambda p: p.get('date', ''), reverse=True)
 
-    for d in ['blog', 'notes', 'status', 'wedding', 'journal', 'newsletter']:
+    for d in ['blog', 'notes', 'status', 'wedding', 'journal', 'newsletter', 'abk']:
         os.makedirs(d, exist_ok=True)
 
     print("\nGenerating HTML pages...")
@@ -466,6 +472,7 @@ def main():
     write_section(wedding_posts,    'wedding',    'wedding')
     write_section(journal_posts,    'journal',    'journal')
     write_section(newsletter_posts, 'newsletter', 'newsletter')
+    write_section(abk_posts,       'abk',        'abk')
 
     with open('blog/index.html', 'w', encoding='utf-8') as f:
         f.write(generate_index(main_posts, 'Blog', 'Writing on product, tech, and life', show_back=True))
@@ -492,6 +499,12 @@ def main():
             note='Occasional longer essays. More coming soon.' if not newsletter_posts else None
         ))
 
+    with open('abk/index.html', 'w', encoding='utf-8') as f:
+        f.write(generate_index(
+            abk_posts, 'ABK', 'Family stories and memories',
+            show_back=True,
+        ))
+
     print(f"\nDone!")
     print(f"  Blog:       {len(main_posts):>4} posts  → /blog/")
     print(f"  Notes:      {len(notes_posts):>4} posts  → /notes/")
@@ -499,6 +512,7 @@ def main():
     print(f"  Wedding:    {len(wedding_posts):>4} posts  → /wedding/")
     print(f"  Journal:    {len(journal_posts):>4} posts  → /journal/")
     print(f"  Newsletter: {len(newsletter_posts):>4} posts  → /newsletter/")
+    print(f"  ABK:        {len(abk_posts):>4} posts  → /abk/")
 
 
 if __name__ == '__main__':

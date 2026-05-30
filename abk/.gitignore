@@ -1,0 +1,6 @@
+# Original large image files (resized copies live in /uploads/tooth-fairy/)
+*.jpg
+*.jpeg
+*.png
+*.HEIC
+*.heic
