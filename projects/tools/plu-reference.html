@@ -1,0 +1,3172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLU ID Reference — United Parks & Resorts (2026)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f5f7; color: #1a1a2e; }
+
+  .header { background: linear-gradient(135deg, #0a2463 0%, #1e4d8c 100%); color: white; padding: 24px 32px; }
+  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+  .header p { font-size: 13px; opacity: 0.75; margin-top: 4px; }
+
+  .controls { padding: 20px 32px 16px; }
+  .search-row { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+  .search-box {
+    flex: 1; max-width: 360px; padding: 9px 14px; border: 1px solid #cbd5e1;
+    border-radius: 8px; font-size: 13px; background: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .search-box:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+  .count-badge { font-size: 12px; color: #64748b; padding: 4px 10px; background: white; border-radius: 12px; border: 1px solid #e2e8f0; }
+
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+  .filter-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px; }
+  .chip {
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s;
+    background: white; color: #475569; border-color: #e2e8f0;
+  }
+  .chip:hover { background: #f1f5f9; border-color: #94a3b8; }
+  .chip.active { background: #1e3a8a; color: white; border-color: #1e3a8a; }
+  .chip.type-ticket.active { background: #0369a1; border-color: #0369a1; }
+  .chip.type-pass.active { background: #7c3aed; border-color: #7c3aed; }
+  .chip.type-funcard.active { background: #047857; border-color: #047857; }
+  .chip.park-DCO.active { background: #78716c; border-color: #78716c; }
+
+  .table-wrap { margin: 0 32px 32px; background: white; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.08); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: #f8fafc; border-bottom: 2px solid #e2e8f0; }
+  th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; white-space: nowrap; user-select: none; }
+  th:hover { color: #1e3a8a; }
+  th.sorted-asc::after { content: " ↑"; }
+  th.sorted-desc::after { content: " ↓"; }
+  tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.1s; }
+  tbody tr:hover { background: #f8fafc; }
+  tbody tr:last-child { border-bottom: none; }
+  td { padding: 10px 14px; vertical-align: middle; }
+
+  /* De-emphasized rows for CSV-only products */
+  tbody tr.csv-only { opacity: 0.5; }
+  tbody tr.csv-only:hover { opacity: 0.75; background: #f8fafc; }
+  tbody tr.csv-only .plu-code { color: #94a3b8; }
+
+  .park-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+  }
+  .park-SWO { background: #dbeafe; color: #1e40af; }
+  .park-APO { background: #e0f2fe; color: #0369a1; }
+  .park-BGT { background: #fef3c7; color: #92400e; }
+  .park-AIT { background: #fde8d8; color: #9a3412; }
+  .park-SWT { background: #f0fdf4; color: #166534; }
+  .park-APT { background: #dcfce7; color: #15803d; }
+  .park-SWC { background: #ede9fe; color: #5b21b6; }
+  .park-SPC { background: #fdf4ff; color: #7e22ce; }
+  .park-BGW { background: #fff7ed; color: #c2410c; }
+  .park-WCW { background: #fef9c3; color: #713f12; }
+  .park-SPL { background: #fce7f3; color: #9d174d; }
+  .park-DCO { background: #f1f5f9; color: #64748b; }
+
+  .plu-code { font-family: "SF Mono", "Fira Code", monospace; font-size: 13px; font-weight: 600; color: #0f172a; letter-spacing: 0.5px; }
+
+  .type-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .type-ticket { background: #e0f2fe; color: #0369a1; }
+  .type-pass { background: #ede9fe; color: #5b21b6; }
+  .type-funcard { background: #dcfce7; color: #15803d; }
+
+  .payment-fpar { color: #1e40af; font-size: 11px; font-weight: 600; }
+  .payment-ezpay { color: #7c3aed; font-size: 11px; font-weight: 600; }
+  .payment-na { color: #94a3b8; font-size: 11px; }
+
+  .legend { display: flex; gap: 20px; align-items: center; padding: 0 32px 14px; font-size: 12px; color: #64748b; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+  .legend-dot.confirmed { background: #0f172a; }
+  .legend-dot.csv-only { background: #cbd5e1; }
+
+  .empty-state { text-align: center; padding: 48px; color: #94a3b8; font-size: 14px; }
+
+  @media (max-width: 768px) {
+    .header, .controls, .table-wrap, .legend { margin-left: 0; margin-right: 0; padding-left: 12px; padding-right: 12px; }
+    .table-wrap { border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>PLU ID Reference — United Parks & Resorts</h1>
+  <p>Source: Book2.xlsx + prior CSV &nbsp;·&nbsp; 293 products across 12 parks &nbsp;·&nbsp; Updated 2026-03-24</p>
+</div>
+
+<div class="controls">
+  <div class="search-row">
+    <input class="search-box" type="text" id="search" placeholder="Search product name or PLU ID…" oninput="applyFilters()">
+    <span class="count-badge" id="count-badge">293 products</span>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Park</span>
+    <span class="chip active" data-filter="park" data-value="all" onclick="toggleFilter(this)">All</span>
+    <span class="chip" data-filter="park" data-value="SWO" onclick="toggleFilter(this)">SWO</span>
+    <span class="chip" data-filter="park" data-value="APO" onclick="toggleFilter(this)">APO</span>
+    <span class="chip" data-filter="park" data-value="BGT" onclick="toggleFilter(this)">BGT</span>
+    <span class="chip" data-filter="park" data-value="AIT" onclick="toggleFilter(this)">AIT</span>
+    <span class="chip" data-filter="park" data-value="SWT" onclick="toggleFilter(this)">SWT</span>
+    <span class="chip" data-filter="park" data-value="APT" onclick="toggleFilter(this)">APT</span>
+    <span class="chip" data-filter="park" data-value="SWC" onclick="toggleFilter(this)">SWC</span>
+    <span class="chip" data-filter="park" data-value="SPC" onclick="toggleFilter(this)">SPC</span>
+    <span class="chip" data-filter="park" data-value="BGW" onclick="toggleFilter(this)">BGW</span>
+    <span class="chip" data-filter="park" data-value="WCW" onclick="toggleFilter(this)">WCW</span>
+    <span class="chip" data-filter="park" data-value="SPL" onclick="toggleFilter(this)">SPL</span>
+    <span class="chip park-DCO" data-filter="park" data-value="DCO" onclick="toggleFilter(this)">DCO</span>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Type</span>
+    <span class="chip active" data-filter="type" data-value="all" onclick="toggleFilter(this)">All</span>
+    <span class="chip type-ticket" data-filter="type" data-value="ticket" onclick="toggleFilter(this)">Ticket</span>
+    <span class="chip type-pass" data-filter="type" data-value="pass" onclick="toggleFilter(this)">Pass</span>
+    <span class="chip type-funcard" data-filter="type" data-value="funcard" onclick="toggleFilter(this)">Fun Card / Season</span>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Source</span>
+    <span class="chip active" data-filter="source" data-value="all" onclick="toggleFilter(this)">All</span>
+    <span class="chip" data-filter="source" data-value="spreadsheet" onclick="toggleFilter(this)">Spreadsheet only</span>
+    <span class="chip" data-filter="source" data-value="csv_only" onclick="toggleFilter(this)">CSV only (unconfirmed)</span>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot confirmed"></div> Confirmed in spreadsheet</div>
+  <div class="legend-item"><div class="legend-dot csv-only"></div> CSV only — not in spreadsheet (de-emphasized)</div>
+</div>
+
+<div class="table-wrap">
+  <table id="plu-table">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)" data-col="0">Park</th>
+        <th onclick="sortTable(1)" data-col="1">Park Name</th>
+        <th onclick="sortTable(2)" data-col="2">Product Name</th>
+        <th onclick="sortTable(3)" data-col="3">PLU ID</th>
+        <th onclick="sortTable(4)" data-col="4">Type</th>
+        <th onclick="sortTable(5)" data-col="5">Payment</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+  <div class="empty-state" id="empty-state" style="display:none">No products match your filters.</div>
+</div>
+
+<script>
+const DATA = [
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Single-Day Ticket",
+    "plu": "168014",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Single-Day Ticket + ADDD",
+    "plu": "168202",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Ultimate Bundle",
+    "plu": "172257",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Any Day Ticket",
+    "plu": "164162",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Any Day Ticket + ADDD",
+    "plu": "153825",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket",
+    "plu": "164165",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "182064",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket",
+    "plu": "164167",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket + ADDD",
+    "plu": "183318",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Four Park Ticket",
+    "plu": "154881",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Fun Card -SWO",
+    "plu": "182557",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Fun Card - SWO/APO",
+    "plu": "182620",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO Bronze FPAR",
+    "plu": "174570",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO Bronze Ezpay",
+    "plu": "174569",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Bronze FPAR",
+    "plu": "174585",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Bronze Ezpay",
+    "plu": "174584",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "FL Bronze FPAR",
+    "plu": "174588",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "FL Bronze Ezpay",
+    "plu": "174587",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO Silver FPAR",
+    "plu": "177567",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO Silver Ezpay",
+    "plu": "177560",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Silver FPAR",
+    "plu": "177572",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Silver Ezpay",
+    "plu": "177565",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "FL Silver FPAR",
+    "plu": "177573",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "FL Silver Ezpay",
+    "plu": "177566",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO Gold FPAR",
+    "plu": "177588",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO Gold Ezpay",
+    "plu": "177581",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Gold FPAR",
+    "plu": "177593",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Gold Ezpay",
+    "plu": "177586",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "FL Gold FPAR",
+    "plu": "177594",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "FL Gold Ezpay",
+    "plu": "177587",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Platinum FPAR",
+    "plu": "177597",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Platinum Ezpay",
+    "plu": "177596",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "161970",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWO",
+    "park_name": "SeaWorld Orlando",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket + ADDD",
+    "plu": "161972",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Single-Day Ticket",
+    "plu": "168022",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Single-Day Ticket + ADDD",
+    "plu": "168306",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Any Day Ticket",
+    "plu": "178180",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Any Day Ticket + ADDD",
+    "plu": "178303",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket",
+    "plu": "164165",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "182064",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket",
+    "plu": "164167",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket + ADDD",
+    "plu": "183318",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Four Park Ticket",
+    "plu": "154881",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Fun Card -APO",
+    "plu": "182605",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Fun Card - SWO/APO",
+    "plu": "182620",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "APO Bronze FPAR",
+    "plu": "174579",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "APO Bronze Ezpay",
+    "plu": "174578",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Bronze FPAR",
+    "plu": "174585",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Bronze Ezpay",
+    "plu": "174584",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "FL Bronze FPAR",
+    "plu": "174588",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "FL Bronze Ezpay",
+    "plu": "174587",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "APO Silver FPAR",
+    "plu": "177570",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "APO Silver Ezpay",
+    "plu": "177563",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Silver FPAR",
+    "plu": "177572",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Silver Ezpay",
+    "plu": "177565",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "FL Silver FPAR",
+    "plu": "177573",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "FL Silver Ezpay",
+    "plu": "177566",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "APO Gold FPAR",
+    "plu": "177591",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "APO Gold Ezpay",
+    "plu": "177584",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Gold FPAR",
+    "plu": "177593",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "SWO/APO Gold Ezpay",
+    "plu": "177586",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "FL Gold FPAR",
+    "plu": "177594",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "FL Gold Ezpay",
+    "plu": "177587",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Platinum FPAR",
+    "plu": "177597",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Platinum Ezpay",
+    "plu": "177596",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "161970",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APO",
+    "park_name": "Aquatica Orlando",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket + ADDD",
+    "plu": "161972",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Single-Day Ticket",
+    "plu": "168010",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Single-Day Ticket + ADDD",
+    "plu": "168204",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Ultimate Bundle",
+    "plu": "169622",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Any Day Ticket",
+    "plu": "178181",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Any Day Ticket + ADDD",
+    "plu": "174670",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket",
+    "plu": "164165",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "182064",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket",
+    "plu": "164167",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket + ADDD",
+    "plu": "183318",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Four Park Ticket",
+    "plu": "154881",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Fun Card -BGT",
+    "plu": "182543",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Fun Card - BGT/AIT",
+    "plu": "182614",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT Bronze FPAR",
+    "plu": "174573",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT Bronze Ezpay",
+    "plu": "174572",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Bronze FPAR",
+    "plu": "174582",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Bronze Ezpay",
+    "plu": "174581",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "FL Bronze FPAR",
+    "plu": "180504",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "FL Bronze Ezpay",
+    "plu": "180503",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT Silver FPAR",
+    "plu": "177568",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT Silver Ezpay",
+    "plu": "177561",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Silver FPAR",
+    "plu": "177571",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Silver Ezpay",
+    "plu": "177564",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "FL Silver FPAR",
+    "plu": "180507",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "FL Silver Ezpay",
+    "plu": "180506",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT Gold FPAR",
+    "plu": "177589",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT Gold Ezpay",
+    "plu": "177582",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Gold FPAR",
+    "plu": "177592",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Gold Ezpay",
+    "plu": "177585",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "FL Gold FPAR",
+    "plu": "180510",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "FL Gold Ezpay",
+    "plu": "180509",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Platinum FPAR",
+    "plu": "180513",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Platinum Ezpay",
+    "plu": "180512",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "161970",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket + ADDD",
+    "plu": "161972",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Single-Day Ticket",
+    "plu": "168055",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Single-Day Ticket + ADDD",
+    "plu": "168305",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Any Day Ticket",
+    "plu": "178270",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Any Day Ticket + ADDD",
+    "plu": "178302",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket",
+    "plu": "164165",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "182064",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket",
+    "plu": "164167",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket + ADDD",
+    "plu": "183318",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Four Park Ticket",
+    "plu": "154881",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Fun Card -AIT",
+    "plu": "182598",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Fun Card - BGT/AIT",
+    "plu": "182614",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "AIT Bronze FPAR",
+    "plu": "174576",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "AIT Bronze Ezpay",
+    "plu": "174575",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Bronze FPAR",
+    "plu": "174582",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Bronze Ezpay",
+    "plu": "174581",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "FL Bronze FPAR",
+    "plu": "180504",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "FL Bronze Ezpay",
+    "plu": "180503",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "AIT Silver FPAR",
+    "plu": "177569",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "AIT Silver Ezpay",
+    "plu": "177562",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Silver FPAR",
+    "plu": "177571",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Silver Ezpay",
+    "plu": "177564",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "FL Silver FPAR",
+    "plu": "180507",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "FL Silver Ezpay",
+    "plu": "180506",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "AIT Gold FPAR",
+    "plu": "177590",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "AIT Gold Ezpay",
+    "plu": "177583",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Gold FPAR",
+    "plu": "177592",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "BGT/AIT Gold Ezpay",
+    "plu": "177585",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "FL Gold FPAR",
+    "plu": "180510",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "FL Gold Ezpay",
+    "plu": "180509",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Platinum FPAR",
+    "plu": "180513",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Platinum Ezpay",
+    "plu": "180512",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "161970",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "AIT",
+    "park_name": "Adventure Island Tampa",
+    "region": "Florida",
+    "name": "Three Day, Three Park Ticket + ADDD",
+    "plu": "161972",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Single-Day Ticket",
+    "plu": "168058",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Single-Day Ticket + ADDD",
+    "plu": "168203",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Ultimate Bundle",
+    "plu": "172270",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Any Day Ticket",
+    "plu": "174751",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Any Day Ticket + ADDD",
+    "plu": "174700",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Two Day, Two Park Ticket",
+    "plu": "174752",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "183281",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Three Day, Two Park Ticket",
+    "plu": "174753",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Three Day, TWo Park Ticket + ADDD",
+    "plu": "183282",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Two Day, One Park Ticket",
+    "plu": "180543",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Two Day, One Park Ticket + ADDD",
+    "plu": "183437",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Season Pass - SWT",
+    "plu": "182721",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Season Pass - SWT/APT",
+    "plu": "182714",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "SWT Silver Pass FPAR",
+    "plu": "173762",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "SWT Silver Pass Ezpay",
+    "plu": "173763",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "SWT Gold Pass FPAR",
+    "plu": "173780",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "SWT Gold Pass Ezpay",
+    "plu": "173781",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "SWT/APT Silver Pass FPAR",
+    "plu": "173930",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "SWT/APT Silver Pass Ezpay",
+    "plu": "173931",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "SWT/APT Gold Pass FPAR",
+    "plu": "173963",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "SWT/APT Gold Pass Ezpay",
+    "plu": "173965",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Platinum Pass FPAR",
+    "plu": "180038",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Platinum Pass Ezpay",
+    "plu": "180039",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "171737",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Three Day, TWo Park Ticket + ADDD",
+    "plu": "171738",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Single-Day Ticket",
+    "plu": "168001",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Single-Day Ticket + ADDD",
+    "plu": "168304",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Any Day Ticket",
+    "plu": "165486",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Any Day Ticket + ADDD",
+    "plu": "161677",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Two Day, Two Park Ticket",
+    "plu": "174752",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "183281",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Three Day, Two Park Ticket",
+    "plu": "174753",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Three Day, TWo Park Ticket + ADD",
+    "plu": "183282",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Season Pass - APT",
+    "plu": "182726",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Season Pass - SWT/APT",
+    "plu": "182714",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "SWT/APT Silver Pass FPAR",
+    "plu": "173930",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "SWT/APT Silver Pass Ezpay",
+    "plu": "173931",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "SWT/APT Gold Pass FPAR",
+    "plu": "173963",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "SWT/APT Gold Pass Ezpay",
+    "plu": "173965",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Platinum Pass FPAR",
+    "plu": "180038",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Platinum Pass Ezpay",
+    "plu": "180039",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Two Day, Two Park Ticket + ADDD",
+    "plu": "171737",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "Three Day, TWo Park Ticket + ADDD",
+    "plu": "171738",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Single Day Ticket",
+    "plu": "169294",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Single Day Ticket + ADDD",
+    "plu": "171278",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Ultimate Bundle",
+    "plu": "172263",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Any Day Ticket",
+    "plu": "174761",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Any Day Ticket + ADDD",
+    "plu": "174698",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Two Day Ticket",
+    "plu": "156314",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Two Day Ticket + ADDD",
+    "plu": "183283",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Two Park Ticket",
+    "plu": "174891",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Adult - 3 for 1 Ticket",
+    "plu": "170207",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Child - 3 for 1 Ticket",
+    "plu": "170208",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Fun Card",
+    "plu": "182514",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Silver  FPAR",
+    "plu": "173625",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Silver  Ezpay",
+    "plu": "173626",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Gold  FPAR",
+    "plu": "173636",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Gold  Ezpay",
+    "plu": "173637",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Platinum  FPAR",
+    "plu": "173646",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Platinum  Ezpay",
+    "plu": "173647",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "2 Park Season Pass",
+    "plu": "182646",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "SoCal FPAR",
+    "plu": "172703",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "SoCal  Ezpay",
+    "plu": "172705",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Two Day Ticket + ADDD",
+    "plu": "174891",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPC",
+    "park_name": "Sesame Place San Diego",
+    "region": "California",
+    "name": "Single Day Ticket",
+    "plu": "172706",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPC",
+    "park_name": "Sesame Place San Diego",
+    "region": "California",
+    "name": "Any Day Ticket",
+    "plu": "181121",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPC",
+    "park_name": "Sesame Place San Diego",
+    "region": "California",
+    "name": "Two Park Ticket",
+    "plu": "174891",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPC",
+    "park_name": "Sesame Place San Diego",
+    "region": "California",
+    "name": "Silver Full Pay",
+    "plu": "182583",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPC",
+    "park_name": "Sesame Place San Diego",
+    "region": "California",
+    "name": "Silver Pass Ezpay",
+    "plu": "184011",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPC",
+    "park_name": "Sesame Place San Diego",
+    "region": "California",
+    "name": "Gold  Full Pay",
+    "plu": "182556",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPC",
+    "park_name": "Sesame Place San Diego",
+    "region": "California",
+    "name": "Gold Ezpay",
+    "plu": "184018",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPC",
+    "park_name": "Sesame Place San Diego",
+    "region": "California",
+    "name": "Platinum Full Pay",
+    "plu": "182532",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPC",
+    "park_name": "Sesame Place San Diego",
+    "region": "California",
+    "name": "Platinum Ezpay",
+    "plu": "184025",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPC",
+    "park_name": "Sesame Place San Diego",
+    "region": "California",
+    "name": "Two Park Season Pass",
+    "plu": "182646",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Single-Day Ticket",
+    "plu": "170529",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Single-Day Ticket + ADDD",
+    "plu": "170533",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Ultimate Bundle",
+    "plu": "181534",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Any Day Ticket",
+    "plu": "162350",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Any Day Ticket + ADDD",
+    "plu": "162680",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Two Day Ticket",
+    "plu": "162346",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Two Day Ticket + ADDD",
+    "plu": "183311",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Three Day Ticket",
+    "plu": "162348",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Three Day Ticket + ADDD",
+    "plu": "183310",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Fun card - BGW",
+    "plu": "182451",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Fun Card- WCW",
+    "plu": "182461",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW Basic FPAR",
+    "plu": "174701",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW Basic Ezpay",
+    "plu": "174702",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW/WCW Basic FPAR",
+    "plu": "174705",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW/WCW Basic Ezpay",
+    "plu": "174706",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW Unlimited FPAR",
+    "plu": "174707",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW Unlimited Ezpay",
+    "plu": "174708",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW/WCW Unlimited FPAR",
+    "plu": "174711",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW/WCW Unlimited Ezpay",
+    "plu": "174712",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW Premier FPAR",
+    "plu": "174713",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW Premier Ezpay",
+    "plu": "174714",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW/WCW Premier FPAR",
+    "plu": "174715",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "BGW/WCW Premier EZpay",
+    "plu": "174716",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Platinum FPAR",
+    "plu": "174718",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Platinum Ezpay",
+    "plu": "174719",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Two Day Ticket + ADDD",
+    "plu": "162681",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Three Day Ticket + ADDD",
+    "plu": "162682",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Single-Day Ticket",
+    "plu": "159563",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Single-Day Ticket + ADDD",
+    "plu": "171126",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Any Day Ticket",
+    "plu": "109378",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Any Day Ticket + ADDD",
+    "plu": "167552",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Two Day Ticket",
+    "plu": "162346",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Two Day Ticket + ADDD",
+    "plu": "183311",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Three Day Ticket",
+    "plu": "162348",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Three Day Ticket + ADD",
+    "plu": "183310",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Fun card - WCW",
+    "plu": "182456",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Fun Card- BGW/WCW",
+    "plu": "182461",
+    "type": "funcard",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "BGW/WCW Basic FPAR",
+    "plu": "174705",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "BGW/WCW Basic Ezpay",
+    "plu": "174706",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "BGW Unlimited FPAR",
+    "plu": "174711",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "BGW Unlimited Ezpay",
+    "plu": "174712",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "BGW Premier FPAR",
+    "plu": "174713",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "BGW Premier Ezpay",
+    "plu": "174714",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Platinum FPAR",
+    "plu": "174718",
+    "type": "pass",
+    "payment": "FPAR",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Platinum Ezpay",
+    "plu": "174719",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "WCW Unlimited",
+    "plu": "174709",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Two Day Ticket + ADDD",
+    "plu": "162681",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Three Day Ticket + ADDD",
+    "plu": "162682",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Single Day Ticket - Intended Date",
+    "plu": "169123",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Two Day Ticket - Intended Date",
+    "plu": "172024",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Any Day Ticket",
+    "plu": "174925",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Free 2nd Visit ",
+    "plu": "162946",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Bronze Full Pay",
+    "plu": "182255",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Bronze Ezpay",
+    "plu": "184000",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Silver Full Pay",
+    "plu": "182264",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Silver Ezpay",
+    "plu": "184002",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Gold Full Pay",
+    "plu": "182273",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Gold Ezpay",
+    "plu": "184005",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Platinum Full Pay",
+    "plu": "182314",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Platinum Ezpay",
+    "plu": "184009",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Transferable Full Pay",
+    "plu": "182336",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Transferable Ezpay",
+    "plu": "184007",
+    "type": "pass",
+    "payment": "EZpay",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "DCO",
+    "park_name": "Discovery Cove Orlando",
+    "region": "Florida",
+    "name": "Day Resort",
+    "plu": "162892",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "DCO",
+    "park_name": "Discovery Cove Orlando",
+    "region": "Florida",
+    "name": "Day Resort + 2 Parks",
+    "plu": "138342",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "DCO",
+    "park_name": "Discovery Cove Orlando",
+    "region": "Florida",
+    "name": "Day Resort + 3 parks",
+    "plu": "138346",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "DCO",
+    "park_name": "Discovery Cove Orlando",
+    "region": "Florida",
+    "name": "Dolphin Swim",
+    "plu": "162890",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "DCO",
+    "park_name": "Discovery Cove Orlando",
+    "region": "Florida",
+    "name": "Dolphin Swim + 2 parks",
+    "plu": "138344",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "DCO",
+    "park_name": "Discovery Cove Orlando",
+    "region": "Florida",
+    "name": "Dolphin Swim + 3 parks",
+    "plu": "138348",
+    "type": "ticket",
+    "payment": "-",
+    "source": "spreadsheet"
+  },
+  {
+    "park_code": "SWC",
+    "park_name": "SeaWorld San Diego",
+    "region": "California",
+    "name": "Four Parks Unlimited + Free Parking \u2014 $62.00/park",
+    "plu": "183780",
+    "type": "pass",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "SWT",
+    "park_name": "SeaWorld San Antonio",
+    "region": "Texas",
+    "name": "Preschool Card \u2014 SeaWorld Only (ages 3-4)",
+    "plu": "183773",
+    "type": "funcard",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "BGT",
+    "park_name": "Busch Gardens Tampa",
+    "region": "Florida",
+    "name": "Preschool Card \u2014 BG + Adventure Island (ages 3-5)",
+    "plu": "183762",
+    "type": "funcard",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Spring Bounce Ticket \u2014 Ages 13+",
+    "plu": "146578",
+    "type": "ticket",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Spring Bounce Ticket \u2014 Ages 6-12",
+    "plu": "146579",
+    "type": "ticket",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Summer Bounce Ticket \u2014 Ages 13+",
+    "plu": "122200",
+    "type": "ticket",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Summer Bounce Ticket \u2014 Ages 6-12",
+    "plu": "122201",
+    "type": "ticket",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "2-Park Preschool Pass \u2014 Ages 3-5",
+    "plu": "130075",
+    "type": "pass",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "BGW",
+    "park_name": "Busch Gardens Williamsburg",
+    "region": "Virginia",
+    "name": "Basic Membership \u2014 Annual",
+    "plu": "174703",
+    "type": "pass",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "Two-Day Two Park Ticket \u2014 $49.99/day",
+    "plu": "182979",
+    "type": "ticket",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "2026 Silver Pass \u2014 $32.50/mo (6 payments)",
+    "plu": "183573",
+    "type": "pass",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "2026 Gold Pass \u2014 $39.00/mo (6 payments)",
+    "plu": "183576",
+    "type": "pass",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "2026 Platinum Pass \u2014 $46.50/mo (6 payments)",
+    "plu": "183581",
+    "type": "pass",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "SPL",
+    "park_name": "Sesame Place Philadelphia",
+    "region": "Pennsylvania",
+    "name": "2026 Transferable Pass \u2014 $39.00/mo (6 payments)",
+    "plu": "183579",
+    "type": "pass",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "APT",
+    "park_name": "Aquatica San Antonio",
+    "region": "Texas",
+    "name": "SeaWorld & Aquatica Preschool Card \u2014 Ages 3-4",
+    "plu": "183774",
+    "type": "funcard",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "WCW",
+    "park_name": "Water Country USA",
+    "region": "Virginia",
+    "name": "Summer Bounce Ticket \u2014 Ages 0-5",
+    "plu": "122202",
+    "type": "ticket",
+    "payment": "-",
+    "source": "csv_only"
+  },
+  {
+    "park_code": "DCO",
+    "park_name": "Discovery Cove Orlando",
+    "region": "Florida",
+    "name": "2 and Under Package \u2014 Ages 0-2",
+    "plu": "124319",
+    "type": "ticket",
+    "payment": "-",
+    "source": "csv_only"
+  }
+];
+
+let activeFilters = { park: 'all', type: 'all', source: 'all' };
+let sortCol = -1;
+let sortDir = 1;
+let currentData = [...DATA];
+
+function toggleFilter(el) {
+  const filter = el.dataset.filter;
+  const value = el.dataset.value;
+  activeFilters[filter] = value;
+  document.querySelectorAll(`[data-filter="${filter}"]`).forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  currentData = DATA.filter(p => {
+    if (activeFilters.park !== 'all' && p.park_code !== activeFilters.park) return false;
+    if (activeFilters.type !== 'all' && p.type !== activeFilters.type) return false;
+    if (activeFilters.source !== 'all' && p.source !== activeFilters.source) return false;
+    if (q && !p.name.toLowerCase().includes(q) && !p.plu.includes(q) && !p.park_name.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  if (sortCol >= 0) sortCurrentData();
+  render();
+}
+
+function sortTable(col) {
+  const ths = document.querySelectorAll('th');
+  ths.forEach(th => th.classList.remove('sorted-asc', 'sorted-desc'));
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = 1; }
+  ths[col].classList.add(sortDir === 1 ? 'sorted-asc' : 'sorted-desc');
+  sortCurrentData();
+  render();
+}
+
+const SORT_KEYS = ['park_code', 'park_name', 'name', 'plu', 'type', 'payment'];
+function sortCurrentData() {
+  const key = SORT_KEYS[sortCol];
+  currentData.sort((a, b) => {
+    const av = a[key] || ''; const bv = b[key] || '';
+    return av < bv ? -sortDir : av > bv ? sortDir : 0;
+  });
+}
+
+function render() {
+  const tbody = document.getElementById('table-body');
+  const empty = document.getElementById('empty-state');
+  const badge = document.getElementById('count-badge');
+  badge.textContent = currentData.length + ' product' + (currentData.length !== 1 ? 's' : '');
+  if (currentData.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  const typeLabels = { ticket: 'Ticket', pass: 'Pass', funcard: 'Fun Card / Season' };
+  tbody.innerHTML = currentData.map(p => `
+    <tr class="${p.source === 'csv_only' ? 'csv-only' : ''}">
+      <td><span class="park-badge park-${p.park_code}">${p.park_code}</span></td>
+      <td style="color:#475569">${p.park_name}</td>
+      <td style="font-weight:500">${p.name}</td>
+      <td><span class="plu-code">${p.plu}</span></td>
+      <td><span class="type-badge type-${p.type}">${typeLabels[p.type]}</span></td>
+      <td>${p.payment === 'FPAR' ? '<span class="payment-fpar">FPAR</span>' :
+            p.payment === 'Ezpay' ? '<span class="payment-ezpay">Ezpay</span>' :
+            p.payment === 'Full Pay' ? '<span class="payment-fpar">Full Pay</span>' :
+            '<span class="payment-na">—</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+render();
+</script>
+</body>
+</html>

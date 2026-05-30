@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Todo</title>
+  <style>
+    :root {
+      --bg: #f5f5f7; --surface: #fff; --border: #e2e2e8;
+      --text: #1d1d1f; --muted: #6e6e73;
+      --primary: #0071e3; --primary-light: #dbeafe;
+      --warn: #f59e0b; --warn-light: #fef3c7;
+      --success: #059669;
+      --recur: #8b5cf6; --recur-light: #f5f3ff;
+      --danger: #ef4444; --danger-light: #fee2e2;
+      --delegate: #0891b2; --delegate-light: #e0f2fe;
+      --age-mild: #fffbeb; --age-mild-border: #fbbf24;
+      --age-warn: #fff7ed; --age-warn-border: #f97316;
+      --age-old:  #fef2f2; --age-old-border:  #ef4444;
+      --radius: 10px; --shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+
+    /* ── Setup overlay ── */
+    #setupOverlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:200}
+    .setup-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px;max-width:420px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.12)}
+    .setup-card h2{font-size:20px;font-weight:700;margin-bottom:8px}
+    .setup-card p{color:var(--muted);font-size:13px;margin-bottom:24px;line-height:1.6}
+    .setup-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+    .setup-btn{padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:opacity .15s}
+    .setup-btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .setup-btn:hover{opacity:.85}
+    #resumeBtn{display:none;width:100%;margin-bottom:8px}
+    .setup-sub{font-size:11px;color:var(--muted);margin-top:8px}
+    .setup-sub a{color:var(--primary);cursor:pointer}
+    #migrateNote{display:none;margin-top:16px;padding:10px;background:var(--warn-light);border-radius:8px;font-size:12px;color:#92400e}
+
+    /* ── Fallback banner ── */
+    #fallbackBanner{display:none;background:var(--warn-light);border-bottom:1px solid var(--warn);padding:8px 16px;text-align:center;font-size:12px;color:#92400e}
+
+    /* ── App shell ── */
+    .app{max-width:780px;margin:0 auto;padding:24px 16px 48px;display:none}
+
+    /* ── Header ── */
+    .header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+    .header h1{font-size:22px;font-weight:700;letter-spacing:-.02em}
+    .header p{color:var(--muted);font-size:12px;margin-top:2px}
+    .save-indicator{font-size:11px;color:var(--muted);white-space:nowrap;margin-top:4px}
+
+    /* ── Filter bar ── */
+    .filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+    .filter-bar input{flex:1;min-width:160px;padding:7px 12px;border:1px solid var(--border);border-radius:20px;font-size:13px;background:var(--surface);outline:none}
+    .filter-bar input:focus{border-color:var(--primary)}
+    .pill{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .15s;white-space:nowrap}
+    .pill.active{background:var(--primary);border-color:var(--primary);color:#fff}
+
+    /* ── Input area ── */
+    .input-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:20px;box-shadow:var(--shadow)}
+    .sim-warn{display:none;background:var(--warn-light);border:1px solid var(--warn);border-radius:8px;padding:8px 12px;font-size:12px;color:#92400e;margin-bottom:8px;line-height:1.5}
+    .sim-warn.show{display:block}
+    .sim-match{display:inline-block;background:#fff;border:1px solid #fbbf24;border-radius:4px;padding:1px 7px;margin:2px 2px 0;font-size:11px}
+    .sim-match em{color:#b45309;font-style:normal}
+    .input-row{display:flex;gap:8px;align-items:flex-end}
+    .input-row textarea{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;resize:none;min-height:40px;max-height:120px;outline:none;line-height:1.4;overflow-y:auto}
+    .input-row textarea:focus{border-color:var(--primary)}
+    .input-row textarea::placeholder{color:var(--muted)}
+    .inp-sel{padding:0 8px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:var(--surface);outline:none;color:var(--text);height:40px;cursor:pointer}
+    .inp-sel:focus{border-color:var(--primary)}
+    .recur-btn{width:40px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+    .recur-btn.on{border-color:var(--recur);color:var(--recur);background:var(--recur-light)}
+    .add-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer;height:40px;flex-shrink:0;transition:background .15s}
+    .add-btn:hover{background:#0062c7}
+    .add-btn:disabled{background:var(--border);color:var(--muted);cursor:default}
+    .recur-row{display:none;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+    .recur-row.show{display:flex}
+    .recur-row select{padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:var(--surface);outline:none;color:var(--text)}
+
+    /* ── Time sections ── */
+    .time-section{margin-bottom:2px}
+    .sec-header{display:flex;align-items:center;gap:8px;padding:10px 0 6px}
+    .sec-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    .sec-label.today{color:var(--primary)}
+    .sec-label.tomorrow{color:#0891b2}
+    .sec-count{font-size:11px;color:var(--muted);background:var(--bg);border-radius:10px;padding:1px 7px;font-weight:600}
+    .drop-zone{border-radius:6px;transition:all .15s;min-height:2px}
+    .drop-zone.over{min-height:44px;background:var(--primary-light);border:2px dashed var(--primary)}
+
+    /* ── Todo card ── */
+    .todo-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:6px;box-shadow:var(--shadow);transition:box-shadow .15s,opacity .15s;cursor:grab;position:relative}
+    .todo-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.12)}
+    .todo-card.dragging{opacity:.35;cursor:grabbing}
+    .todo-card.drop-target{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light)}
+    .todo-card.recur{border-left:3px solid var(--recur)}
+    .todo-row{display:flex;align-items:center;gap:8px}
+    .chk{width:18px;height:18px;border:2px solid var(--border);border-radius:50%;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+    .chk:hover{border-color:var(--primary)}
+    .chk.done{background:var(--success);border-color:var(--success)}
+    .chk.done::after{content:'✓';color:#fff;font-size:11px;font-weight:700}
+    .chk.recur-chk{border-color:var(--recur)}
+    .chk.recur-chk:hover{border-color:var(--recur);background:var(--recur-light)}
+    .todo-text{flex:1;font-size:14px;font-weight:500;min-width:0;word-break:break-word}
+    .todo-text[contenteditable=true]{outline:none;border-bottom:2px solid var(--primary);cursor:text;padding-bottom:1px}
+    .todo-meta{display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--primary-light);color:var(--primary);white-space:nowrap}
+    .rbadge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--recur-light);color:var(--recur);white-space:nowrap}
+    .age-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:#f3f4f6;color:var(--muted);white-space:nowrap}
+    .age-badge.mild{background:var(--age-mild);color:#92400e;border:1px solid var(--age-mild-border)}
+    .age-badge.warn{background:var(--age-warn);color:#9a3412;border:1px solid var(--age-warn-border)}
+    .age-badge.old{background:var(--age-old);color:#991b1b;border:1px solid var(--age-old-border)}
+    .card-actions{display:flex;gap:4px;opacity:0;transition:opacity .15s}
+    .todo-card:hover .card-actions,.todo-card.show-actions .card-actions{opacity:1}
+    .act-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap}
+    .act-btn:hover{border-color:var(--text);color:var(--text)}
+    .act-btn.danger:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-light)}
+    .act-btn.delegate-btn:hover{border-color:var(--delegate);color:var(--delegate);background:var(--delegate-light)}
+    .exp-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:12px;padding:2px 4px;transition:color .15s;flex-shrink:0}
+    .exp-btn:hover{color:var(--text)}
+    .recur-meta{font-size:11px;color:var(--recur);margin-top:3px;padding-left:26px}
+    .detail{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+    .detail.open{display:block}
+    .detail textarea{width:100%;min-height:52px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;resize:vertical;outline:none;color:var(--text);background:#fafafa}
+    .detail textarea:focus{border-color:var(--primary);background:#fff}
+    .detail-meta{font-size:11px;color:var(--muted);margin-top:6px}
+
+    /* ── Collapsible panels ── */
+    .panel-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:10px 0 6px;margin-top:12px}
+    .panel-arrow{font-size:11px;color:var(--muted);transition:transform .2s}
+    .panel-toggle.open .panel-arrow{transform:rotate(90deg)}
+    .panel-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    .panel-body{display:none}
+    .panel-body.open{display:block}
+    .panel-sort{margin-left:auto;display:flex;gap:6px;align-items:center;font-size:11px;color:var(--muted)}
+    .sort-btn{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
+    .sort-btn.active{background:var(--delegate-light);border-color:var(--delegate);color:var(--delegate)}
+
+    /* ── Archived cards ── */
+    .arch-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:6px;box-shadow:var(--shadow);opacity:.75}
+    .arch-card.recur-arch{border-left:3px solid var(--recur)}
+    .arch-row{display:flex;align-items:center;gap:8px}
+    .arch-text{flex:1;font-size:14px;color:var(--muted);text-decoration:line-through;min-width:0}
+    .arch-meta{font-size:11px;color:var(--muted);margin-top:3px}
+    .restore-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;color:var(--muted);flex-shrink:0;transition:all .15s}
+    .restore-btn:hover{border-color:var(--primary);color:var(--primary)}
+
+    /* ── Delegated cards ── */
+    .del-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--delegate);border-radius:var(--radius);padding:10px 12px;margin-bottom:6px;box-shadow:var(--shadow)}
+    .del-row{display:flex;align-items:flex-start;gap:8px}
+    .del-text{flex:1;font-size:14px;font-weight:500;min-width:0;word-break:break-word}
+    .del-meta{font-size:11px;color:var(--delegate);margin-top:3px}
+    .del-actions{display:flex;gap:4px;flex-shrink:0;margin-top:2px}
+    .del-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap}
+    .del-btn:hover{border-color:var(--primary);color:var(--primary)}
+    .del-btn.done-btn:hover{border-color:var(--success);color:var(--success)}
+    .del-btn.disc-btn:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-light)}
+
+    /* ── Recurring mgmt panel ── */
+    .recur-mgmt-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--recur);border-radius:var(--radius);padding:10px 12px;margin-bottom:6px;box-shadow:var(--shadow);display:flex;align-items:center;gap:8px}
+    .recur-mgmt-text{flex:1;font-size:14px;font-weight:500}
+    .recur-mgmt-meta{font-size:11px;color:var(--muted);margin-top:2px}
+
+    .empty{text-align:center;color:var(--muted);padding:24px 0;font-size:13px}
+
+    @media(max-width:600px){.inp-sel.cat-sel{display:none}.save-indicator{display:none}}
+  </style>
+</head>
+<body>
+
+<div id="setupOverlay">
+  <div class="setup-card">
+    <h2>📄 Smart Todo</h2>
+    <p>Your todos live in <strong>todos.json</strong> in this folder — portable and always yours.<br>Pick that file to get started. After the first pick the app auto-resumes on every reload.</p>
+    <div class="setup-btns">
+      <button class="setup-btn primary" id="openBtn">Open todos.json</button>
+      <button class="setup-btn" id="createBtn">Create new file</button>
+    </div>
+    <button class="setup-btn" id="resumeBtn"></button>
+    <div class="setup-sub">Chrome/Edge required for file storage. <a id="useLSLink">Use browser storage instead →</a></div>
+    <div id="migrateNote">✓ Imported todos from previous version.</div>
+  </div>
+</div>
+
+<div id="fallbackBanner">
+  ⚠️ Using browser storage (File System API unavailable).
+  <button onclick="exportJSON()" style="margin-left:10px;padding:2px 10px;border-radius:6px;border:1px solid var(--warn);background:#fff;cursor:pointer;font-size:12px">Export JSON</button>
+</div>
+
+<div class="app" id="app">
+  <div class="header">
+    <div>
+      <h1>Smart Todo</h1>
+      <p id="subtitle">Loading…</p>
+    </div>
+    <div class="save-indicator" id="saveIndicator">📄 <span id="fileName">todos.json</span> · <span id="saveTime">saved just now</span></div>
+  </div>
+
+  <div class="filter-bar" id="filterBar">
+    <input type="text" id="searchInput" placeholder="Search todos…">
+  </div>
+
+  <div class="input-area">
+    <div class="sim-warn" id="simWarn"></div>
+    <div class="input-row">
+      <textarea id="todoInput" placeholder="Add a todo… (Enter to add)" rows="1"></textarea>
+      <select class="inp-sel" id="secSelect">
+        <option value="today">Today</option>
+        <option value="tomorrow">Tomorrow</option>
+        <option value="this-week">This Week</option>
+        <option value="next-week">Next Week</option>
+        <option value="next-month">Next Month</option>
+        <option value="someday">Someday</option>
+      </select>
+      <select class="inp-sel cat-sel" id="catSelect"></select>
+      <button class="recur-btn" id="recurBtn" title="Make recurring">↻</button>
+      <button class="add-btn" id="addBtn" disabled>Add</button>
+    </div>
+    <div class="recur-row" id="recurRow">
+      <span>Repeats:</span>
+      <select id="cadenceSelect">
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+        <option value="quarterly">Quarterly</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="sections"></div>
+  <div id="recurPanel"></div>
+  <div id="delegatedPanel"></div>
+  <div id="discardPanel"></div>
+  <div id="completedPanel"></div>
+</div>
+
+<script>
+// ── Constants ──────────────────────────────────────────────────────────
+const CAT_KEY  = 'smart-todo-cats';
+const LS_KEY   = 'smart-todos';
+const SECTIONS = ['today','tomorrow','this-week','next-week','next-month','someday'];
+const SEC_LABEL = {today:'Today',tomorrow:'Tomorrow','this-week':'This Week','next-week':'Next Week','next-month':'Next Month',someday:'Someday'};
+
+// Adjust these thresholds freely — listed largest first
+const AGE_BUCKETS = [
+  { days: 14, cls: 'old',  label: d => `${d}d overdue` },
+  { days: 7,  cls: 'warn', label: d => `${d}d old` },
+  { days: 3,  cls: 'mild', label: d => `${d}d` },
+];
+
+// ── App state ─────────────────────────────────────────────────────────
+let todos = [], fileHandle = null, usingLS = false;
+let activeFilter = 'All', searchQuery = '', expandedIds = new Set();
+let dragId = null, recurOn = false, delegateSort = 'date';
+
+// ── IndexedDB for file handle persistence ─────────────────────────────
+const IDB = {
+  _db: null,
+  open() {
+    if (this._db) return Promise.resolve(this._db);
+    return new Promise((res, rej) => {
+      const r = indexedDB.open('smart-todo-v2', 1);
+      r.onupgradeneeded = e => e.target.result.createObjectStore('kv');
+      r.onsuccess = e => { this._db = e.target.result; res(this._db); };
+      r.onerror = e => rej(e.target.error);
+    });
+  },
+  async get(key) {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const r = db.transaction('kv').objectStore('kv').get(key);
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  },
+  async set(key, val) {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const r = db.transaction('kv','readwrite').objectStore('kv').put(val, key);
+      r.onsuccess = () => res();
+      r.onerror = () => rej(r.error);
+    });
+  }
+};
+
+// ── File System API ───────────────────────────────────────────────────
+const fsaOK = 'showOpenFilePicker' in window;
+
+async function openFile() {
+  try {
+    [fileHandle] = await window.showOpenFilePicker({
+      types:[{description:'JSON',accept:{'application/json':['.json']}}]
+    });
+    await IDB.set('handle', fileHandle);
+    const raw = await readFile();
+    todos = migrate(raw);
+    await writeFile();
+    hideSetup();
+  } catch(e) { if (e.name !== 'AbortError') console.error(e); }
+}
+
+async function createFile() {
+  try {
+    fileHandle = await window.showSaveFilePicker({
+      suggestedName:'todos.json',
+      types:[{description:'JSON',accept:{'application/json':['.json']}}]
+    });
+    await IDB.set('handle', fileHandle);
+    const legacy = loadLS();
+    if (legacy.length) {
+      todos = migrate(legacy);
+      document.getElementById('migrateNote').style.display = 'block';
+    } else { todos = []; }
+    await writeFile();
+    hideSetup();
+  } catch(e) { if (e.name !== 'AbortError') console.error(e); }
+}
+
+async function readFile() {
+  if (!fileHandle) return [];
+  const f = await fileHandle.getFile();
+  const txt = await f.text();
+  try { return JSON.parse(txt); } catch { return []; }
+}
+
+let _wt = null;
+async function writeFile() {
+  clearTimeout(_wt);
+  _wt = setTimeout(async () => {
+    if (usingLS) {
+      localStorage.setItem(LS_KEY, JSON.stringify(todos));
+      return;
+    }
+    if (!fileHandle) return;
+    try {
+      const w = await fileHandle.createWritable();
+      await w.write(JSON.stringify(todos, null, 2));
+      await w.close();
+      document.getElementById('saveTime').textContent = 'saved just now';
+      if (fileHandle.name) document.getElementById('fileName').textContent = fileHandle.name;
+    } catch(e) { console.error('write:', e); }
+  }, 200);
+}
+
+function loadLS() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch { return []; }
+}
+
+function useLocalStorage() {
+  usingLS = true;
+  todos = migrate(loadLS());
+  document.getElementById('fallbackBanner').style.display = 'block';
+  document.getElementById('saveIndicator').style.display = 'none';
+  hideSetup();
+}
+
+function hideSetup() {
+  document.getElementById('setupOverlay').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  renderAll();
+}
+
+// ── Migration ─────────────────────────────────────────────────────────
+function migrate(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw.map(t => {
+    // infer status from timestamps if status is missing or unknown
+    let status = t.status;
+    if (!['active','completed','discarded','delegated'].includes(status)) {
+      if (t.delegatedAt || t.delegatedTo) status = 'delegated';
+      else if (t.discardedAt) status = 'discarded';
+      else if (t.completedAt) status = 'completed';
+      else status = 'active';
+    }
+    return {
+      id: t.id || crypto.randomUUID(),
+      text: t.text || '',
+      description: t.description || '',
+      category: t.category || 'General',
+      status,
+      section: t.section || 'today',
+      scheduledDate: t.scheduledDate || null,
+      priority: typeof t.priority === 'number' ? t.priority : 0,
+      recurring: t.recurring || null,
+      createdAt: t.createdAt || new Date().toISOString(),
+      updatedAt: t.updatedAt || t.createdAt || new Date().toISOString(),
+      completedAt: t.completedAt || null,
+      discardedAt: t.discardedAt || null,
+      delegatedAt: t.delegatedAt || null,
+      delegatedTo: t.delegatedTo || null,
+    };
+  });
+}
+
+// ── Section logic ─────────────────────────────────────────────────────
+function resolveSection(t) {
+  if (!t.scheduledDate) return t.section || 'today';
+  const now = new Date(); now.setHours(0,0,0,0);
+  const due = new Date(t.scheduledDate); due.setHours(0,0,0,0);
+  const d = Math.round((due - now) / 864e5);
+  if (d <= 0) return 'today';
+  if (d === 1) return 'tomorrow';
+  if (d <= 7) return 'this-week';
+  if (d <= 14) return 'next-week';
+  if (d <= 60) return 'next-month';
+  return 'someday';
+}
+
+function nextDue(cadence, from) {
+  const d = new Date(from || Date.now());
+  if (cadence === 'weekly') d.setDate(d.getDate() + 7);
+  else if (cadence === 'monthly') d.setMonth(d.getMonth() + 1);
+  else if (cadence === 'quarterly') d.setMonth(d.getMonth() + 3);
+  return d.toISOString().split('T')[0];
+}
+
+// ── CRUD ──────────────────────────────────────────────────────────────
+function now() { return new Date().toISOString(); }
+
+function maxPri(sec) {
+  const items = todos.filter(t => t.status === 'active' && resolveSection(t) === sec);
+  return items.length ? Math.max(...items.map(t => t.priority)) : 0;
+}
+
+function addTodo(text, cat, sec, cadence) {
+  const t = {
+    id: crypto.randomUUID(), text: text.trim(), description: '', category: cat,
+    status: 'active', section: sec, scheduledDate: null,
+    priority: maxPri(sec) + 1,
+    recurring: cadence ? { cadence, nextDue: nextDue(cadence) } : null,
+    createdAt: now(), updatedAt: now(),
+    completedAt: null, discardedAt: null, delegatedAt: null, delegatedTo: null,
+  };
+  todos.push(t); writeFile();
+}
+
+function completeTodo(id) {
+  const t = todos.find(x => x.id === id); if (!t) return;
+  t.status = 'completed'; t.completedAt = now(); t.updatedAt = now();
+  if (t.recurring) {
+    const nd = t.recurring.nextDue;
+    todos.push({
+      id: crypto.randomUUID(), text: t.text, description: t.description,
+      category: t.category, status: 'active', section: 'someday',
+      scheduledDate: nd, priority: 0,
+      recurring: { cadence: t.recurring.cadence, nextDue: nextDue(t.recurring.cadence, nd) },
+      createdAt: now(), updatedAt: now(),
+      completedAt: null, discardedAt: null, delegatedAt: null, delegatedTo: null,
+    });
+  }
+  writeFile();
+}
+
+function uncompleteTodo(id) {
+  const t = todos.find(x => x.id === id); if (!t) return;
+  t.status = 'active'; t.completedAt = null;
+  t.priority = maxPri(t.section) + 1; t.updatedAt = now(); writeFile();
+}
+
+function discardTodo(id) {
+  const t = todos.find(x => x.id === id); if (!t) return;
+  t.status = 'discarded'; t.discardedAt = now(); t.updatedAt = now(); writeFile();
+}
+
+function restoreTodo(id) {
+  const t = todos.find(x => x.id === id); if (!t) return;
+  t.status = 'active'; t.discardedAt = null;
+  t.priority = maxPri(t.section) + 1; t.updatedAt = now(); writeFile();
+}
+
+function delegateTodo(id) {
+  const person = prompt('Delegate to (person name):');
+  if (!person?.trim()) return;
+  const t = todos.find(x => x.id === id); if (!t) return;
+  t.status = 'delegated';
+  t.delegatedTo = person.trim();
+  t.delegatedAt = now();
+  t.updatedAt = now();
+  writeFile();
+}
+
+function restoreFromDelegate(id) {
+  const t = todos.find(x => x.id === id); if (!t) return;
+  t.status = 'active'; t.delegatedAt = null; t.delegatedTo = null;
+  t.priority = maxPri(t.section) + 1; t.updatedAt = now(); writeFile();
+}
+
+function editText(id, text) {
+  const t = todos.find(x => x.id === id); if (!t || !text.trim()) return;
+  t.text = text.trim(); t.updatedAt = now(); writeFile();
+}
+
+function editDesc(id, desc) {
+  const t = todos.find(x => x.id === id); if (!t) return;
+  t.description = desc; t.updatedAt = now(); writeFile();
+}
+
+function moveSection(id, sec) {
+  const t = todos.find(x => x.id === id); if (!t) return;
+  t.section = sec; t.scheduledDate = null;
+  t.priority = maxPri(sec) + 1; t.updatedAt = now(); writeFile();
+}
+
+function reorderInSection(dragId, targetId) {
+  const dt = todos.find(t => t.id === dragId);
+  const tt = todos.find(t => t.id === targetId);
+  if (!dt || !tt) return;
+  const sec = resolveSection(dt);
+  const items = todos.filter(t => t.status === 'active' && resolveSection(t) === sec)
+                     .sort((a,b) => a.priority - b.priority);
+  const di = items.findIndex(t => t.id === dragId);
+  const ti = items.findIndex(t => t.id === targetId);
+  if (di === -1 || ti === -1) return;
+  items.splice(di, 1);
+  const ni = items.findIndex(t => t.id === targetId);
+  items.splice(ni, 0, dt);
+  items.forEach((t,i) => { t.priority = i + 1; });
+  writeFile();
+}
+
+// ── Categories ────────────────────────────────────────────────────────
+function getCats() {
+  const base = (() => { try { const s = JSON.parse(localStorage.getItem(CAT_KEY)); return s && s.length ? s : ['General','Work','SEO','Personal']; } catch { return ['General','Work','SEO','Personal']; } })();
+  const used = [...new Set(todos.map(t => t.category))];
+  return [...new Set([...base, ...used])];
+}
+function saveCats(c) { localStorage.setItem(CAT_KEY, JSON.stringify(c)); }
+function ensureCat(c) { const a = getCats(); if (!a.includes(c)) { a.push(c); saveCats(a); } }
+
+// ── Similarity ────────────────────────────────────────────────────────
+function tokenize(s) { return new Set(s.toLowerCase().replace(/[^\w\s]/g,'').split(/\s+/).filter(w=>w.length>2)); }
+function jaccard(a,b) { if(!a.size&&!b.size)return 0; const i=new Set([...a].filter(x=>b.has(x))); return i.size/new Set([...a,...b]).size; }
+function findSimilar(text) {
+  const t = tokenize(text); if (!t.size) return [];
+  return todos.filter(x=>x.status==='active').map(x=>({t:x,s:jaccard(t,tokenize(x.text))}))
+    .filter(r=>r.s>=0.35).sort((a,b)=>b.s-a.s).slice(0,3);
+}
+
+// ── Age helpers ───────────────────────────────────────────────────────
+function ageDays(iso) {
+  if (!iso) return 0;
+  return Math.floor((Date.now() - new Date(iso)) / 864e5);
+}
+function ageBucket(iso) {
+  const d = ageDays(iso);
+  for (const b of AGE_BUCKETS) { if (d >= b.days) return { ...b, d }; }
+  return null;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtD(iso) { if(!iso)return ''; return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function fmtDT(iso) { if(!iso)return ''; const d=new Date(iso); return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' at '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
+function matches(t) {
+  if (activeFilter !== 'All' && t.category !== activeFilter) return false;
+  if (searchQuery) { const q=searchQuery.toLowerCase(); return t.text.toLowerCase().includes(q)||(t.description||'').toLowerCase().includes(q); }
+  return true;
+}
+
+// ── Render: card ──────────────────────────────────────────────────────
+function cardHTML(t) {
+  const exp = expandedIds.has(t.id);
+  const isR = !!t.recurring;
+  const lastDone = isR ? todos.filter(x=>x.text===t.text&&x.status==='completed'&&x.completedAt)
+    .sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt))[0] : null;
+  const nd = isR ? (t.scheduledDate || t.recurring.nextDue) : null;
+
+  // Age styling
+  const bucket = ageBucket(t.createdAt);
+  const ageStyle = bucket ? `background:var(--age-${bucket.cls});border-color:var(--age-${bucket.cls}-border);` : '';
+  const ageBadgeHTML = bucket ? `<span class="age-badge ${bucket.cls}">${esc(bucket.label(bucket.d))}</span>` : '';
+
+  const chkTitle = isR ? `title="Done for now · next due ${fmtD(nd)}"` : '';
+  return `<div class="todo-card${isR?' recur':''}" data-id="${esc(t.id)}" draggable="true" style="${ageStyle}">
+    <div class="todo-row">
+      <div class="chk${isR?' recur-chk':''}" data-a="toggle" ${chkTitle}></div>
+      <span class="todo-text">${esc(t.text)}</span>
+      <div class="todo-meta">
+        ${isR?`<span class="rbadge">↻ ${t.recurring.cadence}</span>`:''}
+        ${ageBadgeHTML}
+        <span class="badge">${esc(t.category)}</span>
+        <div class="card-actions">
+          <button class="act-btn" data-a="edit">Edit</button>
+          <button class="act-btn delegate-btn" data-a="delegate">Delegate</button>
+          <button class="act-btn danger" data-a="discard">Discard</button>
+        </div>
+        <button class="exp-btn" data-a="expand">${exp?'▲':'▼'}</button>
+      </div>
+    </div>
+    ${isR?`<div class="recur-meta">${lastDone?`Last done ${fmtD(lastDone.completedAt)} · `:''}Next ${fmtD(nd)}</div>`:''}
+    <div class="detail${exp?' open':''}">
+      <textarea placeholder="Notes…" data-a="desc">${esc(t.description||'')}</textarea>
+      <div class="detail-meta">Created ${fmtD(t.createdAt)}</div>
+    </div>
+  </div>`;
+}
+
+// ── Render: sections ──────────────────────────────────────────────────
+function renderSections() {
+  const el = document.getElementById('sections');
+  const active = todos.filter(t => t.status === 'active');
+  let html = '', any = false;
+  SECTIONS.forEach(sec => {
+    const items = active.filter(t => resolveSection(t) === sec && matches(t))
+                        .sort((a,b) => a.priority - b.priority);
+    if (!items.length) return;
+    any = true;
+    const lc = sec === 'today' ? ' today' : sec === 'tomorrow' ? ' tomorrow' : '';
+    html += `<div class="time-section" data-sec="${sec}">
+      <div class="sec-header">
+        <span class="sec-label${lc}">${SEC_LABEL[sec]}</span>
+        <span class="sec-count">${items.length}</span>
+      </div>
+      <div class="drop-zone" data-drop="${sec}">${items.map(cardHTML).join('')}</div>
+    </div>`;
+  });
+  el.innerHTML = any ? html : '<div class="empty">No active todos — add one above</div>';
+  el.querySelectorAll('.todo-card').forEach(attachCard);
+  initDrag(el);
+}
+
+// ── Render: recurring panel ───────────────────────────────────────────
+function renderRecurPanel() {
+  const el = document.getElementById('recurPanel');
+  const items = todos.filter(t => t.status === 'active' && t.recurring);
+  if (!items.length) { el.innerHTML = ''; return; }
+  const cards = items.map(t => {
+    const last = todos.filter(x=>x.text===t.text&&x.status==='completed'&&x.completedAt)
+      .sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt))[0];
+    return `<div class="recur-mgmt-card">
+      <div style="flex:1">
+        <div class="recur-mgmt-text">${esc(t.text)}</div>
+        <div class="recur-mgmt-meta">↻ ${t.recurring.cadence} · ${last?`Last ${fmtD(last.completedAt)} · `:''}Next ${fmtD(t.scheduledDate||t.recurring.nextDue)}</div>
+      </div>
+      <span class="badge">${esc(t.category)}</span>
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="panel-toggle" id="rToggle"><span class="panel-arrow">▶</span><span class="panel-label">Recurring (${items.length})</span></div><div class="panel-body" id="rBody">${cards}</div>`;
+  el.querySelector('#rToggle').onclick = () => { el.querySelector('#rToggle').classList.toggle('open'); el.querySelector('#rBody').classList.toggle('open'); };
+}
+
+// ── Render: delegated panel ───────────────────────────────────────────
+function renderDelegatedPanel() {
+  const el = document.getElementById('delegatedPanel');
+  const all = todos.filter(t => t.status === 'delegated');
+  if (!all.length) { el.innerHTML = ''; return; }
+
+  const sorted = [...all].sort((a, b) => {
+    if (delegateSort === 'person') {
+      return (a.delegatedTo || '').localeCompare(b.delegatedTo || '') || new Date(b.delegatedAt) - new Date(a.delegatedAt);
+    }
+    return new Date(b.delegatedAt) - new Date(a.delegatedAt);
+  });
+
+  const filtered = sorted.filter(matches);
+  const autoOpen = (activeFilter !== 'All' || searchQuery) && filtered.length > 0;
+  const delegLabel = filtered.length !== all.length ? `Delegated (${filtered.length} of ${all.length})` : `Delegated (${all.length})`;
+
+  const cards = filtered.map(t => `<div class="del-card">
+    <div class="del-row">
+      <div style="flex:1">
+        <div class="del-text">${esc(t.text)}</div>
+        <div class="del-meta">→ ${esc(t.delegatedTo || '?')} · Delegated ${fmtD(t.delegatedAt)}</div>
+        <div class="arch-meta" style="margin-top:2px"><span class="badge">${esc(t.category)}</span> · Created ${fmtD(t.createdAt)}</div>
+      </div>
+      <div class="del-actions">
+        <button class="del-btn" data-id="${esc(t.id)}" data-da="restore">Restore</button>
+        <button class="del-btn done-btn" data-id="${esc(t.id)}" data-da="complete">Done</button>
+        <button class="del-btn disc-btn" data-id="${esc(t.id)}" data-da="discard">Discard</button>
+      </div>
+    </div>
+  </div>`).join('');
+
+  const sortBtnDate   = `<button class="sort-btn${delegateSort==='date'?' active':''}" id="dSortDate">Date</button>`;
+  const sortBtnPerson = `<button class="sort-btn${delegateSort==='person'?' active':''}" id="dSortPerson">Person</button>`;
+
+  el.innerHTML = `<div class="panel-toggle${autoOpen?' open':''}" id="delToggle">
+    <span class="panel-arrow">▶</span>
+    <span class="panel-label">${delegLabel}</span>
+    <span class="panel-sort">Sort: ${sortBtnDate}${sortBtnPerson}</span>
+  </div>
+  <div class="panel-body${autoOpen?' open':''}" id="delBody">${cards || '<div class="empty">No matching delegated items</div>'}</div>`;
+
+  el.querySelector('#delToggle').onclick = e => {
+    if (e.target.closest('.sort-btn')) return;
+    el.querySelector('#delToggle').classList.toggle('open');
+    el.querySelector('#delBody').classList.toggle('open');
+  };
+  el.querySelector('#dSortDate').onclick = () => { delegateSort = 'date'; renderDelegatedPanel(); };
+  el.querySelector('#dSortPerson').onclick = () => { delegateSort = 'person'; renderDelegatedPanel(); };
+
+  el.querySelectorAll('[data-da]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = btn.dataset.id;
+      const action = btn.dataset.da;
+      if (action === 'restore') { restoreFromDelegate(id); renderAll(); }
+      else if (action === 'complete') { completeTodo(id); renderAll(); }
+      else if (action === 'discard') { discardTodo(id); renderAll(); }
+    });
+  });
+}
+
+// ── Render: discard panel ─────────────────────────────────────────────
+function renderDiscardPanel() {
+  const el = document.getElementById('discardPanel');
+  const all = todos.filter(t => t.status === 'discarded').sort((a,b)=>new Date(b.discardedAt)-new Date(a.discardedAt));
+  if (!all.length) { el.innerHTML = ''; return; }
+  const items = all.filter(matches);
+  if (!items.length && activeFilter === 'All' && !searchQuery) { el.innerHTML = ''; return; }
+  const autoOpen = (activeFilter !== 'All' || searchQuery) && items.length > 0;
+  const cards = items.map(t => `<div class="arch-card">
+    <div class="arch-row">
+      <div style="flex:1">
+        <div class="arch-text">${esc(t.text)}</div>
+        <div class="arch-meta"><span class="badge">${esc(t.category)}</span> Discarded ${fmtD(t.discardedAt)} · Created ${fmtD(t.createdAt)}</div>
+      </div>
+      <button class="restore-btn" data-id="${esc(t.id)}">Restore</button>
+    </div>
+  </div>`).join('') || '<div class="empty">No matching discarded items</div>';
+  const label = items.length !== all.length ? `Discarded (${items.length} of ${all.length})` : `Discarded (${all.length})`;
+  el.innerHTML = `<div class="panel-toggle${autoOpen?' open':''}" id="dToggle"><span class="panel-arrow">▶</span><span class="panel-label">${label}</span></div><div class="panel-body${autoOpen?' open':''}" id="dBody">${cards}</div>`;
+  el.querySelector('#dToggle').onclick = () => { el.querySelector('#dToggle').classList.toggle('open'); el.querySelector('#dBody').classList.toggle('open'); };
+  el.querySelectorAll('.restore-btn').forEach(b => b.onclick = () => { restoreTodo(b.dataset.id); renderAll(); });
+}
+
+// ── Render: completed panel ───────────────────────────────────────────
+function renderCompletedPanel() {
+  const el = document.getElementById('completedPanel');
+  const all = todos.filter(t => t.status === 'completed').sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt));
+  if (!all.length) { el.innerHTML = ''; return; }
+  const filtered = all.filter(matches);
+  const autoOpen = (activeFilter !== 'All' || searchQuery) && filtered.length > 0;
+  const compLabel = filtered.length !== all.length ? `Completed (${filtered.length} of ${all.length})` : `Completed (${all.length})`;
+  const cards = filtered.map(t => `<div class="arch-card${t.recurring?' recur-arch':''}">
+    <div class="arch-row">
+      <div class="chk done" style="flex-shrink:0;cursor:pointer" data-unc="${esc(t.id)}"></div>
+      <div style="flex:1;margin-left:8px">
+        <div class="arch-text">${esc(t.text)}</div>
+        <div class="arch-meta">
+          <span class="badge">${esc(t.category)}</span>${t.recurring?` <span class="rbadge">↻</span>`:''}
+          Created ${fmtD(t.createdAt)} · Done ${fmtDT(t.completedAt)}
+        </div>
+      </div>
+    </div>
+  </div>`).join('') || '<div class="empty">No completed items</div>';
+  el.innerHTML = `<div class="panel-toggle${autoOpen?' open':''}" id="cToggle"><span class="panel-arrow">▶</span><span class="panel-label">${compLabel}</span></div><div class="panel-body${autoOpen?' open':''}" id="cBody">${cards}</div>`;
+  el.querySelector('#cToggle').onclick = () => { el.querySelector('#cToggle').classList.toggle('open'); el.querySelector('#cBody').classList.toggle('open'); };
+  el.querySelectorAll('[data-unc]').forEach(b => b.onclick = () => { uncompleteTodo(b.dataset.unc); renderAll(); });
+}
+
+// ── Render: pills + cat select ────────────────────────────────────────
+function renderPills() {
+  const bar = document.getElementById('filterBar');
+  bar.querySelectorAll('.pill').forEach(p => p.remove());
+  ['All',...getCats()].forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'pill' + (activeFilter===c?' active':'');
+    b.textContent = c;
+    b.onclick = () => { activeFilter = c; renderAll(); };
+    bar.appendChild(b);
+  });
+}
+function renderCatSel() {
+  const s = document.getElementById('catSelect'), cats = getCats(), cur = s.value;
+  s.innerHTML = cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')+`<option value="__new__">+ New…</option>`;
+  if (cats.includes(cur)) s.value = cur;
+}
+
+function renderAll() {
+  renderPills(); renderCatSel();
+  renderSections(); renderRecurPanel(); renderDelegatedPanel(); renderDiscardPanel(); renderCompletedPanel();
+  const active = todos.filter(t=>t.status==='active').length;
+  const doneW = todos.filter(t=>t.status==='completed'&&t.completedAt&&(Date.now()-new Date(t.completedAt))<7*864e5).length;
+  const delegated = todos.filter(t=>t.status==='delegated').length;
+  document.getElementById('subtitle').textContent =
+    `${active} active · ${doneW} done this week${delegated ? ` · ${delegated} delegated` : ''}`;
+}
+
+// ── Card event listeners ──────────────────────────────────────────────
+function attachCard(card) {
+  const id = card.dataset.id;
+
+  card.querySelector('[data-a="toggle"]')?.addEventListener('click', e => {
+    e.stopPropagation(); completeTodo(id); renderAll();
+  });
+
+  card.querySelector('[data-a="expand"]')?.addEventListener('click', e => {
+    e.stopPropagation();
+    expandedIds.has(id) ? expandedIds.delete(id) : expandedIds.add(id);
+    renderAll();
+  });
+
+  card.querySelector('[data-a="desc"]')?.addEventListener('change', e => editDesc(id, e.target.value));
+
+  card.querySelector('[data-a="discard"]')?.addEventListener('click', e => {
+    e.stopPropagation(); discardTodo(id); renderAll();
+  });
+
+  card.querySelector('[data-a="delegate"]')?.addEventListener('click', e => {
+    e.stopPropagation(); delegateTodo(id); renderAll();
+  });
+
+  card.querySelector('[data-a="edit"]')?.addEventListener('click', e => {
+    e.stopPropagation();
+    const el = card.querySelector('.todo-text');
+    const orig = el.textContent;
+    el.contentEditable = 'true'; el.focus();
+    const r = document.createRange(); r.selectNodeContents(el);
+    window.getSelection().removeAllRanges(); window.getSelection().addRange(r);
+    let saved = false;
+    function save() {
+      if (saved) return; saved = true;
+      el.contentEditable = 'false';
+      editText(id, el.textContent || orig);
+      renderAll();
+    }
+    el.addEventListener('blur', save);
+    el.addEventListener('keydown', e2 => {
+      if (e2.key === 'Enter') { e2.preventDefault(); save(); }
+      if (e2.key === 'Escape') { el.contentEditable='false'; el.textContent=orig; saved=true; }
+    });
+  });
+
+  // mobile tap to reveal
+  card.addEventListener('click', e => {
+    if (e.target.closest('[data-a],[contenteditable=true],textarea')) return;
+    card.classList.toggle('show-actions');
+  });
+}
+
+// ── Drag and drop ─────────────────────────────────────────────────────
+function initDrag(container) {
+  container.querySelectorAll('.todo-card').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      dragId = card.dataset.id;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      container.querySelectorAll('.drop-target,.over').forEach(el => el.classList.remove('drop-target','over'));
+      dragId = null;
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault(); e.stopPropagation();
+      container.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+      if (card.dataset.id !== dragId) card.classList.add('drop-target');
+    });
+    card.addEventListener('drop', e => {
+      e.preventDefault(); e.stopPropagation();
+      if (!dragId || card.dataset.id === dragId) return;
+      const dragSec = resolveSection(todos.find(t=>t.id===dragId)||{});
+      const tgtSec  = resolveSection(todos.find(t=>t.id===card.dataset.id)||{});
+      if (dragSec === tgtSec) reorderInSection(dragId, card.dataset.id);
+      else { moveSection(dragId, tgtSec); reorderInSection(dragId, card.dataset.id); }
+      renderAll();
+    });
+  });
+
+  container.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('over');
+      if (!dragId) return;
+      const sec = zone.dataset.drop;
+      if (sec) { moveSection(dragId, sec); renderAll(); }
+    });
+  });
+}
+
+// ── Input handlers ────────────────────────────────────────────────────
+document.getElementById('recurBtn').addEventListener('click', () => {
+  recurOn = !recurOn;
+  document.getElementById('recurBtn').classList.toggle('on', recurOn);
+  document.getElementById('recurRow').classList.toggle('show', recurOn);
+});
+
+document.getElementById('catSelect').addEventListener('change', e => {
+  if (e.target.value === '__new__') {
+    const n = prompt('New category name:');
+    if (n?.trim()) { ensureCat(n.trim()); renderAll(); document.getElementById('catSelect').value = n.trim(); }
+    else renderAll();
+  }
+});
+
+const todoInput = document.getElementById('todoInput');
+const addBtn = document.getElementById('addBtn');
+
+todoInput.addEventListener('input', () => {
+  addBtn.disabled = !todoInput.value.trim();
+  todoInput.style.height = 'auto';
+  todoInput.style.height = Math.min(todoInput.scrollHeight, 120) + 'px';
+  clearTimeout(todoInput._t);
+  todoInput._t = setTimeout(() => {
+    const text = todoInput.value.trim();
+    const sw = document.getElementById('simWarn');
+    if (text.length < 5) { sw.classList.remove('show'); return; }
+    const ms = findSimilar(text);
+    if (!ms.length) { sw.classList.remove('show'); return; }
+    const dup = ms[0].s >= 0.75;
+    sw.innerHTML = `<strong>${dup?'⚠️ Possible duplicate':'💡 Similar todos exist'}:</strong> `
+      + ms.map(m=>`<span class="sim-match">${esc(m.t.text)} <em>${Math.round(m.s*100)}%</em></span>`).join('');
+    sw.classList.add('show');
+  }, 350);
+});
+
+function submit() {
+  const text = todoInput.value.trim(); if (!text) return;
+  const cat = document.getElementById('catSelect').value; if (cat==='__new__') return;
+  const sec = document.getElementById('secSelect').value;
+  const cadence = recurOn ? document.getElementById('cadenceSelect').value : null;
+  ensureCat(cat);
+  addTodo(text, cat, sec, cadence);
+  todoInput.value = ''; todoInput.style.height = 'auto'; addBtn.disabled = true;
+  document.getElementById('simWarn').classList.remove('show');
+  renderAll();
+}
+
+addBtn.addEventListener('click', submit);
+todoInput.addEventListener('keydown', e => { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); submit(); } });
+
+// ── Search ────────────────────────────────────────────────────────────
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value.trim(); renderAll();
+});
+
+// ── Export ────────────────────────────────────────────────────────────
+function exportJSON() {
+  const b = new Blob([JSON.stringify(todos,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(b); a.download='todos.json'; a.click();
+}
+
+// ── Setup events ──────────────────────────────────────────────────────
+document.getElementById('openBtn').addEventListener('click', openFile);
+document.getElementById('createBtn').addEventListener('click', createFile);
+document.getElementById('useLSLink').addEventListener('click', e => { e.preventDefault(); useLocalStorage(); });
+
+// ── Boot ──────────────────────────────────────────────────────────────
+(async () => {
+  if (!fsaOK) { useLocalStorage(); return; }
+  try {
+    const h = await IDB.get('handle');
+    if (h) {
+      const perm = await h.queryPermission({ mode: 'readwrite' });
+      if (perm === 'granted') {
+        fileHandle = h;
+        todos = migrate(await readFile());
+        hideSetup(); return;
+      }
+      // show resume button for prompt state
+      const rb = document.getElementById('resumeBtn');
+      rb.textContent = `Resume "${h.name}"`;
+      rb.style.display = 'block';
+      rb.onclick = async () => {
+        try {
+          const p = await h.requestPermission({ mode: 'readwrite' });
+          if (p === 'granted') { fileHandle = h; todos = migrate(await readFile()); await IDB.set('handle',h); hideSetup(); }
+        } catch(e) { if (e.name !== 'AbortError') console.error(e); }
+      };
+    }
+  } catch(e) { console.log('IDB init:', e); }
+})();
+</script>
+</body>
+</html>

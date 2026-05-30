@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GA Analytics Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; background: #f5f5f7; color: #1d1d1f; }
+
+    /* Upload screen */
+    .upload-header { text-align: center; padding: 48px 24px 32px; }
+    .upload-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .upload-header p { color: #6e6e73; max-width: 520px; margin: 0 auto; line-height: 1.5; }
+    .file-slots { display: flex; gap: 16px; padding: 0 24px 32px; max-width: 900px; margin: 0 auto; }
+    .file-slot { flex: 1; min-width: 0; }
+    .drop-zone { border: 2px dashed #c7c7cc; border-radius: 12px; padding: 32px 16px; text-align: center; cursor: pointer; transition: all 0.15s; background: white; }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: #0071e3; background: #f0f7ff; }
+    .drop-icon { font-size: 32px; margin-bottom: 8px; }
+    .drop-label { font-weight: 600; margin-bottom: 4px; font-size: 14px; }
+    .drop-hint { color: #6e6e73; font-size: 12px; }
+    .file-loaded { display: none; align-items: center; gap: 8px; background: white; border: 1px solid #34c759; border-radius: 8px; padding: 10px 12px; }
+    .file-loaded.visible { display: flex; }
+    .file-name { flex: 1; font-size: 12px; color: #1d1d1f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .remove-btn { background: none; border: none; cursor: pointer; color: #6e6e73; font-size: 16px; padding: 2px 4px; line-height: 1; flex-shrink: 0; }
+    .remove-btn:hover { color: #c0392b; }
+    .analyze-btn { display: block; margin: 0 auto 48px; padding: 12px 48px; background: #0071e3; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .analyze-btn:disabled { background: #c7c7cc; cursor: not-allowed; }
+    .analyze-btn:not(:disabled):hover { background: #0077ed; }
+    .upload-note { text-align: center; font-size: 11px; color: #aeaeb2; padding-bottom: 24px; }
+
+    /* Dashboard shell */
+    #dashboard { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    .dash-header { background: white; border-bottom: 1px solid #e5e5ea; padding: 10px 20px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .dash-title { font-weight: 700; font-size: 14px; white-space: nowrap; }
+    .back-btn { background: none; border: 1px solid #d1d1d6; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 12px; color: #6e6e73; white-space: nowrap; flex-shrink: 0; }
+    .back-btn:hover { background: #f5f5f7; }
+    .period-badges { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
+    .period-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; color: white; white-space: nowrap; }
+    .period-badge.p0 { background: #0071e3; }
+    .period-badge.p1 { background: #34c759; }
+    .period-badge.p2 { background: #ff9500; }
+
+    /* File tabs */
+    .file-tabs { background: #1d1d1f; padding: 0 16px; display: flex; gap: 0; overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
+    .file-tabs::-webkit-scrollbar { display: none; }
+    .file-tab { padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; color: #aeaeb2; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.15s; flex-shrink: 0; }
+    .file-tab:hover { color: white; }
+    .file-tab.active { color: white; border-bottom-color: #0071e3; font-weight: 600; }
+    .file-tab .ft-badge { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+    /* Park tabs */
+    .park-tabs { background: white; border-bottom: 1px solid #e5e5ea; padding: 0 16px; display: flex; gap: 0; overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
+    .park-tabs::-webkit-scrollbar { display: none; }
+    .park-tab { padding: 10px 14px; border: none; background: none; cursor: pointer; font-size: 12px; border-bottom: 2px solid transparent; color: #6e6e73; white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
+    .park-tab:hover { color: #1d1d1f; background: #f5f5f7; }
+    .park-tab.active { color: #0071e3; border-bottom-color: #0071e3; font-weight: 600; }
+
+    /* Sheet tabs */
+    .sheet-tabs { background: #f5f5f7; border-bottom: 1px solid #e5e5ea; padding: 8px 16px; display: flex; gap: 6px; overflow-x: auto; flex-wrap: wrap; flex-shrink: 0; }
+    .sheet-tab { padding: 4px 12px; border-radius: 6px; border: 1px solid #d1d1d6; background: white; cursor: pointer; font-size: 12px; color: #1d1d1f; transition: all 0.15s; white-space: nowrap; }
+    .sheet-tab:hover { border-color: #0071e3; color: #0071e3; }
+    .sheet-tab.active { background: #0071e3; color: white; border-color: #0071e3; }
+
+    /* Controls bar */
+    .controls-bar { background: white; border-bottom: 1px solid #e5e5ea; padding: 8px 16px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex-shrink: 0; }
+    .search-input { border: 1px solid #d1d1d6; border-radius: 6px; padding: 5px 10px; font-size: 13px; width: 200px; outline: none; }
+    .search-input:focus { border-color: #0071e3; }
+    .filter-select { border: 1px solid #d1d1d6; border-radius: 6px; padding: 5px 8px; font-size: 12px; background: white; cursor: pointer; max-width: 180px; }
+    .col-toggle-wrap { position: relative; }
+    .ctrl-btn { border: 1px solid #d1d1d6; border-radius: 6px; padding: 5px 12px; font-size: 12px; background: white; cursor: pointer; white-space: nowrap; }
+    .ctrl-btn:hover { background: #f5f5f7; }
+    .ctrl-btn.filter-active { border-color: #0071e3; color: #0071e3; background: #f0f7ff; }
+    .col-dropdown { display: none; position: absolute; top: calc(100% + 4px); left: 0; background: white; border: 1px solid #d1d1d6; border-radius: 8px; padding: 8px; z-index: 200; min-width: 220px; max-height: 320px; overflow-y: auto; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+    .col-dropdown.open { display: block; }
+    .col-checkbox { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .col-checkbox:hover { background: #f5f5f7; }
+    .col-checkbox input { cursor: pointer; }
+    .compare-label { display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer; color: #1d1d1f; white-space: nowrap; }
+    .compare-label input { cursor: pointer; }
+    .row-count { font-size: 11px; color: #6e6e73; white-space: nowrap; }
+    .controls-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+    /* Table */
+    .table-wrap { flex: 1; overflow: auto; }
+    table { border-collapse: collapse; width: 100%; font-size: 12px; }
+    thead { position: sticky; top: 0; z-index: 10; }
+    th { background: #f5f5f7; border: 1px solid #e5e5ea; padding: 8px 10px; text-align: left; cursor: pointer; user-select: none; white-space: nowrap; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; color: #6e6e73; }
+    th:hover { background: #e8e8ed; color: #1d1d1f; }
+    th.sort-asc::after { content: ' ↑'; color: #0071e3; }
+    th.sort-desc::after { content: ' ↓'; color: #0071e3; }
+    td { border: 1px solid #e5e5ea; padding: 6px 10px; white-space: nowrap; background: white; }
+    tr:hover td { background: #fafafa; }
+    td.positive { color: #1c7c2b; font-weight: 600; }
+    td.negative { color: #c0392b; font-weight: 600; }
+    td.park-col { font-weight: 700; color: #0071e3; }
+    th.period-p2 { border-left: 2px solid #34c759; }
+    th.period-p3 { border-left: 2px solid #ff9500; }
+    td.period-p2 { border-left: 2px solid #34c759; }
+    td.period-p3 { border-left: 2px solid #ff9500; }
+    th .period-label { font-size: 9px; display: block; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+
+    /* Empty state */
+    .empty-state { display: flex; align-items: center; justify-content: center; height: 200px; color: #6e6e73; font-size: 14px; }
+    .no-rows td { text-align: center; color: #6e6e73; padding: 32px; font-style: italic; }
+
+    /* Loading spinner */
+    .loading-state { display: flex; align-items: center; justify-content: center; height: 200px; gap: 10px; color: #6e6e73; }
+
+    @media (max-width: 640px) {
+      .file-slots { flex-direction: column; }
+      .dash-header { flex-wrap: wrap; }
+      .period-badges { width: 100%; margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div id="upload-screen"></div>
+  <div id="dashboard" style="display:none"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ─── Park registry ───────────────────────────────────────────────────────────
+const PARK_NAMES = {
+  SWF: 'SeaWorld Florida',
+  SWC: 'SeaWorld California',
+  SWT: 'SeaWorld Texas',
+  BGT: 'Busch Gardens Tampa',
+  BGW: 'Busch Gardens Williamsburg',
+  SPL: 'Sesame Place PA',
+  SPC: 'Sesame Place CA',
+  APO: 'Aquatica Orlando',
+  APT: 'Aquatica Tampa',
+  AIT: 'Aquatica Texas',
+  DCO: 'Discovery Cove',
+  SWO: 'SeaWorld Orlando', // alias sometimes used
+};
+const PARK_CODES = new Set(Object.keys(PARK_NAMES));
+
+// ─── App state ────────────────────────────────────────────────────────────────
+const state = { files: [null, null, null], parsed: [] };
+
+const dash = {
+  activeFileIdx: 0,
+  activePark: 'ALL',
+  activeSheet: null,
+  sortCol: null,
+  sortDir: 'asc',
+  search: '',
+  hiddenCols: new Set(),
+  channelFilters: new Set(),
+  dimensionFilters: new Set(),
+  compareMode: false,
+};
+
+// ─── Upload screen ────────────────────────────────────────────────────────────
+function renderUploadScreen() {
+  document.getElementById('upload-screen').innerHTML = `
+    <div class="upload-header">
+      <h1>GA Analytics Dashboard</h1>
+      <p>Upload 1–3 weekly GA Excel files to explore and compare periods. Files are processed entirely in your browser — nothing is uploaded anywhere.</p>
+    </div>
+    <div class="file-slots">
+      ${[0, 1, 2].map(i => `
+        <div class="file-slot" id="slot-${i}">
+          <div class="drop-zone" id="drop-${i}">
+            <div class="drop-icon">📊</div>
+            <div class="drop-label">${i === 0 ? 'File 1 (required)' : `File ${i + 1} (optional)`}</div>
+            <div class="drop-hint">${i === 0 ? 'Drag & drop or click to browse' : 'Add a second period to compare'}</div>
+            <input type="file" accept=".xlsx,.xls" id="file-input-${i}" style="display:none">
+          </div>
+          <div class="file-loaded" id="loaded-${i}">
+            <span class="file-name" id="fname-${i}"></span>
+            <button class="remove-btn" onclick="removeFile(${i})" title="Remove">✕</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <button id="analyze-btn" class="analyze-btn" disabled onclick="analyzeFiles()">
+      Analyze →
+    </button>
+    <p class="upload-note">Supports: Admission Product Pages, Sitewide, Howl O Scream, Preschool/Teacher Pass, and other GA weekly exports</p>
+  `;
+  setupDropZones();
+}
+
+function setupDropZones() {
+  [0, 1, 2].forEach(i => {
+    const dz = document.getElementById('drop-' + i);
+    const inp = document.getElementById('file-input-' + i);
+
+    dz.addEventListener('click', () => inp.click());
+    inp.addEventListener('change', e => {
+      if (e.target.files[0]) fileSelected(i, e.target.files[0]);
+    });
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+    dz.addEventListener('dragleave', e => { if (!dz.contains(e.relatedTarget)) dz.classList.remove('drag-over'); });
+    dz.addEventListener('drop', e => {
+      e.preventDefault();
+      dz.classList.remove('drag-over');
+      if (e.dataTransfer.files[0]) fileSelected(i, e.dataTransfer.files[0]);
+    });
+  });
+}
+
+function fileSelected(slot, file) {
+  state.files[slot] = file;
+  document.getElementById('drop-' + slot).style.display = 'none';
+  const loaded = document.getElementById('loaded-' + slot);
+  loaded.classList.add('visible');
+  document.getElementById('fname-' + slot).textContent = file.name;
+  document.getElementById('analyze-btn').disabled = false;
+}
+
+function removeFile(slot) {
+  state.files[slot] = null;
+  document.getElementById('drop-' + slot).style.display = '';
+  document.getElementById('loaded-' + slot).classList.remove('visible');
+  document.getElementById('file-input-' + slot).value = '';
+  document.getElementById('analyze-btn').disabled = !state.files.some(Boolean);
+}
+
+// ─── Excel parsing ─────────────────────────────────────────────────────────────
+
+// Patterns that signal a sub-header row (not real data)
+const SUB_HDR = /^(prior year|current year|cy|py|yoy\s*%?|vs\.?\s*py|week|%|change)$/i;
+
+function expandMergedCells(ws) {
+  const merges = ws['!merges'] || [];
+  merges.forEach(({ s, e }) => {
+    const srcCell = ws[XLSX.utils.encode_cell(s)];
+    if (!srcCell) return;
+    for (let r = s.r; r <= e.r; r++) {
+      for (let c = s.c; c <= e.c; c++) {
+        if (r === s.r && c === s.c) continue;
+        ws[XLSX.utils.encode_cell({ r, c })] = { ...srcCell };
+      }
+    }
+  });
+}
+
+function looksLikeSubHeader(row) {
+  const cells = row.map(c => String(c || '').trim()).filter(Boolean);
+  if (cells.length === 0) return false;
+  const matched = cells.filter(c => SUB_HDR.test(c));
+  return matched.length / cells.length >= 0.4;
+}
+
+function buildHeaders(topRow, subRow) {
+  // Combine two-row headers: "SESSIONS" + "Prior Year" → "SESSIONS — Prior Year"
+  return topRow.map((top, i) => {
+    const t = String(top || '').trim();
+    const s = String(subRow[i] || '').trim();
+    if (!t && !s) return '(blank)';
+    if (!t) return s;
+    if (!s || t === s) return t;
+    return `${t} — ${s}`;
+  });
+}
+
+function dedupeHeaders(headers) {
+  const seen = {};
+  return headers.map(h => {
+    seen[h] = (seen[h] || 0) + 1;
+    return seen[h] > 1 ? `${h} (${seen[h]})` : h;
+  });
+}
+
+function parseFile(arrayBuffer, filename) {
+  const wb = XLSX.read(arrayBuffer, { type: 'array' });
+  const label = extractDateLabel(filename);
+  const sheets = {};
+
+  wb.SheetNames.forEach(name => {
+    const ws = wb.Sheets[name];
+
+    // Expand merged cells so all spanned cells carry the merged value
+    expandMergedCells(ws);
+
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', raw: false });
+    if (rows.length < 2) return;
+
+    // Find header row: first row with ≥3 non-empty cells
+    let headerIdx = 0;
+    for (let i = 0; i < Math.min(rows.length, 15); i++) {
+      const nonEmpty = rows[i].filter(c => c !== '' && c !== null && c !== undefined);
+      if (nonEmpty.length >= 3) { headerIdx = i; break; }
+    }
+
+    // Check for a two-row header (main header + sub-header like "Prior Year" / "YoY %")
+    let dataStart = headerIdx + 1;
+    let headers;
+    const nextRow = rows[headerIdx + 1] || [];
+    if (looksLikeSubHeader(nextRow)) {
+      headers = dedupeHeaders(buildHeaders(rows[headerIdx], nextRow));
+      dataStart = headerIdx + 2;
+    } else {
+      const rawHeaders = rows[headerIdx].map(h => String(h || '').trim());
+      headers = dedupeHeaders(rawHeaders.map(h => h || '(blank)'));
+    }
+
+    const dataRows = rows.slice(dataStart)
+      .filter(r => r.some(c => c !== '' && c !== null && c !== undefined))
+      .map(r => {
+        const obj = {};
+        headers.forEach((h, i) => { obj[h] = r[i] !== undefined ? r[i] : ''; });
+        return obj;
+      });
+
+    if (dataRows.length > 0) {
+      sheets[name] = { headers, rows: dataRows };
+    }
+  });
+
+  return { label, filename, sheets };
+}
+
+function extractDateLabel(filename) {
+  // Explicit date range in filename (e.g. "05-04-2026 to 05-10-2026")
+  let m = filename.match(/(\d{2}-\d{2}-\d{4})\s*(?:to|–|-)\s*(\d{2}-\d{2}-\d{4})/i)
+        || filename.match(/(\d{4}-\d{2}-\d{2})\s*(?:to|–|-)\s*(\d{4}-\d{2}-\d{2})/i);
+  if (m) return `${m[1]} – ${m[2]}`;
+
+  // "week ending MM-DD-YYYY" → just the date
+  m = filename.match(/week\s+ending\s+(\d{2}-\d{2}-\d{4})/i)
+   || filename.match(/week\s+ending\s+(\d{4}-\d{2}-\d{2})/i);
+  if (m) return m[1];
+
+  // Any single date
+  const patterns = [
+    /(\d{2}-\d{2}-\d{4})/,
+    /(\d{4}-\d{2}-\d{2})/,
+    /(\d{8})/,
+    /((?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\s*\d+)/i,
+  ];
+  for (const p of patterns) {
+    const dm = filename.match(p);
+    if (dm) return dm[1];
+  }
+
+  return filename
+    .replace(/\s*(vs PY|Final|Internal Review|Excl Paid Social|FORMATTED)\s*/gi, '')
+    .replace(/\.(xlsx?)$/i, '').trim().slice(-20);
+}
+
+// ─── Park detection ───────────────────────────────────────────────────────────
+function detectParkColumn(headers, rows) {
+  if (!rows || rows.length === 0) return null;
+
+  // Check header names first
+  const parkHeaderIdx = headers.findIndex(h => /^park$/i.test(h.trim()) || /^park\s*code/i.test(h.trim()));
+  if (parkHeaderIdx >= 0) {
+    const colName = headers[parkHeaderIdx];
+    const vals = rows.map(r => String(r[colName] || '').trim().toUpperCase()).filter(Boolean);
+    const parks = [...new Set(vals.filter(v => PARK_CODES.has(v)))];
+    if (parks.length > 0) return { col: colName, parks };
+  }
+
+  // Scan all columns for park code density
+  for (const h of headers) {
+    const vals = rows.map(r => String(r[h] || '').trim().toUpperCase());
+    const matched = vals.filter(v => PARK_CODES.has(v));
+    if (vals.length > 0 && matched.length / vals.length > 0.25 && matched.length >= 2) {
+      const parks = [...new Set(matched)];
+      return { col: h, parks };
+    }
+  }
+
+  return null;
+}
+
+// ─── analyzeFiles ─────────────────────────────────────────────────────────────
+async function analyzeFiles() {
+  const btn = document.getElementById('analyze-btn');
+  btn.textContent = 'Loading…';
+  btn.disabled = true;
+
+  const loaded = state.files.filter(Boolean);
+  state.parsed = [];
+
+  try {
+    for (const file of loaded) {
+      const buf = await file.arrayBuffer();
+      state.parsed.push(parseFile(new Uint8Array(buf), file.name));
+    }
+    buildDashboard();
+  } catch (err) {
+    btn.textContent = 'Analyze →';
+    btn.disabled = false;
+    alert('Error reading file: ' + err.message);
+  }
+}
+
+// ─── Dashboard ────────────────────────────────────────────────────────────────
+function buildDashboard() {
+  document.getElementById('upload-screen').style.display = 'none';
+  const d = document.getElementById('dashboard');
+  d.style.display = 'flex';
+
+  // Reset dash state
+  dash.activeFileIdx = 0;
+  dash.activePark = 'ALL';
+  dash.sortCol = null;
+  dash.sortDir = 'asc';
+  dash.search = '';
+  dash.hiddenCols = new Set();
+  dash.channelFilters = new Set();
+  dash.dimensionFilters = new Set();
+  dash.compareMode = false;
+
+  const sheetNames = Object.keys(state.parsed[0].sheets);
+  dash.activeSheet = sheetNames[0] || null;
+
+  const parks = detectAllParks();
+
+  d.innerHTML = `
+    <div class="dash-header">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+      <span class="dash-title">GA Analytics Dashboard</span>
+      <div class="period-badges">
+        ${state.parsed.map((p, i) => `<span class="period-badge p${i}">P${i + 1}: ${p.label}</span>`).join('')}
+      </div>
+    </div>
+    ${state.parsed.length > 1 ? `<div class="file-tabs" id="file-tabs"></div>` : ''}
+    <div class="park-tabs" id="park-tabs"></div>
+    <div class="sheet-tabs" id="sheet-tabs"></div>
+    <div class="controls-bar" id="controls-bar"></div>
+    <div class="table-wrap" id="table-wrap">
+      <div class="loading-state">Rendering…</div>
+    </div>
+  `;
+
+  if (state.parsed.length > 1) renderFileTabs();
+  renderParkTabs(parks);
+  renderSheetTabs(sheetNames);
+  renderControls();
+  renderTable();
+}
+
+// ─── File tabs ────────────────────────────────────────────────────────────────
+const FILE_COLORS = ['#0071e3', '#34c759', '#ff9500'];
+
+function renderFileTabs() {
+  const el = document.getElementById('file-tabs');
+  if (!el) return;
+  el.innerHTML = state.parsed.map((p, i) =>
+    `<button class="file-tab${i === dash.activeFileIdx ? ' active' : ''}" onclick="selectFile(${i})">
+      <span class="ft-badge" style="background:${FILE_COLORS[i] || '#aaa'}"></span>
+      P${i + 1}: ${esc(p.label)}
+    </button>`
+  ).join('');
+}
+
+function selectFile(idx) {
+  if (idx === dash.activeFileIdx) return;
+  dash.activeFileIdx = idx;
+
+  // Preserve activeSheet if it exists in the new file, otherwise use first sheet
+  const sheetNames = Object.keys(state.parsed[idx].sheets);
+  if (!sheetNames.includes(dash.activeSheet)) {
+    dash.activeSheet = sheetNames[0] || null;
+  }
+
+  // search, channelFilters, dimensionFilters, hiddenCols, sortCol, sortDir
+  // are intentionally preserved so filters carry across period switches.
+
+  renderFileTabs();
+  const parks = detectAllParks();
+  renderParkTabs(parks);
+  renderSheetTabs(sheetNames);
+  renderControls();
+  renderTable();
+}
+
+function goBack() {
+  document.getElementById('dashboard').style.display = 'none';
+  const us = document.getElementById('upload-screen');
+  us.style.display = 'block';
+  const btn = document.getElementById('analyze-btn');
+  if (btn) { btn.textContent = 'Analyze →'; btn.disabled = false; }
+}
+
+function detectAllParks() {
+  const parks = new Set();
+  state.parsed.forEach(p => {
+    Object.values(p.sheets).forEach(sheet => {
+      const info = detectParkColumn(sheet.headers, sheet.rows);
+      if (info) info.parks.forEach(pk => { if (PARK_CODES.has(pk)) parks.add(pk); });
+    });
+  });
+  const sorted = [...parks].sort();
+  return ['ALL', ...sorted];
+}
+
+// ─── Park tabs ────────────────────────────────────────────────────────────────
+
+// Returns the sheet name that corresponds to a park code, or null.
+function sheetForPark(park) {
+  const sheets = state.parsed[0] ? Object.keys(state.parsed[0].sheets) : [];
+  return sheets.find(s => s.trim().toUpperCase() === park.toUpperCase()) || null;
+}
+
+// Returns the park code that matches the current sheet name, or null.
+function parkForSheet(sheetName) {
+  const code = sheetName.trim().toUpperCase();
+  return PARK_CODES.has(code) ? code : null;
+}
+
+function renderParkTabs(parks) {
+  document.getElementById('park-tabs').innerHTML = parks.map(p => {
+    const label = p === 'ALL'
+      ? 'All Parks'
+      : `${p}${PARK_NAMES[p] ? ' — ' + PARK_NAMES[p] : ''}`;
+    const active = (p === 'ALL' && dash.activePark === 'ALL') ||
+                   (p !== 'ALL' && dash.activePark === p);
+    return `<button class="park-tab${active ? ' active' : ''}" onclick="selectPark('${p}')">${label}</button>`;
+  }).join('');
+}
+
+function syncParkTabToSheet() {
+  // Highlight the park tab matching the current active sheet, if any.
+  const matchingPark = parkForSheet(dash.activeSheet || '');
+  dash.activePark = matchingPark || 'ALL';
+  document.querySelectorAll('.park-tab').forEach(b => {
+    const isAll = b.textContent.trim() === 'All Parks';
+    const isMatch = !isAll && b.textContent.trim().startsWith(dash.activePark);
+    b.classList.toggle('active', dash.activePark === 'ALL' ? isAll : isMatch);
+  });
+}
+
+function selectPark(park) {
+  if (park === 'ALL') {
+    // Stay on current sheet but remove park-level row filter
+    dash.activePark = 'ALL';
+  } else {
+    const matchSheet = sheetForPark(park);
+    if (matchSheet) {
+      // This workbook is sheet-per-park: navigate to that sheet
+      dash.activeSheet = matchSheet;
+      dash.sortCol = null;
+      dash.sortDir = 'asc';
+      document.querySelectorAll('.sheet-tab').forEach(b => {
+        b.classList.toggle('active', b.dataset.sheet === matchSheet);
+      });
+      dash.activePark = park;
+    } else {
+      // Consolidated sheet: filter rows by park code column
+      dash.activePark = park;
+    }
+  }
+
+  document.querySelectorAll('.park-tab').forEach(b => {
+    const isAll = b.textContent.trim() === 'All Parks';
+    const isMatch = !isAll && b.textContent.trim().startsWith(park);
+    b.classList.toggle('active', park === 'ALL' ? isAll : isMatch);
+  });
+  renderControls();
+  renderTable();
+}
+
+// ─── Sheet tabs ───────────────────────────────────────────────────────────────
+function renderSheetTabs(sheetNames) {
+  document.getElementById('sheet-tabs').innerHTML = sheetNames.map(s =>
+    `<button class="sheet-tab${s === dash.activeSheet ? ' active' : ''}" data-sheet="${esc(s)}" onclick="selectSheet(this.dataset.sheet)">${esc(s)}</button>`
+  ).join('');
+}
+
+function selectSheet(name) {
+  dash.activeSheet = name;
+  dash.sortCol = null;
+  dash.sortDir = 'asc';
+  document.querySelectorAll('.sheet-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.sheet === name);
+  });
+  // Keep park tabs in sync: highlight the matching park if this sheet is a park sheet
+  syncParkTabToSheet();
+  renderControls();
+  renderTable();
+}
+
+// ─── Controls bar ─────────────────────────────────────────────────────────────
+function getActiveSheetData() {
+  if (!dash.activeSheet || !state.parsed.length) return null;
+  const p = state.parsed[dash.activeFileIdx] || state.parsed[0];
+  return p.sheets[dash.activeSheet] || Object.values(p.sheets)[0] || null;
+}
+
+function renderFilterDropdown(id, label, values, selectedSet) {
+  const btnLabel = selectedSet.size === 0
+    ? `All ${label}s`
+    : selectedSet.size === 1
+      ? esc([...selectedSet][0])
+      : `${selectedSet.size} selected`;
+  const isActive = selectedSet.size > 0;
+  return `
+    <div class="col-toggle-wrap">
+      <button class="ctrl-btn${isActive ? ' filter-active' : ''}" onclick="toggleFilterDropdown(event,'${id}')">
+        ${btnLabel} ▾
+      </button>
+      <div class="col-dropdown" id="${id}">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 6px 8px;border-bottom:1px solid #e5e5ea;margin-bottom:4px">
+          <span style="font-size:11px;font-weight:600;color:#6e6e73;text-transform:uppercase">${esc(label)}</span>
+          <span style="display:flex;gap:8px">
+            <button onclick="selectAllFilter('${id}',${JSON.stringify(values).replace(/"/g, '&quot;')})" style="background:none;border:none;font-size:11px;color:#0071e3;cursor:pointer">Select all</button>
+            <button onclick="clearFilterAll('${id}')" style="background:none;border:none;font-size:11px;color:#6e6e73;cursor:pointer">Clear</button>
+          </span>
+        </div>
+        ${values.map(v => `
+          <label class="col-checkbox">
+            <input type="checkbox" data-fid="${esc(id)}" data-val="${esc(v)}"
+              ${selectedSet.has(v) ? 'checked' : ''}
+              onchange="toggleFilterValue(this.dataset.fid,this.dataset.val,this.checked)">
+            <span>${esc(v)}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderControls() {
+  const sheet = getActiveSheetData();
+  const headers = sheet ? sheet.headers : [];
+  const rows = sheet ? sheet.rows : [];
+
+  const channelCol = headers.find(h => /^channel/i.test(h.trim()) || /\bchannel\b/i.test(h));
+  const channelVals = channelCol
+    ? [...new Set(rows.map(r => String(r[channelCol] || '').trim()).filter(Boolean))]
+    : [];
+
+  const dimCol = headers.find(h => /^dimension$/i.test(h.trim()));
+  const dimVals = dimCol
+    ? [...new Set(rows.map(r => String(r[dimCol] || '').trim()).filter(Boolean))]
+    : [];
+
+  const multiPeriod = state.parsed.length > 1;
+  const hasFilters = dimVals.length > 0 || channelVals.length > 0;
+
+  document.getElementById('controls-bar').innerHTML = `
+    <input type="text" class="search-input" placeholder="Search all columns…" value="${esc(dash.search)}"
+      oninput="dash.search=this.value; renderTable()">
+    ${hasFilters ? `<span style="font-size:11px;color:#6e6e73;white-space:nowrap;padding-left:4px;">Filter by:</span>` : ''}
+    ${dimVals.length > 0 ? renderFilterDropdown('dim-filter-dd', 'Dimension', dimVals, dash.dimensionFilters) : ''}
+    ${channelVals.length > 0 ? renderFilterDropdown('ch-filter-dd', 'Channel', channelVals, dash.channelFilters) : ''}
+    <div class="col-toggle-wrap">
+      <button class="ctrl-btn" onclick="toggleColDropdown(event)">Columns ▾</button>
+      <div class="col-dropdown" id="col-dropdown">
+        <div style="display:flex;justify-content:space-between;padding:4px 6px 8px;border-bottom:1px solid #e5e5ea;margin-bottom:4px">
+          <span style="font-size:11px;font-weight:600;color:#6e6e73;text-transform:uppercase">Show/hide columns</span>
+          <span style="display:flex;gap:8px">
+            <button onclick="hideAllCols()" style="background:none;border:none;font-size:11px;color:#6e6e73;cursor:pointer">Hide all</button>
+            <button onclick="showAllCols()" style="background:none;border:none;font-size:11px;color:#0071e3;cursor:pointer">Show all</button>
+          </span>
+        </div>
+        ${headers.map(h => `
+          <label class="col-checkbox">
+            <input type="checkbox" data-col="${esc(h)}" ${dash.hiddenCols.has(h) ? '' : 'checked'}
+              onchange="toggleCol(this.dataset.col, this.checked)">
+            <span>${esc(h)}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+    ${multiPeriod ? `
+      <label class="compare-label">
+        <input type="checkbox" ${dash.compareMode ? 'checked' : ''} onchange="dash.compareMode=this.checked; renderTable()">
+        Compare periods
+      </label>
+    ` : ''}
+    <div class="controls-right">
+      <span class="row-count" id="row-count"></span>
+      <button class="ctrl-btn" onclick="resetFilters()">Reset</button>
+    </div>
+  `;
+}
+
+function toggleColDropdown(e) {
+  e.stopPropagation();
+  document.querySelectorAll('.col-dropdown.open').forEach(d => { if (d.id !== 'col-dropdown') d.classList.remove('open'); });
+  document.getElementById('col-dropdown').classList.toggle('open');
+}
+
+function toggleFilterDropdown(e, id) {
+  e.stopPropagation();
+  document.querySelectorAll('.col-dropdown.open').forEach(d => { if (d.id !== id) d.classList.remove('open'); });
+  document.getElementById(id).classList.toggle('open');
+}
+
+function toggleFilterValue(id, val, checked) {
+  const set = id === 'dim-filter-dd' ? dash.dimensionFilters : dash.channelFilters;
+  if (checked) set.add(val); else set.delete(val);
+  renderControls();
+  const dd = document.getElementById(id);
+  if (dd) dd.classList.add('open');
+  renderTable();
+}
+
+function clearFilterAll(id) {
+  (id === 'dim-filter-dd' ? dash.dimensionFilters : dash.channelFilters).clear();
+  renderControls();
+  const dd = document.getElementById(id);
+  if (dd) dd.classList.add('open');
+  renderTable();
+}
+
+function selectAllFilter(id, values) {
+  const set = id === 'dim-filter-dd' ? dash.dimensionFilters : dash.channelFilters;
+  values.forEach(v => set.add(v));
+  renderControls();
+  const dd = document.getElementById(id);
+  if (dd) dd.classList.add('open');
+  renderTable();
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.col-toggle-wrap')) {
+    document.querySelectorAll('.col-dropdown.open').forEach(d => d.classList.remove('open'));
+  }
+});
+
+function toggleCol(colName, visible) {
+  if (visible) dash.hiddenCols.delete(colName);
+  else dash.hiddenCols.add(colName);
+  setTimeout(renderTable, 10);
+}
+
+function showAllCols() {
+  dash.hiddenCols.clear();
+  renderControls();
+  document.getElementById('col-dropdown').classList.add('open');
+  renderTable();
+}
+
+function hideAllCols() {
+  const sheet = getActiveSheetData();
+  if (sheet) sheet.headers.forEach(h => dash.hiddenCols.add(h));
+  renderControls();
+  document.getElementById('col-dropdown').classList.add('open');
+  renderTable();
+}
+
+function resetFilters() {
+  dash.search = '';
+  dash.sortCol = null;
+  dash.sortDir = 'asc';
+  dash.channelFilters = new Set();
+  dash.dimensionFilters = new Set();
+  renderControls();
+  renderTable();
+}
+
+// ─── Table logic ──────────────────────────────────────────────────────────────
+function parseNum(val) {
+  if (val === '' || val === null || val === undefined) return null;
+  let s = String(val).trim();
+  // Handle accounting-format negatives: (22.5%) → -22.5
+  const isAcctNeg = s.startsWith('(') && s.endsWith(')');
+  s = s.replace(/[()%,$\s]/g, '');
+  const n = parseFloat(s);
+  if (isNaN(n)) return null;
+  return isAcctNeg ? -n : n;
+}
+
+function isPercentColumn(header, sampleValues) {
+  if (/yoy|rate|%|pct|percent|change/i.test(header)) return true;
+  const samples = (sampleValues || []).filter(v => v !== '' && v !== null).slice(0, 15);
+  return samples.some(v => {
+    const sv = String(v).trim();
+    return sv.includes('%') || /^\([\d.,]+%?\)$/.test(sv);
+  });
+}
+
+function getFilteredRows() {
+  const sheet = getActiveSheetData();
+  if (!sheet) return { headers: [], rows: [], parkCol: null };
+
+  const { headers, rows } = sheet;
+  const parkInfo = detectParkColumn(headers, rows);
+
+  let filtered = rows;
+
+  // Park filter
+  if (dash.activePark !== 'ALL' && parkInfo) {
+    filtered = filtered.filter(r =>
+      String(r[parkInfo.col] || '').trim().toUpperCase() === dash.activePark
+    );
+  }
+
+  // Dimension filter
+  const dimCol = headers.find(h => /^dimension$/i.test(h.trim()));
+  if (dash.dimensionFilters.size > 0 && dimCol) {
+    filtered = filtered.filter(r =>
+      dash.dimensionFilters.has(String(r[dimCol] || '').trim())
+    );
+  }
+
+  // Channel filter
+  const channelCol = headers.find(h => /\bchannel\b/i.test(h));
+  if (dash.channelFilters.size > 0 && channelCol) {
+    filtered = filtered.filter(r =>
+      dash.channelFilters.has(String(r[channelCol] || '').trim())
+    );
+  }
+
+  // Text search
+  if (dash.search) {
+    const q = dash.search.toLowerCase();
+    filtered = filtered.filter(r =>
+      Object.values(r).some(v => String(v).toLowerCase().includes(q))
+    );
+  }
+
+  // Sort
+  if (dash.sortCol) {
+    filtered = [...filtered].sort((a, b) => {
+      const va = parseNum(a[dash.sortCol]);
+      const vb = parseNum(b[dash.sortCol]);
+      if (va !== null && vb !== null) {
+        return dash.sortDir === 'asc' ? va - vb : vb - va;
+      }
+      const sa = String(a[dash.sortCol] || '');
+      const sb = String(b[dash.sortCol] || '');
+      return dash.sortDir === 'asc' ? sa.localeCompare(sb) : sb.localeCompare(sa);
+    });
+  }
+
+  return { headers, rows: filtered, parkCol: parkInfo ? parkInfo.col : null };
+}
+
+function buildMergedData(baseHeaders, baseRows, parkCol) {
+  if (!dash.compareMode || state.parsed.length <= 1) {
+    return { mergedHeaders: baseHeaders, mergedRows: baseRows };
+  }
+
+  const extraPeriods = state.parsed.filter((_, i) => i !== dash.activeFileIdx);
+
+  // Only merge numeric columns
+  const numericSet = new Set(baseHeaders.filter(h => {
+    const samples = baseRows.slice(0, 10).map(r => r[h]);
+    return samples.some(v => parseNum(v) !== null);
+  }));
+  const numericHeaders = baseHeaders.filter(h => numericSet.has(h));
+
+  // Use ALL non-numeric columns as the composite key so each row is uniquely
+  // identified even when the same park+channel appears for multiple dimensions.
+  const keyHeaders = baseHeaders.filter(h => !numericSet.has(h));
+  const makeKey = (r) => keyHeaders.map(h => String(r[h] || '').trim().toLowerCase()).join('||');
+
+  const periodCols = extraPeriods.flatMap((p, pi) =>
+    numericHeaders.map(h => ({ key: `__p${pi + 2}__${h}`, label: h, period: pi + 2 }))
+  );
+
+  const mergedHeaders = [
+    ...baseHeaders,
+    ...periodCols.map(c => c.key),
+  ];
+
+  // Build lookup maps per extra period for O(1) matching.
+  // Keep the first match for a key (don't overwrite) to avoid stale collisions.
+  const lookupMaps = extraPeriods.map(p => {
+    const otherSheet = p.sheets[dash.activeSheet] || Object.values(p.sheets)[0];
+    if (!otherSheet) return { map: new Map(), headers: [] };
+    const m = new Map();
+    // Build key using same positional slots as keyHeaders (handles minor header-name
+    // differences between files by falling back to column index).
+    const otherKeyHeaders = keyHeaders.map((h, i) => {
+      if (otherSheet.rows.length > 0 && otherSheet.rows[0][h] !== undefined) return h;
+      return otherSheet.headers[baseHeaders.indexOf(h)] || h;
+    });
+    otherSheet.rows.forEach(r => {
+      const key = otherKeyHeaders.map(h => String(r[h] || '').trim().toLowerCase()).join('||');
+      if (!m.has(key)) m.set(key, r);
+    });
+    return { map: m, headers: otherSheet.headers };
+  });
+
+  const mergedRows = baseRows.map(r => {
+    const out = { ...r };
+    const lookupKey = makeKey(r);
+
+    extraPeriods.forEach((p, pi) => {
+      const { map, headers: otherHeaders } = lookupMaps[pi];
+      const match = map.get(lookupKey);
+      numericHeaders.forEach(h => {
+        let val = '—';
+        if (match) {
+          if (match[h] !== undefined) {
+            val = match[h];
+          } else {
+            // Positional fallback: same column index in the other file
+            const pos = baseHeaders.indexOf(h);
+            const otherH = otherHeaders[pos];
+            if (otherH && match[otherH] !== undefined) val = match[otherH];
+          }
+        }
+        out[`__p${pi + 2}__${h}`] = val;
+      });
+    });
+    return out;
+  });
+
+  return { mergedHeaders, mergedRows, periodCols };
+}
+
+function renderTable() {
+  const wrap = document.getElementById('table-wrap');
+  const { headers, rows, parkCol } = getFilteredRows();
+
+  if (!headers.length) {
+    wrap.innerHTML = '<div class="empty-state">No data available for this sheet.</div>';
+    return;
+  }
+
+  const visibleBaseHeaders = headers.filter(h => !dash.hiddenCols.has(h));
+  const { mergedHeaders, mergedRows, periodCols } = buildMergedData(visibleBaseHeaders, rows, parkCol);
+
+  // Detect which merged headers are period extras
+  const periodColMap = new Map((periodCols || []).map(c => [c.key, c]));
+
+  // Sample values for % detection
+  const sampleMap = {};
+  visibleBaseHeaders.forEach(h => {
+    sampleMap[h] = rows.slice(0, 30).map(r => r[h]);
+  });
+
+  // Track period group starts
+  let lastPeriod = 1;
+
+  const headerHTML = mergedHeaders.map(h => {
+    const pCol = periodColMap.get(h);
+    const period = pCol ? pCol.period : 1;
+    const isStart = period !== lastPeriod;
+    if (isStart) lastPeriod = period;
+
+    const isSortCol = (pCol ? pCol.label : h) === dash.sortCol && period === 1
+      ? true
+      : h === dash.sortCol;
+    const sortCls = h === dash.sortCol
+      ? (dash.sortDir === 'asc' ? 'sort-asc' : 'sort-desc')
+      : '';
+    const periodCls = period === 2 ? 'period-p2' : period === 3 ? 'period-p3' : '';
+    const cls = [sortCls, periodCls].filter(Boolean).join(' ');
+    const displayLabel = pCol ? esc(pCol.label) : esc(h);
+    const periodLabelColor = period === 1 ? '#0071e3' : period === 2 ? '#34c759' : '#ff9500';
+    const periodDate = state.parsed[period - 1] ? esc(state.parsed[period - 1].label) : `P${period}`;
+    // Only show date label on numeric columns; text/category columns (Dimension, Park, Channel…) get none.
+    const isNumericCol = period > 1 || (sampleMap[h] || []).some(v => parseNum(v) !== null);
+    const showLabel = isNumericCol && (period > 1 || (dash.compareMode && state.parsed.length > 1));
+
+    return `<th class="${cls}" data-col="${esc(h)}" onclick="sortBy(this.dataset.col)">
+      ${showLabel ? `<span class="period-label" style="color:${periodLabelColor}">${periodDate}</span>` : ''}
+      ${displayLabel}
+    </th>`;
+  }).join('');
+
+  const bodyHTML = mergedRows.map(r => {
+    const cells = mergedHeaders.map(h => {
+      const pCol = periodColMap.get(h);
+      const period = pCol ? pCol.period : 1;
+      const periodCls = period === 2 ? 'period-p2' : period === 3 ? 'period-p3' : '';
+
+      const raw = r[h] !== undefined ? r[h] : '';
+      const str = String(raw);
+      const baseHeader = pCol ? pCol.label : h;
+      const isPercent = isPercentColumn(baseHeader, sampleMap[baseHeader] || []);
+
+      let valueCls = '';
+      if (h === parkCol) valueCls = 'park-col';
+      if (isPercent && str !== '—') {
+        const n = parseNum(raw);
+        if (n !== null && n > 0) valueCls = 'positive';
+        else if (n !== null && n < 0) valueCls = 'negative';
+      }
+
+      const cls = [valueCls, periodCls].filter(Boolean).join(' ');
+      return `<td class="${cls}">${esc(str)}</td>`;
+    }).join('');
+    return `<tr>${cells}</tr>`;
+  }).join('');
+
+  const noRows = !mergedRows.length
+    ? `<tr class="no-rows"><td colspan="${mergedHeaders.length}">No rows match the current filters.</td></tr>`
+    : '';
+
+  wrap.innerHTML = `
+    <table>
+      <thead><tr>${headerHTML}</tr></thead>
+      <tbody>${bodyHTML || noRows}</tbody>
+    </table>
+  `;
+
+  const rc = document.getElementById('row-count');
+  if (rc) rc.textContent = `${mergedRows.length} row${mergedRows.length !== 1 ? 's' : ''}`;
+}
+
+function sortBy(col) {
+  if (dash.sortCol === col) {
+    dash.sortDir = dash.sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    dash.sortCol = col;
+    dash.sortDir = 'asc';
+  }
+  renderTable();
+}
+
+// ─── Utility ──────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const inp = document.querySelector('.search-input');
+    if (inp && dash.search) {
+      dash.search = '';
+      inp.value = '';
+      renderTable();
+    }
+  }
+});
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+renderUploadScreen();
+</script>
+</body>
+</html>

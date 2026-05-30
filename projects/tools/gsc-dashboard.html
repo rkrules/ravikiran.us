@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSC Segmented Analysis Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,Arial,sans-serif;font-size:13px;color:#1a1a1a;background:#f0f0f0;min-height:100vh}
+/* Upload */
+#upload-section{max-width:860px;margin:40px auto;padding:24px}
+.upload-card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:28px}
+.upload-card h1{font-size:18px;font-weight:600;margin-bottom:6px;color:#1a1a1a}
+.upload-card p{color:#555;margin-bottom:20px;font-size:12px}
+.drop-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.drop-zone{border:2px dashed #bbb;border-radius:6px;padding:28px 16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:#fafafa}
+.drop-zone:hover,.drop-zone.drag-over{border-color:#1F5F9E;background:#EEF4FB}
+.drop-zone.loaded{border-color:#2D6A27;background:#EEF4EE}
+.drop-zone svg{display:block;margin:0 auto 8px;opacity:.4}
+.drop-zone p{font-size:12px;color:#666;margin:4px 0}
+.drop-zone strong{font-size:13px;color:#1a1a1a}
+.park-name-input{width:100%;margin-top:10px;padding:6px 9px;border:1px solid #ccc;border-radius:4px;font-size:12px;font-family:inherit}
+.park-name-input:focus{outline:none;border-color:#1F5F9E}
+.file-label{font-size:11px;color:#2D6A27;margin-top:4px;word-break:break-all;display:none}
+.analyze-btn{margin-top:20px;padding:9px 22px;background:#1F5F9E;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer;font-family:inherit}
+.analyze-btn:hover{background:#174e85}
+.analyze-btn:disabled{background:#aaa;cursor:not-allowed}
+.error-msg{color:#9C1F1F;font-size:12px;margin-top:10px;display:none}
+/* App */
+#app{display:none}
+/* Tab bar */
+#tab-bar{background:#fff;border-bottom:1px solid #ddd;padding:0 16px;display:flex;gap:0;overflow-x:auto;position:sticky;top:0;z-index:20;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.tab-btn{padding:11px 14px;border:none;background:none;cursor:pointer;font-size:12px;font-family:inherit;color:#666;border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s}
+.tab-btn:hover{color:#1a1a1a}
+.tab-btn.active{color:#1F5F9E;border-bottom-color:#1F5F9E;font-weight:600}
+/* Tab content */
+#tab-content{padding:16px}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+/* Insight note */
+.insight-note{background:#f7f7f7;border:1px solid #e0e0e0;border-left:3px solid #1F5F9E;padding:9px 13px;margin-bottom:14px;font-size:11.5px;color:#444;line-height:1.5}
+.insight-note strong{color:#1a1a1a}
+/* Table controls */
+.table-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.sort-btn{padding:4px 9px;border:1px solid #ccc;background:#fff;border-radius:4px;font-size:11px;cursor:pointer;font-family:inherit;color:#333}
+.sort-btn:hover{background:#f0f0f0}
+.sort-btn.active{background:#1F5F9E;color:#fff;border-color:#1F5F9E}
+.ctrl-sep{color:#ccc;font-size:11px}
+.copy-btn{padding:4px 10px;border:1px solid #ccc;background:#fff;border-radius:4px;font-size:11px;cursor:pointer;font-family:inherit;color:#333}
+.copy-btn:hover{background:#f0f0f0}
+.col-toggle-wrap{position:relative;display:inline-block}
+.col-toggle-btn{padding:4px 9px;border:1px solid #ccc;background:#fff;border-radius:4px;font-size:11px;cursor:pointer;font-family:inherit;color:#333}
+.col-toggle-btn:hover{background:#f0f0f0}
+.col-dropdown{display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid #ccc;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:30;padding:8px 10px;min-width:180px;max-height:320px;overflow-y:auto}
+.col-dropdown.open{display:block}
+.col-dropdown label{display:flex;align-items:center;gap:6px;padding:3px 0;cursor:pointer;font-size:11px;white-space:nowrap}
+.col-dropdown label:hover{color:#1F5F9E}
+/* Table wrapper */
+.table-wrap{overflow-x:auto;border:1px solid #ddd;border-radius:4px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:12px}
+thead th{background:#fff;color:#333;font-weight:600;padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:2px solid #ddd;position:sticky;top:0;z-index:10;cursor:pointer;user-select:none}
+thead th:first-child{text-align:left;min-width:180px}
+thead th:hover{background:#f5f5f5}
+thead th .sort-ind{font-size:10px;margin-left:3px;color:#999}
+thead th.sort-asc .sort-ind::after{content:'▲'}
+thead th.sort-desc .sort-ind::after{content:'▼'}
+thead th:not(.sort-asc):not(.sort-desc) .sort-ind::after{content:'⇅'}
+tbody tr:nth-child(even){background:#F9F9F9}
+tbody tr:hover{background:#EFF5FF}
+tbody tr.total-row{background:#F0F0F0!important;font-weight:700}
+tbody tr.other-row td:first-child::after{content:' *';color:#999}
+td{padding:7px 10px;text-align:right;border-bottom:1px solid #eee}
+td:first-child{text-align:left}
+.seg-cell{display:flex;align-items:center;gap:6px}
+.seg-expand{cursor:pointer;color:#1F5F9E;font-size:15px;line-height:1;flex-shrink:0;font-weight:400}
+.seg-expand:hover{color:#174e85}
+.seg-info{cursor:pointer;color:#aaa;font-size:11px;flex-shrink:0}
+.seg-info:hover{color:#555}
+.c-green{color:#375623;font-weight:600}
+.c-red{color:#9C1F1F;font-weight:600}
+.other-note{font-size:11px;color:#888;margin-top:8px;font-style:italic}
+/* Brand tab */
+.brand-summary{margin-bottom:20px}
+.expand-section{border:1px solid #ddd;border-radius:4px;background:#fff;margin-bottom:12px}
+.expand-header{padding:9px 13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;background:#fafafa;border-bottom:1px solid #ddd;border-radius:4px 4px 0 0}
+.expand-header:hover{background:#f0f0f0}
+.expand-header .expand-arrow{font-size:11px;color:#666}
+.expand-body{display:none;padding:10px}
+.expand-body.open{display:block}
+/* Share comparison */
+.share-toggle{display:flex;gap:0;margin-bottom:12px}
+.share-toggle-btn{padding:5px 14px;border:1px solid #ccc;background:#fff;font-size:12px;cursor:pointer;font-family:inherit;color:#555}
+.share-toggle-btn:first-child{border-radius:4px 0 0 4px}
+.share-toggle-btn:last-child{border-radius:0 4px 4px 0}
+.share-toggle-btn.active{background:#1F5F9E;color:#fff;border-color:#1F5F9E}
+.group-header-p1{background:#1F5F9E;color:#fff;text-align:center!important;font-size:11px;padding:5px 8px}
+.group-header-p2{background:#2D6A27;color:#fff;text-align:center!important;font-size:11px;padding:5px 8px}
+.group-header-gap{background:#555;color:#fff;text-align:center!important;font-size:11px;padding:5px 8px}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 12px}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:6px;width:100%;max-width:960px;margin:auto;box-shadow:0 8px 32px rgba(0,0,0,.18)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #eee}
+.modal-header h2{font-size:14px;font-weight:600}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:#888;line-height:1;padding:2px 6px}
+.modal-close:hover{color:#333}
+.modal-body{padding:16px 18px;max-height:72vh;overflow-y:auto}
+.modal-body p{font-size:12px;color:#444;margin-bottom:10px;line-height:1.6}
+.modal-body code{background:#f0f0f0;padding:1px 4px;border-radius:2px;font-family:monospace;font-size:11px}
+.modal-body table{font-size:11px}
+.modal-body td,.modal-body th{padding:5px 8px}
+/* Loading */
+.loading{text-align:center;padding:30px;color:#888;font-size:13px}
+/* Reset button */
+#reset-btn{padding:5px 12px;background:none;border:1px solid #ccc;border-radius:4px;font-size:11px;cursor:pointer;font-family:inherit;color:#666;margin-left:auto}
+#reset-btn:hover{background:#f0f0f0}
+/* Summary tab */
+.summ-wrap{max-width:1100px}
+.summ-section{margin-bottom:26px}
+.summ-h2{font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #1F5F9E;display:inline-block}
+.summ-takeway{background:#fafafa;border-left:3px solid #555;padding:8px 12px;margin:6px 0 10px;font-size:12px;color:#333;line-height:1.65}
+.summ-park-h{font-size:14px;font-weight:700;color:#1F5F9E;margin:0 0 14px;padding-bottom:6px;border-bottom:2px solid #1F5F9E}
+.summ-park-sep{border:none;border-top:1px solid #ddd;margin:24px 0}
+.summ-tbl-wrap{overflow-x:auto;margin-bottom:4px}
+.summ-tbl{border-collapse:collapse;font-size:11.5px;width:100%;background:#fff}
+.summ-tbl th{background:#f4f4f4;font-weight:600;padding:6px 10px;text-align:right;border:1px solid #ddd;white-space:nowrap}
+.summ-tbl th:first-child{text-align:left;min-width:180px}
+.summ-tbl td{padding:5px 10px;text-align:right;border:1px solid #eee}
+.summ-tbl td:first-child{text-align:left;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.summ-tbl tr:nth-child(even){background:#f9f9f9}
+.summ-tbl tr:hover{background:#EFF5FF}
+.summ-movers-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+.summ-stat-box{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.summ-stat{background:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 14px;min-width:130px}
+.summ-stat label{font-size:10px;color:#888;display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.4px}
+.summ-stat .val{font-size:17px;font-weight:700;color:#1a1a1a}
+.summ-stat .val.up{color:#375623}.summ-stat .val.dn{color:#9C1F1F}
+.summ-context{font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #ddd}
+.period-tbl{border-collapse:collapse;font-size:12px;margin-bottom:0}
+.period-tbl th,.period-tbl td{padding:7px 14px;border:1px solid #ddd}
+.period-tbl th{background:#f4f4f4;font-weight:600}
+.period-tbl td:first-child{font-weight:600}
+.summ-reset-wrap{margin-bottom:14px;display:flex;justify-content:flex-end}
+</style>
+</head>
+<body>
+
+<div id="upload-section">
+  <div class="upload-card">
+    <h1>GSC Segmented Analysis Dashboard</h1>
+    <p>Upload 1 or 2 Google Search Console <strong>Compare export</strong> files (.xlsx). Each file should have CY and PY columns (export GSC with a date comparison enabled).</p>
+    <div class="drop-grid">
+      <div>
+        <div class="drop-zone" id="drop1" onclick="document.getElementById('file1').click()">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          <strong>Park 1 File</strong>
+          <p>Drag & drop or click to browse</p>
+          <div class="file-label" id="file1-label"></div>
+        </div>
+        <input type="text" class="park-name-input" id="park1-name" placeholder="Park 1 name (e.g. SeaWorld Florida)" value="Park 1">
+        <input type="file" id="file1" accept=".xlsx" style="display:none">
+      </div>
+      <div>
+        <div class="drop-zone" id="drop2" onclick="document.getElementById('file2').click()">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          <strong>Park 2 File</strong>
+          <p>Optional — for comparison analysis</p>
+          <div class="file-label" id="file2-label"></div>
+        </div>
+        <input type="text" class="park-name-input" id="park2-name" placeholder="Park 2 name (e.g. Busch Gardens Tampa)" value="Park 2">
+        <input type="file" id="file2" accept=".xlsx" style="display:none">
+      </div>
+    </div>
+    <input type="text" class="park-name-input" id="analysis-context" placeholder="Analysis context / title (optional — e.g. Memorial Day 2026)" style="margin-top:14px;max-width:500px">
+    <button class="analyze-btn" id="analyze-btn" disabled>Analyze</button>
+    <div class="error-msg" id="error-msg"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="tab-bar"></div>
+  <div id="tab-content"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-header">
+      <h2 id="modal-title"></h2>
+      <button class="modal-close" onclick="closeModalDirect()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════
+// SEGMENT DEFINITIONS
+// ═══════════════════════════════════════════════
+const PAGES_SEGMENTS = [
+  { name: 'Homepage', desc: 'Root domain URLs, GBP listing links, and UTM=gbp URLs', test: u =>
+    /^https?:\/\/[^\/]+(\/[a-z0-9-]*\/?)?(\?.*)?$/.test(u) || u.includes('gbp_listing') || u.includes('utm_campaign=gbp') },
+  { name: 'Tickets', desc: 'Patterns: ticket, admission, buy-ticket, boleto, ingresso', test: u =>
+    ['ticket','admission','buy-ticket','boleto','ingresso'].some(p=>u.includes(p)) },
+  { name: 'Annual Pass', desc: 'Patterns: annual-pass, season-pass, /pass, membership', test: u =>
+    ['annual-pass','season-pass','/pass','membership'].some(p=>u.includes(p)) },
+  { name: 'Fun Card', desc: 'Patterns: fun-card, fun card', test: u =>
+    u.includes('fun-card') || u.includes('fun card') },
+  { name: 'Pass Member Portal', desc: 'Patterns: sign-in, dashboard, /account, benefits, my-account, login, renew', test: u =>
+    ['sign-in','dashboard','/account','benefits','my-account','login','renew'].some(p=>u.includes(p)) },
+  { name: 'Checkout / Cart', desc: 'Patterns: checkout, /cart, confirmation, billing, payment', test: u =>
+    ['checkout','/cart','confirmation','billing','payment'].some(p=>u.includes(p)) },
+  { name: 'Upgrades & Add-ons', desc: 'Patterns: upgrade, add-on, dining-plan, all-day-dining, quick-queue, souvenir, /photo, parking', test: u =>
+    ['upgrade','add-on','dining-plan','all-day-dining','quick-queue','souvenir','/photo','parking'].some(p=>u.includes(p)) },
+  { name: 'Group & Promo', desc: 'Patterns: group, promo, coupon, discount, deal, military, resident', test: u =>
+    ['group','promo','coupon','discount','deal','military','resident'].some(p=>u.includes(p)) },
+  { name: 'Events — HOS', desc: 'Patterns: howl-o-scream, halloween, haunted, scare', test: u =>
+    ['howl-o-scream','halloween','haunted','scare'].some(p=>u.includes(p)) },
+  { name: 'Events — Christmas', desc: 'Patterns: christmas-town, christmas-celebration, electric-ocean, winter', test: u =>
+    ['christmas-town','christmas-celebration','electric-ocean','winter'].some(p=>u.includes(p)) },
+  { name: 'Events — Other', desc: 'Patterns: event, festival, concert, seven-seas-food, food-wine, summer, nights', test: u =>
+    ['event','festival','concert','seven-seas-food','food-wine','summer','nights'].some(p=>u.includes(p)) },
+  { name: 'Rides & Thrills', desc: 'Patterns: ride, coaster, roller-coaster, iron-gwazi, tigris, mako, manta, infinity-falls, attraction', test: u =>
+    ['ride','coaster','roller-coaster','iron-gwazi','tigris','mako','manta','infinity-falls','attraction'].some(p=>u.includes(p)) },
+  { name: 'Animal Experiences', desc: 'Patterns: animal, dolphin, orca, penguin, shark, manatee, turtle, safari, cheetah, giraffe, gorilla, rhino', test: u =>
+    ['animal','dolphin','orca','penguin','shark','manatee','turtle','safari','cheetah','giraffe','gorilla','rhino'].some(p=>u.includes(p)) },
+  { name: 'Shows & Entertainment', desc: 'Patterns: show, theater, entertainment, performance, live-show', test: u =>
+    ['show','theater','entertainment','performance','live-show'].some(p=>u.includes(p)) },
+  { name: "Children's / Family", desc: "Patterns: kids, family, sesame, play-area, toddler, little-ones, preschool", test: u =>
+    ['kids','family','sesame','play-area','toddler','little-ones','preschool'].some(p=>u.includes(p)) },
+  { name: 'Dining', desc: 'Patterns: dining, restaurant, food, /menu, drink', test: u =>
+    ['dining','restaurant','food','/menu','drink'].some(p=>u.includes(p)) },
+  { name: 'Conservation', desc: 'Patterns: conservation, rescue, rehabilitation, education, research, ambassador', test: u =>
+    ['conservation','rescue','rehabilitation','education','research','ambassador'].some(p=>u.includes(p)) },
+  { name: 'Park Info', desc: 'Patterns: park-info, hours, /map, directions, contact, calendar, schedule', test: u =>
+    ['park-info','hours','/map','directions','contact','calendar','schedule'].some(p=>u.includes(p)) },
+  { name: 'Hotels / Stays', desc: 'Patterns: hotel, /stay, resort, overnight, package', test: u =>
+    ['hotel','/stay','resort','overnight','package'].some(p=>u.includes(p)) },
+  { name: 'Accessibility', desc: 'Patterns: accessibility, ada, wheelchair, disability, accessible', test: u =>
+    ['accessibility','ada','wheelchair','disability','accessible'].some(p=>u.includes(p)) },
+  { name: 'FAQs / Help', desc: 'Patterns: faq, /help, policy, rules, refund, weather', test: u =>
+    ['faq','/help','policy','rules','refund','weather'].some(p=>u.includes(p)) },
+  { name: 'Careers', desc: 'Patterns: /jobs/, /careers/, hiring, employment', test: u =>
+    ['/jobs/','/careers/','hiring','employment'].some(p=>u.includes(p)) },
+];
+
+const QUERIES_SEGMENTS = [
+  { name: 'Brand — Name Search', desc: 'Brand name variants: seaworld, sea world, busch gardens, discovery cove, aquatica, and misspellings', test: q =>
+    ['seaworld','sea world','sea-world','seaworl','seeworld','seaword','seaworls','seawolrd','seaworkd','seawod',
+     'busch','bush garden','bushgarden','bucsh','buch garden','bushe garden',
+     'discovery cove','aquatica'].some(p=>q.includes(p)) || /\bsea\b/.test(q) },
+  { name: 'Tickets', desc: 'Patterns: ticket, admission', test: q =>
+    ['ticket','admission'].some(p=>q.includes(p)) },
+  { name: 'Annual Pass', desc: 'Patterns: annual pass, season pass, pass, membership', test: q =>
+    ['annual pass','season pass','pass','membership'].some(p=>q.includes(p)) },
+  { name: 'Fun Card', desc: 'Pattern: fun card', test: q => q.includes('fun card') },
+  { name: 'Pass Member Portal', desc: 'Patterns: sign in, login, my account, dashboard, renew', test: q =>
+    ['sign in','login','my account','dashboard','renew'].some(p=>q.includes(p)) },
+  { name: 'Upgrades & Add-ons', desc: 'Patterns: upgrade, add-on, dining plan, all day dining, quick queue, parking', test: q =>
+    ['upgrade','add-on','dining plan','all day dining','quick queue','parking'].some(p=>q.includes(p)) },
+  { name: 'Group & Promo', desc: 'Patterns: group, promo, coupon, discount, deal, military, resident', test: q =>
+    ['group','promo','coupon','discount','deal','military','resident'].some(p=>q.includes(p)) },
+  { name: 'Events — HOS', desc: 'Patterns: howl o scream, halloween, haunted, scare', test: q =>
+    ['howl o scream','halloween','haunted','scare'].some(p=>q.includes(p)) },
+  { name: 'Events — Christmas', desc: 'Patterns: christmas town, christmas celebration, electric ocean, winter', test: q =>
+    ['christmas town','christmas celebration','electric ocean','winter'].some(p=>q.includes(p)) },
+  { name: 'Events — Other', desc: 'Patterns: event, festival, concert, seven seas food, food wine, summer, nights', test: q =>
+    ['event','festival','concert','seven seas food','food wine','summer','nights'].some(p=>q.includes(p)) },
+  { name: 'Rides & Thrills', desc: 'Patterns: ride, coaster, roller coaster, iron gwazi, tigris, mako, manta, infinity falls, attraction', test: q =>
+    ['ride','coaster','roller coaster','iron gwazi','tigris','mako','manta','infinity falls','attraction'].some(p=>q.includes(p)) },
+  { name: 'Animal Experiences', desc: 'Patterns: animal, dolphin, orca, penguin, shark, manatee, turtle, safari, cheetah, giraffe, gorilla, rhino', test: q =>
+    ['animal','dolphin','orca','penguin','shark','manatee','turtle','safari','cheetah','giraffe','gorilla','rhino'].some(p=>q.includes(p)) },
+  { name: 'Shows & Entertainment', desc: 'Patterns: show, theater, entertainment, performance', test: q =>
+    ['show','theater','entertainment','performance'].some(p=>q.includes(p)) },
+  { name: "Children's / Family", desc: "Patterns: kids, family, sesame, toddler, preschool", test: q =>
+    ['kids','family','sesame','toddler','preschool'].some(p=>q.includes(p)) },
+  { name: 'Dining', desc: 'Patterns: dining, restaurant, food, menu, drink', test: q =>
+    ['dining','restaurant','food','menu','drink'].some(p=>q.includes(p)) },
+  { name: 'Conservation', desc: 'Patterns: conservation, rescue, rehabilitation, education, research', test: q =>
+    ['conservation','rescue','rehabilitation','education','research'].some(p=>q.includes(p)) },
+  { name: 'Park Info', desc: 'Patterns: hours, map, directions, contact, calendar, schedule', test: q =>
+    ['hours','map','directions','contact','calendar','schedule'].some(p=>q.includes(p)) },
+  { name: 'Hotels / Stays', desc: 'Patterns: hotel, resort, overnight, package', test: q =>
+    ['hotel','resort','overnight','package'].some(p=>q.includes(p)) },
+  { name: 'Accessibility', desc: 'Patterns: accessibility, ada, wheelchair, disability', test: q =>
+    ['accessibility','ada','wheelchair','disability'].some(p=>q.includes(p)) },
+  { name: 'FAQs / Help', desc: 'Patterns: faq, help, policy, rules, refund, weather', test: q =>
+    ['faq','help','policy','rules','refund','weather'].some(p=>q.includes(p)) },
+  { name: 'Careers', desc: 'Patterns: jobs, careers, hiring, employment', test: q =>
+    ['jobs','careers','hiring','employment'].some(p=>q.includes(p)) },
+];
+
+const BRAND_PATTERNS = [
+  'seaworld','sea world','sea-world','seaworl','seeworld','seaword','seaworls','seawolrd','seaworkd','seawod',
+  'busch','bush garden','bushgarden','bucsh','buch garden','bushe garden',
+  'howl','underwater grill','hallow','discovery cove','aquatica','atlantis',
+  'mako','manta','infinity falls','iron gwazi','tigris',
+  'sesame','waves of honor','voyager','christmas town','electric ocean',
+  'seven seas','fun card','serengeti','edge of africa'
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const state = {
+  park1: null,
+  park2: null,
+  activeTab: null,
+  sortConfig: {},
+  hiddenCols: {},
+  shareView: 'pages',
+  context: '',
+};
+
+let fileBuffers = { f1: null, f2: null };
+
+// ═══════════════════════════════════════════════
+// FORMATTING
+// ═══════════════════════════════════════════════
+const fmt = {
+  int: v => v == null ? '—' : Math.round(v).toLocaleString(),
+  pct1: v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(1) + '%',
+  pct2: v => v == null ? '—' : v.toFixed(2) + '%',
+  pp: v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2) + 'pp',
+  pos: v => v == null ? '—' : v.toFixed(1),
+  posDelta: v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(1),
+  ctr: v => v == null ? '—' : v.toFixed(2) + '%',
+  ctrDelta: v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2) + 'pp',
+  yoy: v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(1) + '%',
+};
+
+function colorClass(col, val) {
+  if (val == null) return '';
+  if (col === 'yoy' || col === 'shift' || col === 'ctr_delta') return val >= 0 ? 'c-green' : 'c-red';
+  if (col === 'pos_delta') return val < 0 ? 'c-green' : (val > 0 ? 'c-red' : '');
+  return '';
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════════
+// FILE PARSING
+// ═══════════════════════════════════════════════
+function parseFile(buffer, filename) {
+  const wb = XLSX.read(buffer, {type: 'array'});
+  const queriesSheet = wb.Sheets['Queries'];
+  const pagesSheet = wb.Sheets['Pages'];
+  if (!queriesSheet) throw new Error(`"${filename}": Missing "Queries" sheet. Expected sheets: Queries, Pages, Countries, Devices, Search appearance, Filters`);
+  if (!pagesSheet) throw new Error(`"${filename}": Missing "Pages" sheet.`);
+  const q = parseSheet(queriesSheet, filename, 'Queries');
+  const p = parseSheet(pagesSheet, filename, 'Pages');
+  const { periodCY, periodPY } = parsePeriodLabels(q.headers);
+  return { queries: q.rows, pages: p.rows, periodCY, periodPY };
+}
+
+function parseSheet(sheet, filename, sheetName) {
+  const rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:0});
+  if (!rows || rows.length < 2) throw new Error(`"${filename}" → ${sheetName}: No data rows found.`);
+  const headers = rows[0];
+  if (headers.length < 9) {
+    throw new Error(`"${filename}" → ${sheetName}: Found ${headers.length} column(s) but expected 9.\n\nThis looks like a single-period export. Please re-export from GSC with date comparison enabled: select your date range, click "Compare", choose a comparison period, then export.`);
+  }
+  const data = rows.slice(1)
+    .filter(r => r[0] && String(r[0]).trim())
+    .map(r => ({
+      entity: String(r[0]).trim(),
+      clicks_cy: parseFloat(r[1]) || 0,
+      clicks_py: parseFloat(r[2]) || 0,
+      impr_cy:   parseFloat(r[3]) || 0,
+      impr_py:   parseFloat(r[4]) || 0,
+      ctr_cy:    parseFloat(r[5]) || 0,
+      ctr_py:    parseFloat(r[6]) || 0,
+      pos_cy:    parseFloat(r[7]) || 0,
+      pos_py:    parseFloat(r[8]) || 0,
+    }));
+  return { rows: data, headers };
+}
+
+function parsePeriodLabels(headers) {
+  const found = [];
+  for (const h of headers) {
+    if (!h) continue;
+    const m = String(h).match(/\(([^)]+)\)/);
+    if (m && !found.includes(m[1])) found.push(m[1]);
+    if (found.length >= 2) break;
+  }
+  return { periodCY: found[0] || 'Current Period', periodPY: found[1] || 'Prior Period' };
+}
+
+// ═══════════════════════════════════════════════
+// CLASSIFICATION
+// ═══════════════════════════════════════════════
+function classifyURL(url) {
+  const u = url.toLowerCase();
+  for (const seg of PAGES_SEGMENTS) if (seg.test(u)) return seg.name;
+  return 'Other';
+}
+
+function classifyQuery(q) {
+  const lq = q.toLowerCase();
+  for (const seg of QUERIES_SEGMENTS) if (seg.test(lq)) return seg.name;
+  return 'Other';
+}
+
+function isBrand(q) {
+  const lq = q.toLowerCase();
+  return BRAND_PATTERNS.some(p => lq.includes(p));
+}
+
+// ═══════════════════════════════════════════════
+// METRICS COMPUTATION
+// ═══════════════════════════════════════════════
+function computeSegments(rows, classifyFn) {
+  const map = {};
+  const totClicks_cy = rows.reduce((s,r) => s + r.clicks_cy, 0);
+  const totClicks_py = rows.reduce((s,r) => s + r.clicks_py, 0);
+
+  for (const row of rows) {
+    const name = classifyFn(row.entity);
+    if (!map[name]) map[name] = {name, items:[], clicks_cy:0, clicks_py:0, impr_cy:0, impr_py:0, wpos_cy:0, wpos_cy_w:0, wpos_py:0, wpos_py_w:0};
+    const s = map[name];
+    s.items.push(row);
+    s.clicks_cy += row.clicks_cy;
+    s.clicks_py += row.clicks_py;
+    s.impr_cy   += row.impr_cy;
+    s.impr_py   += row.impr_py;
+    if (row.pos_cy > 0) { s.wpos_cy += row.pos_cy * row.clicks_cy; s.wpos_cy_w += row.clicks_cy; }
+    if (row.pos_py > 0) { s.wpos_py += row.pos_py * row.clicks_py; s.wpos_py_w += row.clicks_py; }
+  }
+
+  return Object.values(map).map(s => {
+    const yoy      = s.clicks_py > 0 ? (s.clicks_cy - s.clicks_py) / s.clicks_py * 100 : null;
+    const share_cy = totClicks_cy > 0 ? s.clicks_cy / totClicks_cy * 100 : 0;
+    const share_py = totClicks_py > 0 ? s.clicks_py / totClicks_py * 100 : 0;
+    const ctr_cy   = s.impr_cy > 0 ? s.clicks_cy / s.impr_cy * 100 : null;
+    const ctr_py   = s.impr_py > 0 ? s.clicks_py / s.impr_py * 100 : null;
+    const pos_cy   = s.wpos_cy_w > 0 ? s.wpos_cy / s.wpos_cy_w : null;
+    const pos_py   = s.wpos_py_w > 0 ? s.wpos_py / s.wpos_py_w : null;
+    return {
+      name: s.name,
+      items: s.items,
+      clicks_cy: s.clicks_cy,
+      clicks_py: s.clicks_py,
+      yoy,
+      share_cy,
+      share_py,
+      shift: share_cy - share_py,
+      pos_cy,
+      pos_py,
+      pos_delta: (pos_cy != null && pos_py != null) ? pos_cy - pos_py : null,
+      ctr_cy,
+      ctr_py,
+      ctr_delta: (ctr_cy != null && ctr_py != null) ? ctr_cy - ctr_py : null,
+      row_count: s.items.length,
+    };
+  });
+}
+
+function totalRow(segments) {
+  const tot = {
+    name: 'Total',
+    items: [],
+    clicks_cy: 0, clicks_py: 0, impr_cy: 0, impr_py: 0,
+    wpos_cy: 0, wpos_cy_w: 0, wpos_py: 0, wpos_py_w: 0,
+  };
+  for (const s of segments) {
+    tot.clicks_cy += s.clicks_cy;
+    tot.clicks_py += s.clicks_py;
+    tot.impr_cy   += s.impr_cy || 0;
+    tot.impr_py   += s.impr_py || 0;
+  }
+  // Re-aggregate position from items
+  for (const s of segments) {
+    for (const r of s.items) {
+      if (r.pos_cy > 0) { tot.wpos_cy += r.pos_cy * r.clicks_cy; tot.wpos_cy_w += r.clicks_cy; }
+      if (r.pos_py > 0) { tot.wpos_py += r.pos_py * r.clicks_py; tot.wpos_py_w += r.clicks_py; }
+    }
+  }
+  const yoy    = tot.clicks_py > 0 ? (tot.clicks_cy - tot.clicks_py) / tot.clicks_py * 100 : null;
+  const ctr_cy = tot.impr_cy > 0 ? tot.clicks_cy / tot.impr_cy * 100 : null;
+  const ctr_py = tot.impr_py > 0 ? tot.clicks_py / tot.impr_py * 100 : null;
+  const pos_cy = tot.wpos_cy_w > 0 ? tot.wpos_cy / tot.wpos_cy_w : null;
+  const pos_py = tot.wpos_py_w > 0 ? tot.wpos_py / tot.wpos_py_w : null;
+  return {
+    name: 'Total', items: [], row_count: segments.reduce((s,x)=>s+x.row_count,0),
+    clicks_cy: tot.clicks_cy, clicks_py: tot.clicks_py, yoy,
+    share_cy: 100, share_py: 100, shift: 0,
+    pos_cy, pos_py, pos_delta: (pos_cy!=null&&pos_py!=null)?pos_cy-pos_py:null,
+    ctr_cy, ctr_py, ctr_delta: (ctr_cy!=null&&ctr_py!=null)?ctr_cy-ctr_py:null,
+  };
+}
+
+// ═══════════════════════════════════════════════
+// TABLE COLUMNS DEFINITION
+// ═══════════════════════════════════════════════
+const SEG_COLS = [
+  { key:'clicks_cy',  label:'Clicks CY',    fmtKey:'int',      colorKey:null },
+  { key:'clicks_py',  label:'Clicks PY',    fmtKey:'int',      colorKey:null },
+  { key:'yoy',        label:'Clicks YoY%',  fmtKey:'yoy',      colorKey:'yoy' },
+  { key:'share_py',   label:'Share PY',     fmtKey:'pct2',     colorKey:null },
+  { key:'share_cy',   label:'Share CY',     fmtKey:'pct2',     colorKey:null },
+  { key:'shift',      label:'Shift pp',     fmtKey:'pp',       colorKey:'shift' },
+  { key:'pos_cy',     label:'Pos CY',       fmtKey:'pos',      colorKey:null },
+  { key:'pos_py',     label:'Pos PY',       fmtKey:'pos',      colorKey:null },
+  { key:'pos_delta',  label:'Pos Δ',        fmtKey:'posDelta', colorKey:'pos_delta' },
+  { key:'ctr_cy',     label:'CTR CY',       fmtKey:'ctr',      colorKey:null },
+  { key:'ctr_py',     label:'CTR PY',       fmtKey:'ctr',      colorKey:null },
+  { key:'ctr_delta',  label:'CTR Δ',        fmtKey:'ctrDelta', colorKey:'ctr_delta' },
+  { key:'row_count',  label:'Rows',         fmtKey:'int',      colorKey:null },
+];
+
+// ═══════════════════════════════════════════════
+// RENDER SEGMENT TABLE
+// ═══════════════════════════════════════════════
+function renderSegmentTable(segments, tabKey, type) {
+  if (!state.hiddenCols[tabKey]) state.hiddenCols[tabKey] = new Set();
+  if (!state.sortConfig[tabKey]) state.sortConfig[tabKey] = {col:'clicks_cy', dir:'desc'};
+  const hidden = state.hiddenCols[tabKey];
+  const sort = state.sortConfig[tabKey];
+
+  const sorted = sortSegments([...segments], sort);
+  const tot = totalRow(segments);
+  const hasOther = segments.some(s=>s.name==='Other');
+  const visibleCols = SEG_COLS.filter(c => !hidden.has(c.key));
+
+  const sortBtns = [
+    {col:'clicks_cy', label:'Clicks CY'},
+    {col:'yoy',       label:'Clicks YoY'},
+    {col:'shift',     label:'Share Shift'},
+    {col:'pos_delta', label:'Pos Δ'},
+    {col:'name',      label:'A-Z'},
+  ].map(b => `<button class="sort-btn ${sort.col===b.col?'active':''}" onclick="setSort('${tabKey}','${b.col}')">${b.label}</button>`).join('');
+
+  const colCheckboxes = SEG_COLS.map(c =>
+    `<label><input type="checkbox" ${hidden.has(c.key)?'':'checked'} onchange="toggleCol('${tabKey}','${c.key}',this.checked)"> ${esc(c.label)}</label>`
+  ).join('');
+
+  const headerCells = visibleCols.map(c => {
+    const cls = sort.col===c.key ? (sort.dir==='asc'?'sort-asc':'sort-desc') : '';
+    return `<th class="${cls}" onclick="setSort('${tabKey}','${c.key}')">${esc(c.label)}<span class="sort-ind"></span></th>`;
+  }).join('');
+
+  const bodyRows = sorted.map((s, i) => {
+    const isOther = s.name === 'Other';
+    const dataCells = visibleCols.map(c => {
+      const raw = s[c.key];
+      const disp = fmt[c.fmtKey] ? fmt[c.fmtKey](raw) : (raw ?? '—');
+      const cc = c.colorKey ? colorClass(c.colorKey, raw) : '';
+      return `<td class="${cc}">${disp}</td>`;
+    }).join('');
+    const segDef = type==='pages'
+      ? PAGES_SEGMENTS.find(x=>x.name===s.name)
+      : QUERIES_SEGMENTS.find(x=>x.name===s.name);
+    const infoBtn = segDef ? `<span class="seg-info" title="Segment definition" onclick="showSegInfo(event,'${esc(s.name)}','${esc(segDef.desc||'')}')" >ⓘ</span>` : '';
+    const expandBtn = `<span class="seg-expand" title="Expand rows" onclick="showExpandedRows(event,'${esc(s.name)}','${tabKey}',${i})">▶</span>`;
+    return `<tr class="${isOther?'other-row':''}" data-idx="${i}">
+      <td><div class="seg-cell">${expandBtn}${esc(s.name)}${infoBtn}</div></td>${dataCells}</tr>`;
+  }).join('');
+
+  const totCells = visibleCols.map(c => {
+    const raw = tot[c.key];
+    const disp = fmt[c.fmtKey] ? fmt[c.fmtKey](raw) : (raw ?? '—');
+    const cc = c.colorKey ? colorClass(c.colorKey, raw) : '';
+    return `<td class="${cc}">${disp}</td>`;
+  }).join('');
+
+  const otherNote = hasOther
+    ? `<p class="other-note">* "Other" contains ${type==='pages'?'URLs':'queries'} that did not match any defined segment. These may represent new content areas, miscategorized pages, or queries outside the park's primary topic clusters. Review the expanded row list to assess.</p>`
+    : '';
+
+  return `
+<div class="table-controls">
+  <span style="font-size:11px;color:#666;font-weight:600">Sort:</span>
+  ${sortBtns}
+  <span class="ctrl-sep">|</span>
+  <div class="col-toggle-wrap">
+    <button class="col-toggle-btn" onclick="toggleColDropdown('${tabKey}')">Columns ▾</button>
+    <div class="col-dropdown" id="coldrop-${tabKey}">${colCheckboxes}</div>
+  </div>
+  <span class="ctrl-sep">|</span>
+  <button class="copy-btn" onclick="copyTSV('${tabKey}')">Copy TSV</button>
+  <button id="reset-btn" onclick="resetApp()" style="margin-left:auto">← New Analysis</button>
+</div>
+<div class="table-wrap">
+<table id="tbl-${tabKey}">
+<thead><tr><th onclick="setSort('${tabKey}','name')" class="${sort.col==='name'?(sort.dir==='asc'?'sort-asc':'sort-desc'):''}">Segment<span class="sort-ind"></span></th>${headerCells}</tr></thead>
+<tbody>${bodyRows}<tr class="total-row"><td><strong>Total</strong></td>${totCells}</tr></tbody>
+</table>
+</div>
+${otherNote}`;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER BRAND TAB
+// ═══════════════════════════════════════════════
+function renderBrandTab(queriesRows, tabKey) {
+  const brandRows = queriesRows.filter(r => isBrand(r.entity));
+  const nonBrandRows = queriesRows.filter(r => !isBrand(r.entity));
+
+  function aggRows(rows) {
+    const totCY = queriesRows.reduce((s,r)=>s+r.clicks_cy,0);
+    const totPY = queriesRows.reduce((s,r)=>s+r.clicks_py,0);
+    const cl_cy = rows.reduce((s,r)=>s+r.clicks_cy,0);
+    const cl_py = rows.reduce((s,r)=>s+r.clicks_py,0);
+    const im_cy = rows.reduce((s,r)=>s+r.impr_cy,0);
+    const im_py = rows.reduce((s,r)=>s+r.impr_py,0);
+    let wpos_cy=0, wpos_cy_w=0, wpos_py=0, wpos_py_w=0;
+    for (const r of rows) {
+      if (r.pos_cy>0){wpos_cy+=r.pos_cy*r.clicks_cy; wpos_cy_w+=r.clicks_cy;}
+      if (r.pos_py>0){wpos_py+=r.pos_py*r.clicks_py; wpos_py_w+=r.clicks_py;}
+    }
+    const pos_cy = wpos_cy_w>0 ? wpos_cy/wpos_cy_w : null;
+    const pos_py = wpos_py_w>0 ? wpos_py/wpos_py_w : null;
+    const ctr_cy = im_cy>0 ? cl_cy/im_cy*100 : null;
+    const ctr_py = im_py>0 ? cl_py/im_py*100 : null;
+    return {
+      cl_cy, cl_py,
+      yoy: cl_py>0?(cl_cy-cl_py)/cl_py*100:null,
+      share_cy: totCY>0?cl_cy/totCY*100:0,
+      share_py: totPY>0?cl_py/totPY*100:0,
+      pos_cy, pos_py,
+      pos_delta: (pos_cy!=null&&pos_py!=null)?pos_cy-pos_py:null,
+      ctr_cy, ctr_py,
+      ctr_delta: (ctr_cy!=null&&ctr_py!=null)?ctr_cy-ctr_py:null,
+    };
+  }
+
+  function brandTableRow(label, d, cls='') {
+    const yooCls = d.yoy!=null?(d.yoy>=0?'c-green':'c-red'):'';
+    const shiftVal = d.share_cy - d.share_py;
+    const shiftCls = shiftVal>=0?'c-green':'c-red';
+    const pdCls = d.pos_delta!=null?(d.pos_delta<0?'c-green':(d.pos_delta>0?'c-red':'')):'';
+    const ctrCls = d.ctr_delta!=null?(d.ctr_delta>=0?'c-green':'c-red'):'';
+    return `<tr class="${cls}"><td>${label}</td>
+      <td>${fmt.int(d.cl_cy)}</td><td>${fmt.int(d.cl_py)}</td>
+      <td class="${yooCls}">${fmt.yoy(d.yoy)}</td>
+      <td>${fmt.pct2(d.share_py)}</td><td>${fmt.pct2(d.share_cy)}</td>
+      <td class="${shiftCls}">${fmt.pp(shiftVal)}</td>
+      <td>${fmt.pos(d.pos_cy)}</td><td>${fmt.pos(d.pos_py)}</td>
+      <td class="${pdCls}">${fmt.posDelta(d.pos_delta)}</td>
+      <td>${fmt.ctr(d.ctr_cy)}</td><td>${fmt.ctr(d.ctr_py)}</td>
+      <td class="${ctrCls}">${fmt.ctrDelta(d.ctr_delta)}</td></tr>`;
+  }
+
+  const bd = aggRows(brandRows);
+  const nd = aggRows(nonBrandRows);
+  const tot_cy = queriesRows.reduce((s,r)=>s+r.clicks_cy,0);
+  const tot_py = queriesRows.reduce((s,r)=>s+r.clicks_py,0);
+  const td_yoy = tot_py>0?(tot_cy-tot_py)/tot_py*100:null;
+  const td = {cl_cy:tot_cy,cl_py:tot_py,yoy:td_yoy,share_cy:100,share_py:100,pos_cy:null,pos_py:null,pos_delta:null,ctr_cy:null,ctr_py:null,ctr_delta:null};
+
+  const summaryTable = `
+<div class="table-wrap brand-summary">
+<table>
+<thead><tr><th style="text-align:left">Type</th><th>Clicks CY</th><th>Clicks PY</th><th>Clicks YoY%</th><th>Share PY</th><th>Share CY</th><th>Shift pp</th><th>Pos CY</th><th>Pos PY</th><th>Pos Δ</th><th>CTR CY</th><th>CTR PY</th><th>CTR Δ</th></tr></thead>
+<tbody>
+${brandTableRow('Brand', bd)}
+${brandTableRow('Non-Brand', nd)}
+${brandTableRow('Total', td, 'total-row')}
+</tbody></table></div>`;
+
+  function top25Table(rows, label, subKey) {
+    const sorted = [...rows].sort((a,b)=>b.clicks_cy-a.clicks_cy).slice(0,25);
+    const rows_html = sorted.map(r => {
+      const yoy = r.clicks_py>0?(r.clicks_cy-r.clicks_py)/r.clicks_py*100:null;
+      const pd = (r.pos_cy>0&&r.pos_py>0)?r.pos_cy-r.pos_py:null;
+      const yooCls = yoy!=null?(yoy>=0?'c-green':'c-red'):'';
+      const pdCls = pd!=null?(pd<0?'c-green':(pd>0?'c-red':'')):'';
+      return `<tr><td style="text-align:left;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r.entity)}">${esc(r.entity)}</td>
+        <td>${fmt.int(r.clicks_cy)}</td><td>${fmt.int(r.clicks_py)}</td>
+        <td class="${yooCls}">${fmt.yoy(yoy)}</td>
+        <td>${fmt.pos(r.pos_cy>0?r.pos_cy:null)}</td>
+        <td>${fmt.pos(r.pos_py>0?r.pos_py:null)}</td>
+        <td class="${pdCls}">${fmt.posDelta(pd)}</td></tr>`;
+    }).join('');
+    return `
+<div class="expand-section">
+  <div class="expand-header" onclick="toggleExpand('${subKey}')">
+    <span>${label} <span style="font-weight:400;color:#888">(${rows.length} total, showing top 25)</span></span>
+    <span class="expand-arrow" id="arrow-${subKey}">▶</span>
+  </div>
+  <div class="expand-body" id="body-${subKey}">
+    <button class="copy-btn" style="margin-bottom:8px" onclick="copyTop25TSV('${subKey}')">Copy TSV</button>
+    <div class="table-wrap"><table id="top25-${subKey}">
+    <thead><tr><th style="text-align:left">Query</th><th>Clicks CY</th><th>Clicks PY</th><th>Clicks YoY%</th><th>Pos CY</th><th>Pos PY</th><th>Pos Δ</th></tr></thead>
+    <tbody>${rows_html}</tbody></table></div>
+  </div>
+</div>`;
+  }
+
+  return summaryTable
+    + top25Table(brandRows,    'Top 25 Brand Queries',     tabKey+'-brand25')
+    + top25Table(nonBrandRows, 'Top 25 Non-Brand Queries', tabKey+'-nb25');
+}
+
+// ═══════════════════════════════════════════════
+// RENDER SHARE COMPARISON
+// ═══════════════════════════════════════════════
+function renderShareComparison() {
+  const p1 = state.park1, p2 = state.park2;
+  if (!p1 || !p2) return '';
+  const view = state.shareView;
+  const seg1 = computeSegments(view==='pages' ? p1.pages : p1.queries, view==='pages' ? classifyURL : classifyQuery);
+  const seg2 = computeSegments(view==='pages' ? p2.pages : p2.queries, view==='pages' ? classifyURL : classifyQuery);
+  const map1 = Object.fromEntries(seg1.map(s=>[s.name,s]));
+  const map2 = Object.fromEntries(seg2.map(s=>[s.name,s]));
+  const allNames = [...new Set([...seg1.map(s=>s.name),...seg2.map(s=>s.name)])];
+
+  const rows = allNames.map(name => {
+    const a = map1[name] || {clicks_cy:0,clicks_py:0,yoy:null,share_cy:0};
+    const b = map2[name] || {clicks_cy:0,clicks_py:0,yoy:null,share_cy:0};
+    return { name, a, b, gap: b.share_cy - a.share_cy, yoyGap: (b.yoy??0)-(a.yoy??0) };
+  }).sort((x,y) => Math.abs(y.gap) - Math.abs(x.gap));
+
+  const p1c = '#1F5F9E', p2c = '#2D6A27';
+  const bodyRows = rows.map(r => {
+    const gapCls = r.gap > 0 ? 'c-green' : (r.gap < 0 ? 'c-red' : '');
+    const yoyGapCls = r.yoyGap >= 0 ? 'c-green' : 'c-red';
+    const a1yoo = r.a.yoy!=null?(r.a.yoy>=0?'c-green':'c-red'):'';
+    const a2yoo = r.b.yoy!=null?(r.b.yoy>=0?'c-green':'c-red'):'';
+    return `<tr>
+      <td style="text-align:left">${esc(r.name)}</td>
+      <td>${fmt.int(r.a.clicks_cy)}</td><td>${fmt.int(r.a.clicks_py)}</td>
+      <td class="${a1yoo}">${fmt.yoy(r.a.yoy)}</td>
+      <td>${fmt.pct2(r.a.share_cy)}</td>
+      <td>${fmt.int(r.b.clicks_cy)}</td><td>${fmt.int(r.b.clicks_py)}</td>
+      <td class="${a2yoo}">${fmt.yoy(r.b.yoy)}</td>
+      <td>${fmt.pct2(r.b.share_cy)}</td>
+      <td class="${gapCls}">${fmt.pp(r.gap)}</td>
+      <td class="${yoyGapCls}">${fmt.pp(r.yoyGap)}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+  <div class="share-toggle">
+    <button class="share-toggle-btn ${view==='pages'?'active':''}" onclick="setShareView('pages')">Pages</button>
+    <button class="share-toggle-btn ${view==='queries'?'active':''}" onclick="setShareView('queries')">Queries</button>
+  </div>
+  <button class="copy-btn" onclick="copyShareTSV()">Copy TSV</button>
+</div>
+<div class="table-wrap">
+<table id="tbl-share">
+<thead>
+<tr>
+  <th rowspan="2" style="text-align:left;border-bottom:2px solid #ddd">Segment</th>
+  <th colspan="4" class="group-header-p1" style="background:${p1c}">${esc(p1.name)}</th>
+  <th colspan="4" class="group-header-p2" style="background:${p2c}">${esc(p2.name)}</th>
+  <th colspan="2" class="group-header-gap">Gap (${esc(p2.name)} − ${esc(p1.name)})</th>
+</tr>
+<tr>
+  <th style="background:#dce8f7">Clicks CY</th><th style="background:#dce8f7">Clicks PY</th><th style="background:#dce8f7">YoY%</th><th style="background:#dce8f7">Share CY</th>
+  <th style="background:#d4e8d0">Clicks CY</th><th style="background:#d4e8d0">Clicks PY</th><th style="background:#d4e8d0">YoY%</th><th style="background:#d4e8d0">Share CY</th>
+  <th>Share Gap</th><th>YoY Gap</th>
+</tr>
+</thead>
+<tbody>${bodyRows}</tbody>
+</table>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════
+// SUMMARY TAB
+// ═══════════════════════════════════════════════
+function computeSummaryInsights(park) {
+  const pages = park.pages, queries = park.queries;
+  const pCY = pages.reduce((s,r)=>s+r.clicks_cy,0);
+  const pPY = pages.reduce((s,r)=>s+r.clicks_py,0);
+  const qCY = queries.reduce((s,r)=>s+r.clicks_cy,0);
+  const qPY = queries.reduce((s,r)=>s+r.clicks_py,0);
+
+  const pageSegs  = computeSegments(pages,   classifyURL);
+  const querySegs = computeSegments(queries, classifyQuery);
+  const byDelta     = arr => [...arr].sort((a,b)=>(a.clicks_cy-a.clicks_py)-(b.clicks_cy-b.clicks_py));
+  const byDeltaDesc = arr => [...arr].sort((a,b)=>(b.clicks_cy-b.clicks_py)-(a.clicks_cy-a.clicks_py));
+
+  const gbpRows = [...pages]
+    .filter(r => { const u=r.entity.toLowerCase(); return u.includes('gbp_listing')||u.includes('utm_campaign=gbp')||u.includes('utm_source=google'); })
+    .sort((a,b)=>(a.clicks_cy-a.clicks_py)-(b.clicks_cy-b.clicks_py)).slice(0,10);
+
+  const ticketPages = [...pages]
+    .filter(r => classifyURL(r.entity)==='Tickets')
+    .sort((a,b)=>(a.clicks_cy-a.clicks_py)-(b.clicks_cy-b.clicks_py)).slice(0,10);
+
+  const ticketQueries = [...queries]
+    .filter(r => classifyQuery(r.entity)==='Tickets')
+    .sort((a,b)=>(a.clicks_cy-a.clicks_py)-(b.clicks_cy-b.clicks_py)).slice(0,10);
+
+  const kpRows = [...pages]
+    .filter(r => { const u=r.entity.toLowerCase(); return u.includes('knowledgepanel')||u.includes('google_knowledge')||u.includes('knowledgegraph'); });
+
+  const posClicksDivergence = [...pages]
+    .filter(r => r.pos_cy>0&&r.pos_py>0&&r.pos_cy<r.pos_py&&r.clicks_cy<r.clicks_py)
+    .sort((a,b)=>(a.clicks_cy-a.clicks_py)-(b.clicks_cy-b.clicks_py)).slice(0,10);
+
+  return {
+    overview: { pCY, pPY, qCY, qPY,
+      pYoY: pPY>0?(pCY-pPY)/pPY*100:null,
+      qYoY: qPY>0?(qCY-qPY)/qPY*100:null },
+    topDecPgs:  byDelta(pageSegs).slice(0,3),
+    topGainPgs: byDeltaDesc(pageSegs).slice(0,3),
+    topDecQs:   byDelta(querySegs).slice(0,3),
+    topGainQs:  byDeltaDesc(querySegs).slice(0,3),
+    gbpRows, ticketPages, ticketQueries, kpRows, posClicksDivergence,
+  };
+}
+
+function computeBrandSummary(queries) {
+  const brandRows    = queries.filter(r =>  isBrand(r.entity));
+  const nonBrandRows = queries.filter(r => !isBrand(r.entity));
+  const totCY = queries.reduce((s,r)=>s+r.clicks_cy,0);
+  const totPY = queries.reduce((s,r)=>s+r.clicks_py,0);
+  function agg(rows, label) {
+    const cl_cy=rows.reduce((s,r)=>s+r.clicks_cy,0), cl_py=rows.reduce((s,r)=>s+r.clicks_py,0);
+    const im_cy=rows.reduce((s,r)=>s+r.impr_cy,0),   im_py=rows.reduce((s,r)=>s+r.impr_py,0);
+    let wpc=0,wpcw=0,wpp=0,wppw=0;
+    for (const r of rows) {
+      if (r.pos_cy>0){wpc+=r.pos_cy*r.clicks_cy;wpcw+=r.clicks_cy;}
+      if (r.pos_py>0){wpp+=r.pos_py*r.clicks_py;wppw+=r.clicks_py;}
+    }
+    const pos_cy=wpcw>0?wpc/wpcw:null, pos_py=wppw>0?wpp/wppw:null;
+    const ctr_cy=im_cy>0?cl_cy/im_cy*100:null, ctr_py=im_py>0?cl_py/im_py*100:null;
+    const sh_cy=totCY>0?cl_cy/totCY*100:0, sh_py=totPY>0?cl_py/totPY*100:0;
+    return { label, cl_cy, cl_py,
+      yoy: cl_py>0?(cl_cy-cl_py)/cl_py*100:null,
+      sh_cy, sh_py, shift: sh_cy-sh_py,
+      pos_cy, pos_py, pos_delta:(pos_cy!=null&&pos_py!=null)?pos_cy-pos_py:null,
+      ctr_cy, ctr_py, ctr_delta:(ctr_cy!=null&&ctr_py!=null)?ctr_cy-ctr_py:null };
+  }
+  return [agg(brandRows,'Brand'), agg(nonBrandRows,'Non-Brand'), agg(queries,'Total')];
+}
+
+function statBox(label, val, rawVal) {
+  const cls = rawVal==null?'':(rawVal>=0?'up':'dn');
+  return `<div class="summ-stat"><label>${esc(label)}</label><div class="val ${cls}">${val}</div></div>`;
+}
+
+function moversMiniTable(title, segs, isGain) {
+  const color = isGain ? '#375623' : '#9C1F1F';
+  const rows = segs.map(s => {
+    const delta = s.clicks_cy - s.clicks_py;
+    const dCls = delta>=0?'c-green':'c-red';
+    const yoyCls = s.yoy!=null?(s.yoy>=0?'c-green':'c-red'):'';
+    return `<tr><td style="text-align:left">${esc(s.name)}</td>
+      <td>${fmt.int(s.clicks_cy)}</td>
+      <td class="${dCls}">${(delta>=0?'+':'')+Math.round(delta).toLocaleString()}</td>
+      <td class="${yoyCls}">${fmt.yoy(s.yoy)}</td></tr>`;
+  }).join('');
+  return `<div>
+    <div style="font-size:11px;font-weight:600;margin-bottom:4px;color:${color}">${esc(title)}</div>
+    <div class="summ-tbl-wrap"><table class="summ-tbl">
+      <thead><tr><th style="text-align:left">Segment</th><th>Clicks CY</th><th>Click Δ</th><th>YoY%</th></tr></thead>
+      <tbody>${rows}</tbody></table></div></div>`;
+}
+
+function summaryCell(val, fmtKey) {
+  if (fmtKey==='entity') return `<td style="text-align:left;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(String(val??''))}">${esc(String(val??''))}</td>`;
+  if (fmtKey==='text')   return `<td style="text-align:left">${esc(String(val??'—'))}</td>`;
+  if (val==null) return '<td>—</td>';
+  let disp='—', cls='';
+  if (fmtKey==='int')         { disp = Math.round(val).toLocaleString(); }
+  else if (fmtKey==='ctr')    { disp = val.toFixed(2)+'%'; }
+  else if (fmtKey==='pos')    { disp = val.toFixed(1); }
+  else if (fmtKey==='delta_clicks') { disp=(val>=0?'+':'')+Math.round(val).toLocaleString(); cls=val>=0?'c-green':'c-red'; }
+  else if (fmtKey==='delta_impr')   { disp=(val>=0?'+':'')+Math.round(val).toLocaleString(); }
+  else if (fmtKey==='ctrDelta')     { disp=(val>=0?'+':'')+val.toFixed(2)+'pp'; cls=val>=0?'c-green':'c-red'; }
+  else if (fmtKey==='posDelta')     { disp=(val>=0?'+':'')+val.toFixed(1); cls=val<0?'c-green':(val>0?'c-red':''); }
+  else if (fmtKey==='yoy')         { disp=(val>=0?'+':'')+val.toFixed(1)+'%'; cls=val>=0?'c-green':'c-red'; }
+  else if (fmtKey==='pct2')        { disp=val.toFixed(2)+'%'; }
+  else if (fmtKey==='shift_pp')    { disp=(val>=0?'+':'')+val.toFixed(2)+'pp'; cls=val>=0?'c-green':'c-red'; }
+  return `<td${cls?` class="${cls}"`:''}>${disp}</td>`;
+}
+
+function summaryTable(headers, dataRows, fmtKeys) {
+  const thead = headers.map((h,i)=>`<th${i===0?' style="text-align:left"':''}>${esc(h)}</th>`).join('');
+  const tbody = dataRows.map(row=>'<tr>'+row.map((v,i)=>summaryCell(v,fmtKeys[i])).join('')+'</tr>').join('');
+  return `<div class="summ-tbl-wrap"><table class="summ-tbl"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table></div>`;
+}
+
+function renderParkSummary(park, ins, secOffset) {
+  const o = ins.overview;
+  const pDir = (o.pYoY??0)>=0 ? 'grew' : 'declined';
+  const qDir = (o.qYoY??0)>=0 ? 'grew' : 'declined';
+  let html = '';
+
+  // S1: Overall
+  html += `<div class="summ-section">
+    <div class="summ-h2">${secOffset+1}. Overall Performance</div>
+    <div class="summ-takeway">
+      Pages organic clicks <strong>${pDir} ${Math.abs(o.pYoY??0).toFixed(1)}% YoY</strong>
+      (${fmt.int(o.pCY)} CY vs ${fmt.int(o.pPY)} PY).
+      Query-level clicks <strong>${qDir} ${Math.abs(o.qYoY??0).toFixed(1)}% YoY</strong>
+      (${fmt.int(o.qCY)} CY vs ${fmt.int(o.qPY)} PY).
+    </div>
+    <div class="summ-stat-box">
+      ${statBox('Pages Clicks CY', fmt.int(o.pCY), null)}
+      ${statBox('Pages Clicks PY', fmt.int(o.pPY), null)}
+      ${statBox('Pages YoY', fmt.yoy(o.pYoY), o.pYoY)}
+      ${statBox('Queries Clicks CY', fmt.int(o.qCY), null)}
+      ${statBox('Queries Clicks PY', fmt.int(o.qPY), null)}
+      ${statBox('Queries YoY', fmt.yoy(o.qYoY), o.qYoY)}
+    </div>
+  </div>`;
+
+  // S2: Segment movers
+  html += `<div class="summ-section">
+    <div class="summ-h2">${secOffset+2}. Segment Movers</div>
+    <div class="summ-takeway">Top 3 gaining and declining segments by absolute click change (pages, then queries).</div>
+    <div class="summ-movers-grid">
+      ${moversMiniTable('Pages — Biggest Declines', ins.topDecPgs, false)}
+      ${moversMiniTable('Pages — Biggest Gains',    ins.topGainPgs, true)}
+    </div>
+    <div class="summ-movers-grid">
+      ${moversMiniTable('Queries — Biggest Declines', ins.topDecQs, false)}
+      ${moversMiniTable('Queries — Biggest Gains',    ins.topGainQs, true)}
+    </div>
+  </div>`;
+
+  // S3: Brand vs Non-Brand
+  const brandData = computeBrandSummary(park.queries);
+  const nbRow = brandData[1], bRow = brandData[0];
+  const nbDir = (nbRow.yoy??0)>=0?'grew':'declined';
+  html += `<div class="summ-section">
+    <div class="summ-h2">${secOffset+3}. Brand vs. Non-Brand (Queries)</div>
+    <div class="summ-takeway">
+      Brand queries: seaworld, busch + variants, discovery cove, aquatica, ride names (mako, manta, iron gwazi, tigris, infinity falls), event names (howl, christmas town, electric ocean), and other park-specific terms.
+      Non-brand <strong>${nbDir} ${Math.abs(nbRow.yoy??0).toFixed(1)}% YoY</strong>
+      (${fmt.int(nbRow.cl_cy)} vs ${fmt.int(nbRow.cl_py)}).
+      Non-brand represents destination-agnostic and activity-intent queries — a leading indicator of top-of-funnel organic health.
+    </div>
+    ${summaryTable(
+      ['Type','Clicks CY','Clicks PY','YoY%','Share PY','Share CY','Shift pp','Pos CY','Pos PY','Pos Δ','CTR CY','CTR PY','CTR Δ'],
+      brandData.map(d=>[d.label,d.cl_cy,d.cl_py,d.yoy,d.sh_py,d.sh_cy,d.shift,d.pos_cy,d.pos_py,d.pos_delta,d.ctr_cy,d.ctr_py,d.ctr_delta]),
+      ['text','int','int','yoy','pct2','pct2','shift_pp','pos','pos','posDelta','ctr','ctr','ctrDelta']
+    )}
+  </div>`;
+
+  // S4: GBP/UTM
+  if (ins.gbpRows.length > 0) {
+    const gbpDelta = ins.gbpRows.reduce((s,r)=>s+(r.clicks_cy-r.clicks_py),0);
+    const totalDelta = o.pCY - o.pPY;
+    const gbpSharePct = totalDelta !== 0 ? Math.round(Math.abs(gbpDelta/totalDelta)*100) : 0;
+    html += `<div class="summ-section">
+      <div class="summ-h2">${secOffset+4}. GBP / UTM URL Analysis</div>
+      <div class="summ-takeway">
+        Homepage/GBP-tagged URLs (rows where the URL carries <code>utm_campaign=gbp</code>, <code>utm_source=google</code>, or <code>gbp_listing</code>) accounted for
+        <strong>${fmt.int(Math.abs(gbpDelta))} ${gbpDelta<0?'click decline':'click gain'}</strong>${totalDelta!==0?` — approximately ${gbpSharePct}% of the overall page-level change`:''}.
+        These rows represent Google Business Profile placement and official-link routing, which is separate from standard organic rankings.
+        YoY changes here suggest Google altered how it surfaces or attributes official park links in the SERP.
+      </div>
+      ${summaryTable(
+        ['URL / Page','Clicks CY','Clicks PY','Click Δ','Impr CY','Impr PY','Impr Δ','CTR CY','CTR PY','CTR Δ'],
+        ins.gbpRows.map(r=>{
+          const cD=(r.impr_cy>0&&r.impr_py>0)?(r.clicks_cy/r.impr_cy-r.clicks_py/r.impr_py)*100:null;
+          return [r.entity,r.clicks_cy,r.clicks_py,r.clicks_cy-r.clicks_py,r.impr_cy,r.impr_py,r.impr_cy-r.impr_py,
+                  r.impr_cy>0?r.clicks_cy/r.impr_cy*100:null,r.impr_py>0?r.clicks_py/r.impr_py*100:null,cD];
+        }),
+        ['entity','int','int','delta_clicks','int','int','delta_impr','ctr','ctr','ctrDelta']
+      )}
+    </div>`;
+  }
+
+  // S4: Ticket pages
+  if (ins.ticketPages.length > 0) {
+    const tpCY = ins.ticketPages.reduce((s,r)=>s+r.clicks_cy,0);
+    const tpPY = ins.ticketPages.reduce((s,r)=>s+r.clicks_py,0);
+    const tpYoY = tpPY>0?(tpCY-tpPY)/tpPY*100:null;
+    const tpDelta = tpCY - tpPY;
+    html += `<div class="summ-section">
+      <div class="summ-h2">${secOffset+5}. Ticket Page Performance</div>
+      <div class="summ-takeway">
+        Top ${ins.ticketPages.length} ticket-classified pages sorted by click change.
+        Combined: <strong>${fmt.yoy(tpYoY)} YoY</strong> (${fmt.int(tpCY)} vs ${fmt.int(tpPY)}).
+        ${tpDelta<0?`These pages account for ${fmt.int(Math.abs(tpDelta))} of the ticket-page click decline.`:`These pages contributed ${fmt.int(tpDelta)} in ticket-page click growth.`}
+        Pages are classified as Tickets if the URL contains: ticket, admission, buy-ticket, boleto, or ingresso.
+      </div>
+      ${summaryTable(
+        ['Page URL','Clicks CY','Clicks PY','Click Δ','Pos CY','Pos PY','Pos Δ','CTR CY','CTR PY','CTR Δ'],
+        ins.ticketPages.map(r=>{
+          const pd=(r.pos_cy>0&&r.pos_py>0)?r.pos_cy-r.pos_py:null;
+          const cCY=r.impr_cy>0?r.clicks_cy/r.impr_cy*100:null;
+          const cPY=r.impr_py>0?r.clicks_py/r.impr_py*100:null;
+          return [r.entity,r.clicks_cy,r.clicks_py,r.clicks_cy-r.clicks_py,
+                  r.pos_cy>0?r.pos_cy:null,r.pos_py>0?r.pos_py:null,pd,cCY,cPY,(cCY!=null&&cPY!=null)?cCY-cPY:null];
+        }),
+        ['entity','int','int','delta_clicks','pos','pos','posDelta','ctr','ctr','ctrDelta']
+      )}
+    </div>`;
+  }
+
+  // S5: Ticket queries
+  if (ins.ticketQueries.length > 0) {
+    const tqCY = ins.ticketQueries.reduce((s,r)=>s+r.clicks_cy,0);
+    const tqPY = ins.ticketQueries.reduce((s,r)=>s+r.clicks_py,0);
+    const tqYoY = tqPY>0?(tqCY-tqPY)/tqPY*100:null;
+    html += `<div class="summ-section">
+      <div class="summ-h2">${secOffset+6}. Ticket Query Performance</div>
+      <div class="summ-takeway">
+        Top ${ins.ticketQueries.length} ticket-intent queries sorted by click change.
+        Combined: <strong>${fmt.yoy(tqYoY)} YoY</strong> (${fmt.int(tqCY)} vs ${fmt.int(tqPY)}).
+        Queries are classified as Tickets if they contain: ticket or admission.
+      </div>
+      ${summaryTable(
+        ['Query','Clicks CY','Clicks PY','Click Δ','Pos CY','Pos PY','Pos Δ','CTR CY','CTR PY','CTR Δ'],
+        ins.ticketQueries.map(r=>{
+          const pd=(r.pos_cy>0&&r.pos_py>0)?r.pos_cy-r.pos_py:null;
+          const cCY=r.impr_cy>0?r.clicks_cy/r.impr_cy*100:null;
+          const cPY=r.impr_py>0?r.clicks_py/r.impr_py*100:null;
+          return [r.entity,r.clicks_cy,r.clicks_py,r.clicks_cy-r.clicks_py,
+                  r.pos_cy>0?r.pos_cy:null,r.pos_py>0?r.pos_py:null,pd,cCY,cPY,(cCY!=null&&cPY!=null)?cCY-cPY:null];
+        }),
+        ['entity','int','int','delta_clicks','pos','pos','posDelta','ctr','ctr','ctrDelta']
+      )}
+    </div>`;
+  }
+
+  // S6: KP rows
+  if (ins.kpRows.length > 0) {
+    const kpCY = ins.kpRows.reduce((s,r)=>s+r.clicks_cy,0);
+    const kpPY = ins.kpRows.reduce((s,r)=>s+r.clicks_py,0);
+    html += `<div class="summ-section">
+      <div class="summ-h2">${secOffset+7}. Knowledge Panel / Official Link URL Changes</div>
+      <div class="summ-takeway">
+        ${ins.kpRows.length} Knowledge Panel / official-link URL${ins.kpRows.length>1?'s':''} detected (URLs containing <code>knowledgepanel</code> or <code>google_knowledge</code>).
+        ${kpPY>0?`These drove <strong>${fmt.int(kpPY)} clicks in the prior period</strong>; current-period clicks: <strong>${fmt.int(kpCY)}</strong>.`:''}
+        KP-tagged rows represent Google routing users through official Knowledge Panel ticket links — distinct from standard organic rankings.
+        Changes here help explain click decline even when organic rankings are stable.
+      </div>
+      ${summaryTable(
+        ['URL / Page','Clicks CY','Clicks PY','Click Δ','Impr CY','Impr PY','Interpretation'],
+        ins.kpRows.map(r=>[r.entity,r.clicks_cy,r.clicks_py,r.clicks_cy-r.clicks_py,r.impr_cy,r.impr_py,
+          r.clicks_cy===0&&r.clicks_py>0?'Not visible in CY top results':
+          r.clicks_cy<r.clicks_py*0.5?'Significant YoY decline':'Moderate YoY change'
+        ]),
+        ['entity','int','int','delta_clicks','int','int','text']
+      )}
+    </div>`;
+  }
+
+  // S7: Pos up, clicks down
+  if (ins.posClicksDivergence.length > 0) {
+    html += `<div class="summ-section">
+      <div class="summ-h2">${secOffset+8}. Ranking Held — Clicks Fell</div>
+      <div class="summ-takeway">
+        ${ins.posClicksDivergence.length} page${ins.posClicksDivergence.length>1?'s':''} improved organic rankings YoY (lower Pos Δ) but received fewer clicks.
+        Better ranking + fewer clicks typically indicates SERP feature displacement — AI Overviews, Knowledge Panel entries, or paid ads above organic are absorbing intent before users reach the organic result.
+        These pages are still visible; the click model changed around them.
+      </div>
+      ${summaryTable(
+        ['URL / Page','Clicks CY','Clicks PY','Click Δ','Pos CY','Pos PY','Pos Δ','CTR CY','CTR PY','CTR Δ'],
+        ins.posClicksDivergence.map(r=>{
+          const cCY=r.impr_cy>0?r.clicks_cy/r.impr_cy*100:null;
+          const cPY=r.impr_py>0?r.clicks_py/r.impr_py*100:null;
+          return [r.entity,r.clicks_cy,r.clicks_py,r.clicks_cy-r.clicks_py,
+                  r.pos_cy,r.pos_py,r.pos_cy-r.pos_py,cCY,cPY,(cCY!=null&&cPY!=null)?cCY-cPY:null];
+        }),
+        ['entity','int','int','delta_clicks','pos','pos','posDelta','ctr','ctr','ctrDelta']
+      )}
+    </div>`;
+  }
+
+  return html;
+}
+
+function renderSummaryTab() {
+  const parks = [state.park1, state.park2].filter(Boolean);
+  let html = `<div class="summ-wrap">`;
+  html += `<div class="summ-reset-wrap"><button id="reset-btn" onclick="resetApp()">← New Analysis</button></div>`;
+
+  if (state.context) {
+    html += `<div class="summ-context">${esc(state.context)}</div>`;
+  }
+
+  // Period table
+  const periodRows = parks.map(p =>
+    `<tr><td>${esc(p.name)}</td><td>Google Search Console</td><td>${esc(p.periodCY||'Current Period')}</td><td>${esc(p.periodPY||'Prior Period')}</td></tr>`
+  ).join('');
+  html += `<div class="summ-section">
+    <div class="summ-h2">Analysis Window</div>
+    <div class="summ-tbl-wrap"><table class="period-tbl">
+      <thead><tr><th>Park</th><th>Source</th><th>Current Period (CY)</th><th>Comparison Period (PY)</th></tr></thead>
+      <tbody>${periodRows}</tbody>
+    </table></div>
+  </div>`;
+
+  if (parks.length === 1) {
+    html += renderParkSummary(parks[0], computeSummaryInsights(parks[0]), 0);
+  } else {
+    parks.forEach((p, i) => {
+      if (i > 0) html += '<hr class="summ-park-sep">';
+      html += `<div class="summ-park-h">${esc(p.name)}</div>`;
+      html += renderParkSummary(p, computeSummaryInsights(p), 0);
+    });
+  }
+
+  html += '</div>';
+  return html;
+}
+
+// ═══════════════════════════════════════════════
+// TAB MANAGEMENT
+// ═══════════════════════════════════════════════
+function buildTabs() {
+  const p1 = state.park1, p2 = state.park2;
+  const tabs = [];
+  tabs.push({key:'summary',    label:'Summary'});
+  tabs.push({key:'p1_pages',   label:`${p1.name} — Pages`});
+  tabs.push({key:'p1_queries', label:`${p1.name} — Queries`});
+  tabs.push({key:'p1_brand',   label:`${p1.name} — Brand`});
+  if (p2) {
+    tabs.push({key:'p2_pages',   label:`${p2.name} — Pages`});
+    tabs.push({key:'p2_queries', label:`${p2.name} — Queries`});
+    tabs.push({key:'p2_brand',   label:`${p2.name} — Brand`});
+    tabs.push({key:'share',      label:'Share Comparison'});
+  }
+  return tabs;
+}
+
+function renderApp() {
+  const tabs = buildTabs();
+  if (!state.activeTab || !tabs.find(t=>t.key===state.activeTab)) {
+    state.activeTab = tabs[0].key;
+  }
+
+  const tabBar = document.getElementById('tab-bar');
+  tabBar.innerHTML = tabs.map(t =>
+    `<button class="tab-btn ${state.activeTab===t.key?'active':''}" onclick="switchTab('${t.key}')">${esc(t.label)}</button>`
+  ).join('');
+
+  renderActiveTab();
+}
+
+function renderActiveTab() {
+  const p1 = state.park1, p2 = state.park2;
+  const key = state.activeTab;
+  const content = document.getElementById('tab-content');
+  let html = '';
+  const insightPos = `<div class="insight-note"><strong>Position note:</strong> Lower position = higher ranking. Negative Pos Δ = ranking improved YoY. If position improves but clicks fall, paid search may be absorbing organic clicks.</div>`;
+  const insightCTR = `<div class="insight-note" style="margin-top:-6px"><strong>CTR note:</strong> CTR is impressions-normalised. A falling CTR with improving position can indicate SERP feature displacement or paid ad coverage above organic results.</div>`;
+
+  if (key === 'summary') {
+    html = renderSummaryTab();
+  } else if (key === 'p1_pages') {
+    const segs = computeSegments(p1.pages, classifyURL);
+    html = insightPos + insightCTR + renderSegmentTable(segs, key, 'pages');
+  } else if (key === 'p1_queries') {
+    const segs = computeSegments(p1.queries, classifyQuery);
+    html = insightPos + insightCTR + renderSegmentTable(segs, key, 'queries');
+  } else if (key === 'p1_brand') {
+    html = insightPos + insightCTR + renderBrandTab(p1.queries, key);
+  } else if (key === 'p2_pages' && p2) {
+    const segs = computeSegments(p2.pages, classifyURL);
+    html = insightPos + insightCTR + renderSegmentTable(segs, key, 'pages');
+  } else if (key === 'p2_queries' && p2) {
+    const segs = computeSegments(p2.queries, classifyQuery);
+    html = insightPos + insightCTR + renderSegmentTable(segs, key, 'queries');
+  } else if (key === 'p2_brand' && p2) {
+    html = insightPos + insightCTR + renderBrandTab(p2.queries, key);
+  } else if (key === 'share') {
+    html = insightPos + renderShareComparison();
+  }
+
+  content.innerHTML = html;
+
+  // Close any open col dropdowns when switching tabs
+  document.querySelectorAll('.col-dropdown').forEach(d => d.classList.remove('open'));
+}
+
+function switchTab(key) {
+  state.activeTab = key;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() && b.getAttribute('onclick').includes(`'${key}'`)));
+  // Re-render tab bar to fix active state cleanly
+  const tabs = buildTabs();
+  const tabBar = document.getElementById('tab-bar');
+  tabBar.innerHTML = tabs.map(t =>
+    `<button class="tab-btn ${state.activeTab===t.key?'active':''}" onclick="switchTab('${t.key}')">${esc(t.label)}</button>`
+  ).join('');
+  renderActiveTab();
+}
+
+// ═══════════════════════════════════════════════
+// SORT & COLUMN TOGGLE
+// ═══════════════════════════════════════════════
+function setSort(tabKey, col) {
+  const cur = state.sortConfig[tabKey] || {col:'clicks_cy', dir:'desc'};
+  if (cur.col === col) {
+    state.sortConfig[tabKey] = {col, dir: cur.dir==='desc'?'asc':'desc'};
+  } else {
+    const defaultDesc = new Set(['clicks_cy','clicks_py','yoy','shift','row_count']);
+    state.sortConfig[tabKey] = {col, dir: col==='name' ? 'asc' : (defaultDesc.has(col)?'desc':'asc')};
+  }
+  renderActiveTab();
+}
+
+function sortSegments(segs, sort) {
+  const {col, dir} = sort;
+  return segs.sort((a,b) => {
+    let av = a[col], bv = b[col];
+    if (col === 'name') { av = av||''; bv = bv||''; return dir==='asc' ? av.localeCompare(bv) : bv.localeCompare(av); }
+    av = av ?? (dir==='desc' ? -Infinity : Infinity);
+    bv = bv ?? (dir==='desc' ? -Infinity : Infinity);
+    return dir==='asc' ? av - bv : bv - av;
+  });
+}
+
+function toggleCol(tabKey, colKey, visible) {
+  if (!state.hiddenCols[tabKey]) state.hiddenCols[tabKey] = new Set();
+  if (visible) state.hiddenCols[tabKey].delete(colKey);
+  else state.hiddenCols[tabKey].add(colKey);
+  renderActiveTab();
+  // Re-open dropdown after re-render
+  setTimeout(() => {
+    const dd = document.getElementById(`coldrop-${tabKey}`);
+    if (dd) dd.classList.add('open');
+  }, 10);
+}
+
+function toggleColDropdown(tabKey) {
+  const dd = document.getElementById(`coldrop-${tabKey}`);
+  if (dd) dd.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════
+// COPY TSV
+// ═══════════════════════════════════════════════
+function copyTSV(tabKey) {
+  const tbl = document.getElementById(`tbl-${tabKey}`);
+  if (!tbl) return;
+  const rows = tbl.querySelectorAll('tr');
+  const lines = Array.from(rows).map(row =>
+    Array.from(row.querySelectorAll('th,td')).map(c => c.innerText.trim()).join('\t')
+  );
+  navigator.clipboard.writeText(lines.join('\n')).then(() => flashCopy(tabKey));
+}
+
+function copyTop25TSV(subKey) {
+  const tbl = document.getElementById(`top25-${subKey}`);
+  if (!tbl) return;
+  const lines = Array.from(tbl.querySelectorAll('tr')).map(row =>
+    Array.from(row.querySelectorAll('th,td')).map(c => c.innerText.trim()).join('\t')
+  );
+  navigator.clipboard.writeText(lines.join('\n'));
+}
+
+function copyShareTSV() {
+  const tbl = document.getElementById('tbl-share');
+  if (!tbl) return;
+  const lines = Array.from(tbl.querySelectorAll('tr')).map(row =>
+    Array.from(row.querySelectorAll('th,td')).map(c => c.innerText.trim()).join('\t')
+  );
+  navigator.clipboard.writeText(lines.join('\n'));
+}
+
+function flashCopy(tabKey) {
+  const btn = document.querySelector(`[onclick="copyTSV('${tabKey}')"]`);
+  if (!btn) return;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Copied';
+  btn.style.color = '#2D6A27';
+  setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+}
+
+// ═══════════════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════════════
+function showSegInfo(evt, name, desc) {
+  evt.stopPropagation();
+  document.getElementById('modal-title').textContent = `Segment: ${name}`;
+  document.getElementById('modal-body').innerHTML = `<p>${esc(desc)}</p>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function showExpandedRows(evt, segName, tabKey, segIdx) {
+  evt.stopPropagation();
+  // Recompute segments to get items
+  const isPages = tabKey.includes('pages');
+  const parkKey = tabKey.startsWith('p1') ? 'park1' : 'park2';
+  const rows = state[parkKey][isPages ? 'pages' : 'queries'];
+  const classifyFn = isPages ? classifyURL : classifyQuery;
+  const segs = computeSegments(rows, classifyFn);
+  const sort = state.sortConfig[tabKey] || {col:'clicks_cy', dir:'desc'};
+  const sorted = sortSegments([...segs], sort);
+  const seg = sorted[segIdx];
+  if (!seg) return;
+
+  const items = [...seg.items].sort((a,b) => b.clicks_cy - a.clicks_cy);
+  const label = isPages ? 'URL / Page' : 'Query';
+
+  const bodyRows = items.map(r => {
+    const yoy = r.clicks_py>0?(r.clicks_cy-r.clicks_py)/r.clicks_py*100:null;
+    const pd = (r.pos_cy>0&&r.pos_py>0)?r.pos_cy-r.pos_py:null;
+    const yooCls = yoy!=null?(yoy>=0?'c-green':'c-red'):'';
+    const pdCls = pd!=null?(pd<0?'c-green':(pd>0?'c-red':'')):'';
+    const ctrDelta = (r.impr_cy>0&&r.impr_py>0) ? (r.clicks_cy/r.impr_cy - r.clicks_py/r.impr_py)*100 : null;
+    const ctrCls = ctrDelta!=null?(ctrDelta>=0?'c-green':'c-red'):'';
+    return `<tr>
+      <td style="text-align:left;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r.entity)}">${esc(r.entity)}</td>
+      <td>${fmt.int(r.clicks_cy)}</td><td>${fmt.int(r.clicks_py)}</td>
+      <td class="${yooCls}">${fmt.yoy(yoy)}</td>
+      <td>${fmt.pos(r.pos_cy>0?r.pos_cy:null)}</td>
+      <td>${fmt.pos(r.pos_py>0?r.pos_py:null)}</td>
+      <td class="${pdCls}">${fmt.posDelta(pd)}</td>
+      <td>${fmt.ctr(r.impr_cy>0?r.clicks_cy/r.impr_cy*100:null)}</td>
+      <td>${fmt.ctr(r.impr_py>0?r.clicks_py/r.impr_py*100:null)}</td>
+      <td class="${ctrCls}">${fmt.ctrDelta(ctrDelta)}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('modal-title').textContent = `${seg.name} — ${items.length} ${isPages?'pages':'queries'}`;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="table-wrap"><table>
+    <thead><tr>
+      <th style="text-align:left">${label}</th>
+      <th>Clicks CY</th><th>Clicks PY</th><th>Clicks YoY%</th>
+      <th>Pos CY</th><th>Pos PY</th><th>Pos Δ</th>
+      <th>CTR CY</th><th>CTR PY</th><th>CTR Δ</th>
+    </tr></thead>
+    <tbody>${bodyRows}</tbody>
+    </table></div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(evt) {
+  if (evt.target === document.getElementById('modal-overlay')) closeModalDirect();
+}
+
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════
+// SHARE VIEW TOGGLE
+// ═══════════════════════════════════════════════
+function setShareView(v) {
+  state.shareView = v;
+  renderActiveTab();
+}
+
+// ═══════════════════════════════════════════════
+// EXPAND SECTIONS (Brand tab)
+// ═══════════════════════════════════════════════
+function toggleExpand(id) {
+  const body = document.getElementById('body-'+id);
+  const arrow = document.getElementById('arrow-'+id);
+  if (!body) return;
+  const open = body.classList.toggle('open');
+  if (arrow) arrow.textContent = open ? '▼' : '▶';
+}
+
+// ═══════════════════════════════════════════════
+// FILE UPLOAD & ANALYSIS
+// ═══════════════════════════════════════════════
+function setupDropZone(zoneId, fileId, labelId, bufKey) {
+  const zone = document.getElementById(zoneId);
+  const input = document.getElementById(fileId);
+  const label = document.getElementById(labelId);
+
+  ['dragenter','dragover'].forEach(e => zone.addEventListener(e, ev => { ev.preventDefault(); zone.classList.add('drag-over'); }));
+  ['dragleave','drop'].forEach(e => zone.addEventListener(e, ev => { ev.preventDefault(); zone.classList.remove('drag-over'); }));
+  zone.addEventListener('drop', ev => {
+    const file = ev.dataTransfer.files[0];
+    if (file) loadFile(file, label, zone, bufKey);
+  });
+  input.addEventListener('change', () => {
+    if (input.files[0]) loadFile(input.files[0], label, zone, bufKey);
+  });
+}
+
+function loadFile(file, labelEl, zoneEl, bufKey) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    fileBuffers[bufKey] = {buf: new Uint8Array(e.target.result), name: file.name};
+    labelEl.textContent = file.name;
+    labelEl.style.display = 'block';
+    zoneEl.classList.add('loaded');
+    document.getElementById('analyze-btn').disabled = !fileBuffers.f1;
+    clearError();
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+document.getElementById('analyze-btn').addEventListener('click', () => {
+  clearError();
+  try {
+    const p1name = document.getElementById('park1-name').value.trim() || 'Park 1';
+    const p1data = parseFile(fileBuffers.f1.buf, fileBuffers.f1.name);
+    state.park1 = { name: p1name, pages: p1data.pages, queries: p1data.queries, periodCY: p1data.periodCY, periodPY: p1data.periodPY };
+    state.park2 = null;
+    if (fileBuffers.f2) {
+      const p2name = document.getElementById('park2-name').value.trim() || 'Park 2';
+      const p2data = parseFile(fileBuffers.f2.buf, fileBuffers.f2.name);
+      state.park2 = { name: p2name, pages: p2data.pages, queries: p2data.queries, periodCY: p2data.periodCY, periodPY: p2data.periodPY };
+    }
+    state.context = document.getElementById('analysis-context').value.trim();
+    state.activeTab = null;
+    state.sortConfig = {};
+    state.hiddenCols = {};
+    document.getElementById('upload-section').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    renderApp();
+  } catch(e) {
+    showError(e.message);
+  }
+});
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function clearError() {
+  const el = document.getElementById('error-msg');
+  el.style.display = 'none';
+}
+
+function resetApp() {
+  state.park1 = state.park2 = null;
+  state.context = '';
+  fileBuffers = {f1: null, f2: null};
+  document.getElementById('upload-section').style.display = 'block';
+  document.getElementById('app').style.display = 'none';
+  ['drop1','drop2'].forEach(id => {
+    const z = document.getElementById(id);
+    z.classList.remove('loaded','drag-over');
+  });
+  ['file1-label','file2-label'].forEach(id => {
+    const l = document.getElementById(id);
+    l.style.display = 'none'; l.textContent = '';
+  });
+  document.getElementById('file1').value = '';
+  document.getElementById('file2').value = '';
+  document.getElementById('analyze-btn').disabled = true;
+}
+
+// Close col dropdowns on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.col-toggle-wrap')) {
+    document.querySelectorAll('.col-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+
+// ESC closes modal
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeModalDirect(); });
+
+// Init
+setupDropZone('drop1','file1','file1-label','f1');
+setupDropZone('drop2','file2','file2-label','f2');
+</script>
+</body>
+</html>

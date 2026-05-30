@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout Error Analyzer v2</title>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f0f4f8;
+  color: #1a2332;
+  font-size: 14px;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.app-header {
+  background: #0f2d52;
+  color: #fff;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.app-header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: .02em; }
+.app-header .sub { font-size: .72rem; opacity: .65; margin-top: 2px; }
+.mode-pill {
+  font-size: .72rem;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-weight: 700;
+  background: #1d4ed8;
+  color: #fff;
+  letter-spacing: .04em;
+}
+
+/* ── Setup panel ── */
+.setup-panel {
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 14px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+.setup-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.setup-section label.section-label {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #64748b;
+}
+.file-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.btn {
+  padding: 7px 13px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: .8rem;
+  font-weight: 600;
+  transition: filter .12s;
+  white-space: nowrap;
+}
+.btn:hover { filter: brightness(.9); }
+.btn-primary  { background: #2563eb; color: #fff; }
+.btn-outline  { background: #fff; color: #374151; border: 1px solid #d1d5db; }
+.btn-success  { background: #059669; color: #fff; }
+.btn-warn     { background: #f59e0b; color: #fff; }
+.btn-sm { padding: 5px 10px; font-size: .75rem; }
+
+.mode-toggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  overflow: hidden;
+  align-self: flex-end;
+}
+.mode-toggle button {
+  padding: 7px 14px;
+  font-size: .8rem;
+  font-weight: 600;
+  border: none;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+  transition: background .1s, color .1s;
+}
+.mode-toggle button.active {
+  background: #0f2d52;
+  color: #fff;
+}
+
+.loaded-pill {
+  font-size: .7rem;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-weight: 600;
+  background: #dbeafe;
+  color: #1e40af;
+  white-space: nowrap;
+}
+.loaded-pill.ok    { background: #d1fae5; color: #065f46; }
+.loaded-pill.warn  { background: #fef3c7; color: #78350f; }
+
+.divider { width: 1px; background: #e2e8f0; align-self: stretch; margin: 0 4px; }
+
+/* ── Tabs ── */
+.tab-nav {
+  background: #fff;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 0 24px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 11px 18px;
+  font-size: .82rem;
+  font-weight: 600;
+  border: none;
+  background: none;
+  color: #64748b;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: color .12s, border-color .12s;
+}
+.tab-btn:hover { color: #1a2332; }
+.tab-btn.active { color: #0f2d52; border-bottom-color: #2563eb; }
+.tab-btn .badge-count {
+  display: inline-block;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: .65rem;
+  padding: 1px 6px;
+  border-radius: 99px;
+  margin-left: 5px;
+  font-weight: 700;
+}
+.tab-btn.active .badge-count { background: #dbeafe; color: #1e40af; }
+
+/* ── Content area ── */
+.content { padding: 20px 24px; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ── Empty / loading states ── */
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+  color: #94a3b8;
+}
+.empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; }
+.empty-state p { font-size: .9rem; line-height: 1.7; }
+.empty-state strong { color: #475569; }
+
+/* ── Summary cards ── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
+  border-left: 4px solid #2563eb;
+}
+.card.green  { border-left-color: #059669; }
+.card.red    { border-left-color: #dc2626; }
+.card.orange { border-left-color: #f59e0b; }
+.card.purple { border-left-color: #7c3aed; }
+.card-label  { font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; color: #64748b; margin-bottom: 5px; }
+.card-value  { font-size: 1.8rem; font-weight: 800; color: #0f2d52; line-height: 1; }
+.card-sub    { font-size: .72rem; color: #64748b; margin-top: 5px; line-height: 1.4; }
+.card-delta  { font-size: .75rem; font-weight: 700; margin-top: 4px; }
+.delta-up   { color: #dc2626; }
+.delta-down { color: #059669; }
+.delta-flat { color: #94a3b8; }
+
+/* ── Section titles ── */
+.sec-title {
+  font-size: .82rem;
+  font-weight: 700;
+  color: #0f2d52;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin: 20px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sec-title:first-child { margin-top: 0; }
+
+/* ── Tables ── */
+.tbl-wrap {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.tbl-scroll { overflow-x: auto; }
+.tbl-scroll.max-h-md { max-height: 340px; overflow-y: auto; }
+.tbl-scroll.max-h-lg { max-height: 520px; overflow-y: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: .78rem; }
+thead th {
+  background: #f8fafc;
+  padding: 9px 11px;
+  text-align: left;
+  font-weight: 700;
+  color: #475569;
+  border-bottom: 2px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+thead th:hover { background: #f1f5f9; }
+thead th.sort-asc::after  { content: ' ↑'; color: #2563eb; }
+thead th.sort-desc::after { content: ' ↓'; color: #2563eb; }
+thead th.no-sort { cursor: default; }
+thead th.no-sort:hover { background: #f8fafc; }
+tbody td { padding: 7px 11px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+tbody tr:hover { background: #f8fafc; }
+tbody tr:last-child td { border-bottom: none; }
+.td-msg { max-width: 320px; word-break: break-word; line-height: 1.4; }
+.td-num { text-align: right; font-variant-numeric: tabular-nums; }
+.td-right { text-align: right; }
+
+/* ── Tags / pills ── */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: .68rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.tag-up      { background: #fee2e2; color: #991b1b; }
+.tag-down    { background: #d1fae5; color: #065f46; }
+.tag-flat    { background: #f1f5f9; color: #64748b; }
+.tag-new     { background: #ede9fe; color: #5b21b6; }
+.tag-gone    { background: #fef3c7; color: #78350f; }
+.tag-bank    { background: #dbeafe; color: #1e40af; }
+.tag-lang-es { background: #fef3c7; color: #78350f; }
+.tag-lang-pt { background: #ede9fe; color: #5b21b6; }
+.tag-lang-en { background: #f1f5f9; color: #475569; }
+.tag-group   { background: #e0f2fe; color: #0369a1; }
+.tag-other   { background: #fef3c7; color: #78350f; }
+
+/* ── Filter bar ── */
+.filter-bar {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.filter-bar input[type=text], .filter-bar select {
+  padding: 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: .8rem;
+  color: #1a2332;
+  background: #fff;
+  outline: none;
+}
+.filter-bar input[type=text]:focus, .filter-bar select:focus { border-color: #2563eb; }
+.filter-bar input[type=text] { width: 220px; }
+.result-count { margin-left: auto; font-size: .72rem; color: #64748b; font-weight: 600; }
+
+/* ── Overall comparison banner ── */
+.compare-banner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
+  margin-bottom: 20px;
+}
+.compare-metric { display: flex; flex-direction: column; gap: 3px; }
+.compare-metric .label  { font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; color: #64748b; }
+.compare-metric .cur    { font-size: 1.2rem; font-weight: 800; color: #0f2d52; }
+.compare-metric .base   { font-size: .72rem; color: #94a3b8; }
+.compare-metric .delta  { font-size: .75rem; font-weight: 700; }
+
+/* ── Group dictionary ── */
+.dict-table th.no-sort { cursor: default; }
+.dict-kw { font-size: .72rem; color: #475569; line-height: 1.5; }
+.dict-kw span { display: inline-block; background: #f1f5f9; border-radius: 4px; padding: 1px 5px; margin: 1px 2px 1px 0; font-family: monospace; font-size: .7rem; }
+
+/* ── Bucket summary ── */
+.bucket-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.bucket-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
+  padding: 14px 18px 12px;
+  border-top: 4px solid #94a3b8;
+}
+.bucket-card.sys  { border-top-color: #7c3aed; }
+.bucket-card.user { border-top-color: #0891b2; }
+.bucket-card.bank { border-top-color: #dc2626; }
+.bucket-card .bk-label { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: #64748b; margin-bottom: 6px; }
+.bucket-card .bk-users { font-size: 1.6rem; font-weight: 800; color: #0f2d52; line-height: 1; }
+.bucket-card .bk-sub { font-size: .72rem; color: #64748b; margin-top: 4px; }
+.bucket-card .bk-groups { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.tag-sys  { background: #ede9fe; color: #5b21b6; }
+.tag-user { background: #e0f7fa; color: #006064; }
+.tag-bank { background: #fee2e2; color: #991b1b; }
+.tag-system-label { font-size: .65rem; padding: 1px 6px; border-radius: 99px; font-weight: 700; background: #f1f5f9; color: #475569; }
+@media (max-width: 700px) { .bucket-strip { grid-template-columns: 1fr; } }
+.bucket-card { cursor: pointer; transition: box-shadow .12s, transform .1s; }
+.bucket-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.12); transform: translateY(-1px); }
+.bucket-card.active-filter { outline: 3px solid #2563eb; outline-offset: 2px; }
+.bucket-card.dimmed { opacity: .4; }
+.group-filter-hint { font-size: .72rem; color: #64748b; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+
+/* ── Rank badge ── */
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: .72rem;
+  font-weight: 800;
+  background: #e2e8f0;
+  color: #475569;
+}
+.rank-badge.top { background: #fee2e2; color: #991b1b; }
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .setup-panel { padding: 12px 16px; }
+  .content { padding: 14px 16px; }
+  .tab-nav { padding: 0 16px; }
+  .cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div>
+    <h1>Checkout Error Analyzer v2</h1>
+    <div class="sub" id="headerSub">Load files to begin — no dictionary needed</div>
+  </div>
+  <span class="mode-pill" id="headerMode">—</span>
+</header>
+
+<!-- SETUP PANEL -->
+<div class="setup-panel">
+  <div class="setup-section">
+    <label class="section-label">Mode</label>
+    <div class="mode-toggle">
+      <button id="btnModeSingle" onclick="switchMode('single')" class="active">Single Period</button>
+      <button id="btnModeCompare" onclick="switchMode('compare')">Comparison (YoY)</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Single-period inputs -->
+  <div class="setup-section" id="singleInputs">
+    <label class="section-label">Single Period</label>
+    <div class="file-row">
+      <label class="btn btn-primary btn-sm" for="singleFile">Errors CSV</label>
+      <input type="file" id="singleFile" accept=".csv" class="hidden">
+      <span class="loaded-pill" id="pillSingle" style="display:none"></span>
+      <label class="btn btn-outline btn-sm" for="singleDimFile">Totals CSV</label>
+      <input type="file" id="singleDimFile" accept=".csv" class="hidden">
+      <span class="loaded-pill" id="pillSingleDim" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Comparison inputs -->
+  <div class="setup-section hidden" id="compareInputs">
+    <label class="section-label">Current Period</label>
+    <div class="file-row">
+      <label class="btn btn-primary btn-sm" for="curErrFile">Errors CSV</label>
+      <input type="file" id="curErrFile" accept=".csv" class="hidden">
+      <span class="loaded-pill" id="pillCurErr" style="display:none"></span>
+      <label class="btn btn-outline btn-sm" for="curDimFile">Totals CSV</label>
+      <input type="file" id="curDimFile" accept=".csv" class="hidden">
+      <span class="loaded-pill" id="pillCurDim" style="display:none"></span>
+    </div>
+  </div>
+  <div class="setup-section hidden" id="compareInputsBase">
+    <label class="section-label">Baseline Period</label>
+    <div class="file-row">
+      <label class="btn btn-primary btn-sm" for="baseErrFile">Errors CSV</label>
+      <input type="file" id="baseErrFile" accept=".csv" class="hidden">
+      <span class="loaded-pill" id="pillBaseErr" style="display:none"></span>
+      <label class="btn btn-outline btn-sm" for="baseDimFile">Totals CSV</label>
+      <input type="file" id="baseDimFile" accept=".csv" class="hidden">
+      <span class="loaded-pill" id="pillBaseDim" style="display:none"></span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="setup-section" style="align-self:flex-end;">
+    <div class="file-row">
+      <button class="btn btn-success btn-sm hidden" id="exportBtn" onclick="exportExcel()">⬇ Export Excel</button>
+      <button class="btn btn-outline btn-sm" onclick="resetAll()">✕ Clear</button>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" onclick="showTab('overview')" id="tabOverview">Overview</button>
+  <button class="tab-btn hidden" onclick="showTab('delta')" id="tabDelta">
+    Delta Dashboard <span class="badge-count" id="deltaBadge"></span>
+  </button>
+  <button class="tab-btn" onclick="showTab('detail')" id="tabDetail">
+    Message Detail <span class="badge-count" id="detailBadge"></span>
+  </button>
+  <button class="tab-btn" onclick="showTab('dictionary')" id="tabDictionary">Group Dictionary</button>
+</nav>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- OVERVIEW TAB -->
+  <div class="tab-pane active" id="paneOverview">
+    <div class="empty-state" id="emptyOverview">
+      <div class="icon">📊</div>
+      <p>
+        <strong>Single Period:</strong> Load one errors CSV — auto-classified, no dictionary needed.<br>
+        <strong>Comparison:</strong> Load current + baseline errors CSVs (and optional totals CSVs) to see delta metrics.
+      </p>
+    </div>
+    <div class="hidden" id="overviewContent">
+      <div class="cards" id="summaryCards"></div>
+      <div id="compareBannerWrap"></div>
+      <div id="bucketSummaryWrap"></div>
+      <div class="sec-title" id="groupTableTitle">Group Summary</div>
+      <div class="tbl-wrap">
+        <div class="tbl-scroll max-h-md">
+          <table id="groupSummaryTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELTA DASHBOARD TAB -->
+  <div class="tab-pane hidden" id="paneDelta">
+    <div class="empty-state" id="emptyDelta">
+      <div class="icon">📈</div>
+      <p>Load current + baseline error CSVs in <strong>Comparison mode</strong> to see YoY delta metrics.</p>
+    </div>
+    <div class="hidden" id="deltaContent">
+      <div class="sec-title">
+        YoY Error Changes — Ranked by Failure Impact
+        <span style="font-size:.72rem;font-weight:400;text-transform:none;letter-spacing:0;color:#64748b;">sorted by absolute failure delta</span>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-scroll max-h-lg">
+          <table id="deltaDashTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MESSAGE DETAIL TAB -->
+  <div class="tab-pane hidden" id="paneDetail">
+    <div class="empty-state" id="emptyDetail">
+      <div class="icon">🔍</div>
+      <p>Load an errors CSV to explore individual messages with group assignments.</p>
+    </div>
+    <div class="hidden" id="detailContent">
+      <div class="filter-bar">
+        <input type="text" id="detailSearch" placeholder="🔍  Search messages, groups, codes…" oninput="applyDetailFilter()">
+        <select id="detailGroupFilter" onchange="applyDetailFilter()">
+          <option value="">All Groups</option>
+        </select>
+        <select id="detailLangFilter" onchange="applyDetailFilter()">
+          <option value="">All Languages</option>
+          <option value="English">English</option>
+          <option value="Spanish">Spanish</option>
+          <option value="Portuguese">Portuguese</option>
+        </select>
+        <select id="detailParkFilter" onchange="applyDetailFilter()">
+          <option value="">All Parks</option>
+        </select>
+        <select id="detailPeriodFilter" onchange="applyDetailFilter()" class="hidden" id="detailPeriodFilter">
+          <option value="">Both Periods</option>
+          <option value="current">Current</option>
+          <option value="baseline">Baseline</option>
+        </select>
+        <span class="result-count" id="detailCount"></span>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-scroll max-h-lg">
+          <table id="detailTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GROUP DICTIONARY TAB -->
+  <div class="tab-pane hidden" id="paneDictionary">
+    <div class="sec-title">Group Mapping Reference</div>
+    <p style="font-size:.8rem;color:#64748b;margin-bottom:14px;">
+      Built-in classification rules — no external dictionary needed.
+      Messages are matched by keyword substring (case-insensitive).
+    </p>
+    <div class="tbl-wrap dict-table">
+      <div class="tbl-scroll">
+        <table id="dictTable"></table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.content -->
+
+<script>
+// ════════════════════════════════════════════════════════════════════
+// CLASSIFICATION ENGINE  (ported from checkout_error_cleaning_and_comparison.ipynb)
+// ════════════════════════════════════════════════════════════════════
+
+// ── Bucket + backend system lookup ──────────────────────────────────
+// bucket:  'System Error' | 'User Error' | 'Bank/External'
+// system:  primary backend platform that generates the error
+const BUCKET_META = {
+  'Generic system error with callback number': { bucket: 'System Error',   system: 'Sitecore' },
+  'State eligibility restriction':             { bucket: 'System Error',   system: 'Sitecore' },
+  'Bank issue':                                { bucket: 'Bank/External',  system: 'Bank' },
+  'Payment declined':                          { bucket: 'Bank/External',  system: 'Freedompay' },
+  'Expired card':                              { bucket: 'User Error',     system: 'Freedompay' },
+  'Invalid or mismatched payment information': { bucket: 'User Error',     system: 'Freedompay' },
+  'Address mismatch':                          { bucket: 'User Error',     system: 'Freedompay' },
+  'Already redeemed item':                     { bucket: 'System Error',   system: 'OMS' },
+  'Call customer service':                     { bucket: 'System Error',   system: 'Unknown' },
+  'Transaction processing issue':              { bucket: 'Bank/External',  system: 'Freedompay' },
+  'Cart item processing issue':                { bucket: 'System Error',   system: 'Sitecore' },
+  'Credit transaction error':                  { bucket: 'Bank/External',  system: 'Freedompay' },
+  'Order submission issue':                    { bucket: 'System Error',   system: 'Sitecore' },
+  'PO box not supported':                      { bucket: 'User Error',     system: 'Sitecore' },
+  'Invalid delivery option':                   { bucket: 'System Error',   system: 'Sitecore' },
+  'Card cannot be processed':                  { bucket: 'Bank/External',  system: 'Freedompay' },
+  'Other':                                     { bucket: 'System Error',   system: 'Unknown' },
+};
+function getBucket(groupName) { return (BUCKET_META[groupName] || { bucket: 'System Error', system: 'Unknown' }).bucket; }
+function getSystem(groupName) { return (BUCKET_META[groupName] || { bucket: 'System Error', system: 'Unknown' }).system; }
+
+const GROUP_RULES = [
+  {
+    name: 'Generic system error with callback number',
+    keywords_en: ['an error has occurred'],
+    keywords_es: ['se ha producido un error'],
+    keywords_pt: ['ocorreu um erro'],
+    notes: 'Also matches French (une erreur s\'est produite), German (es ist ein fehler aufgetreten), Italian (si è verificato un errore)',
+    test: s =>
+      s.includes('an error has occurred') ||
+      s.includes('se ha producido un error') ||
+      s.includes('ocorreu um erro') ||
+      s.includes("une erreur s'est produite") ||
+      s.includes('si è verificato un errore') ||
+      s.includes('es ist ein fehler aufgetreten'),
+  },
+  {
+    name: 'State eligibility restriction',
+    keywords_en: ['restricted to residents of', 'not eligible'],
+    keywords_es: ['restringido a residentes de', 'restringido a los residentes de'],
+    keywords_pt: [],
+    test: s =>
+      s.includes('restricted to residents of') ||
+      s.includes('not eligible') ||
+      s.includes('restringido a residentes de') ||
+      s.includes('restringido a los residentes de'),
+  },
+  {
+    name: 'Bank issue',
+    keywords_en: ['problem with your bank', 'bank transaction error'],
+    keywords_es: ['problema con su banco', 'problema con tu banco', 'error en la transacción bancaria'],
+    keywords_pt: ['parece haver um problema com seu banco', 'problema com seu banco'],
+    notes: 'Also matches German (problem mit ihrer bank), French (problème avec votre banque)',
+    test: s =>
+      s.includes('there seems to be a problem with your bank') ||
+      s.includes('bank transaction error') ||
+      s.includes('problema con su banco') ||
+      s.includes('problema con tu banco') ||
+      s.includes('error en la transacción bancaria') ||
+      s.includes('parece haver um problema com seu banco') ||
+      s.includes('problema com seu banco') ||
+      s.includes('problem mit ihrer bank') ||
+      s.includes('problème avec votre banque') ||
+      s.includes('银行账户似乎出现问题'),
+  },
+  {
+    name: 'Payment declined',
+    keywords_en: ['payment was declined'],
+    keywords_es: ['pago ha sido rechazado', 'tu pago fue rechazado', 'su pago fue rechazado'],
+    keywords_pt: ['pagamento foi recusado'],
+    test: s =>
+      s.includes('payment was declined') ||
+      s.includes('pago ha sido rechazado') ||
+      s.includes('tu pago fue rechazado') ||
+      s.includes('su pago fue rechazado') ||
+      s.includes('pagamento foi recusado'),
+  },
+  {
+    name: 'Expired card',
+    keywords_en: ['credit card has expired', 'saved credit card is expired'],
+    keywords_es: ['tarjeta de crédito ha caducado'],
+    keywords_pt: [],
+    test: s =>
+      s.includes('credit card has expired') ||
+      s.includes('saved credit card is expired') ||
+      s.includes('tarjeta de crédito ha caducado'),
+  },
+  {
+    name: 'Invalid or mismatched payment information',
+    keywords_en: ['problem with the information you provided'],
+    keywords_es: ['problema con la información que proporcionaste', 'hubo un problema con la información'],
+    keywords_pt: ['houve um problema com as informações'],
+    test: s =>
+      s.includes('problem with the information you provided') ||
+      s.includes('problema con la información que proporcionaste') ||
+      s.includes('hubo un problema con la información') ||
+      s.includes('houve um problema com as informações'),
+  },
+  {
+    name: 'Address mismatch',
+    keywords_en: ['state does not match the zip code'],
+    keywords_es: ['el estado no coincide con el código postal', 'estado no coincide con el código'],
+    keywords_pt: ['o estado não corresponde ao código postal'],
+    test: s =>
+      s.includes('state does not match the zip code') ||
+      s.includes('estado no coincide con el código postal') ||
+      s.includes('estado no coincide con el código') ||
+      s.includes('o estado não corresponde ao código postal'),
+  },
+  {
+    name: 'Already redeemed item',
+    keywords_en: ['already been redeemed'],
+    keywords_es: ['canjeados'],
+    keywords_pt: [],
+    test: s => s.includes('already been redeemed') || s.includes('canjeados'),
+  },
+  {
+    name: 'Call customer service',
+    keywords_en: ['please call customer service'],
+    keywords_es: ['llame al servicio'],
+    keywords_pt: [],
+    test: s => s.includes('please call customer service') || s.includes('llame al servicio'),
+  },
+  {
+    name: 'Transaction processing issue',
+    keywords_en: ['difficulty processing your transaction'],
+    keywords_es: ['dificultades para procesar su transacción', 'problemas para procesar su transacción'],
+    keywords_pt: ['dificuldades para processar sua transação'],
+    test: s =>
+      s.includes('difficulty processing your transaction') ||
+      s.includes('dificultades para procesar su transacción') ||
+      s.includes('problemas para procesar su transacción') ||
+      s.includes('dificuldades para processar sua transação'),
+  },
+  {
+    name: 'Cart item processing issue',
+    keywords_en: ['difficulty with some items in your cart'],
+    keywords_es: ['problemas con algunos artículos'],
+    keywords_pt: [],
+    test: s =>
+      s.includes('difficulty with some items in your cart') ||
+      s.includes('problemas con algunos artículos'),
+  },
+  {
+    name: 'Credit transaction error',
+    keywords_en: ['credit transaction error'],
+    keywords_es: [],
+    keywords_pt: [],
+    test: s => s.includes('credit transaction error'),
+  },
+  {
+    name: 'Order submission issue',
+    keywords_en: ['problem submitting your order', 'error occurred while submitting your request'],
+    keywords_es: [],
+    keywords_pt: [],
+    test: s =>
+      s.includes('problem submitting your order') ||
+      s.includes('error occurred while submitting your request'),
+  },
+  {
+    name: 'PO box not supported',
+    keywords_en: ['po box addresses are not supported'],
+    keywords_es: [],
+    keywords_pt: [],
+    test: s => s.includes('po box addresses are not supported'),
+  },
+  {
+    name: 'Invalid delivery option',
+    keywords_en: ['invalid delivery option'],
+    keywords_es: [],
+    keywords_pt: [],
+    test: s => s.includes('invalid delivery option'),
+  },
+  {
+    name: 'Card cannot be processed',
+    keywords_en: ['cannot be processed at this time', 'card details could not be verified'],
+    keywords_es: [],
+    keywords_pt: [],
+    test: s =>
+      s.includes('cannot be processed at this time') ||
+      s.includes('card details could not be verified'),
+  },
+];
+
+function classifyGroup(msg) {
+  const s = String(msg || '').normalize('NFC').toLowerCase();
+  for (const rule of GROUP_RULES) {
+    if (rule.test(s)) return rule.name;
+  }
+  return 'Other';
+}
+
+function detectLanguage(msg) {
+  const raw = String(msg || '');
+  const s = raw.normalize('NFC').toLowerCase();
+  // CJK ranges (quick check on original msg for character code)
+  if ([...raw].some(c => c.charCodeAt(0) > 0x4E00 && c.charCodeAt(0) < 0x9FFF)) return 'Chinese';
+  if ([...raw].some(c => (c.charCodeAt(0) >= 0x3040 && c.charCodeAt(0) <= 0x30FF))) return 'Japanese';
+  if ([...raw].some(c => c.charCodeAt(0) >= 0xAC00 && c.charCodeAt(0) <= 0xD7A3)) return 'Korean';
+  if (['bitte versuchen sie', 'rufen sie uns', 'es ist ein fehler', 'es scheint ein problem'].some(k => s.includes(k))) return 'German';
+  if (["une erreur s'est produite", 'problème avec votre banque', 'veuillez réessayer', 'il semble y avoir'].some(k => s.includes(k))) return 'French';
+  if (['si è verificato', 'riprova o chiamaci'].some(k => s.includes(k))) return 'Italian';
+  if (['neem contact op', 'klantenservice'].some(k => s.includes(k))) return 'Dutch';
+  if (['parece haver', 'houve um problema', 'ops, houve', 'tente novamente',
+       'entre em contato', 'não corresponde', 'informações', 'ocorreu um erro',
+       'pagamento foi recusado', 'dificuldades para processar'].some(k => s.includes(k))) {
+    return 'Portuguese';
+  }
+  if (['parece haber', 'inténtelo', 'llámenos', 'pedido', 'tu pago',
+       'rechazado', 'hubo un problema', 'dificultades', 'transacción',
+       'código postal', 'estado no coincide', 'llame al servicio',
+       'artículos', 'canjeados', 'tarjeta de crédito', 'restringido a'].some(k => s.includes(k))) {
+    return 'Spanish';
+  }
+  return 'English';
+}
+
+// ── Park code → Park name lookup ────────────────────────────────────
+// Error codes in parentheses at end of messages (e.g. "(1069)") identify the park.
+// Phone numbers embedded in generic system errors are also park-specific.
+const PARK_CODES = {
+  // Error code → Park (trailing code in parentheses)
+  '1001': 'SeaWorld Orlando (SWO)',
+  '1002': 'SeaWorld San Antonio (SWT)',
+  '1003': 'SeaWorld San Diego (SWS)',
+  '1010': 'Busch Gardens Tampa (BGT)',
+  '1011': 'Busch Gardens Williamsburg (BGW)',
+  '1020': 'Aquatica Orlando (AIT)',
+  '1021': 'Aquatica San Antonio (AIS)',
+  '1022': 'Aquatica San Diego (ASD)',
+  '1030': 'Discovery Cove (DCO)',
+  '1040': 'Adventure Island (AIP)',
+  '1050': 'Water Country USA (WCW)',
+  '1060': 'Sesame Place Philadelphia (SPC)',
+  '1061': 'Sesame Place San Diego (SPL)',
+  // Common Freedompay codes
+  '2001': 'Payment processor — card declined',
+  '2002': 'Payment processor — bank issue',
+  '2003': 'Payment processor — CVV/AVS failure',
+  '2077': 'Payment processor — invalid data',
+  '1069': 'Payment processor — processing error',
+};
+
+// Phone number → Park (digits-only keys for reliable matching)
+// These are the callback numbers embedded in "Please call customer service" and
+// "An error has occurred" messages — one number per park.
+// Update with your actual park phone numbers.
+const PHONE_PARK = {
+  '4075455550': 'SeaWorld Orlando (SWO)',
+  '2105233611': 'SeaWorld San Antonio (SWT)',
+  '6192224732': 'SeaWorld San Diego (SWS)',
+  '8139875082': 'Busch Gardens Tampa (BGT)',
+  '7572533350': 'Busch Gardens Williamsburg (BGW)',
+  '7206343400': 'Discovery Cove (DCO)',
+  '4072890918': 'SeaWorld / Aquatica (SWO area)',  // number from your example
+};
+
+function extractPhone(msg) {
+  // Match formats: (407)289-0918, 407-545-5550, 407.545.5550, 4075455550
+  const m = String(msg || '').match(/(\(?\d{3}\)?[\s.\-]?\d{3}[\s.\-]\d{4})/);
+  return m ? m[1].trim() : '';
+}
+
+function extractCode(msg) {
+  const m = String(msg || '').trim().match(/\((\d{3,6})\)\s*$/);
+  return m ? m[1] : '';
+}
+
+function lookupPark(code, phone) {
+  if (code && PARK_CODES[code]) return PARK_CODES[code];
+  if (phone) {
+    // Normalize phone to digits only for matching
+    const digits = phone.replace(/\D/g, '');
+    for (const [k, v] of Object.entries(PHONE_PARK)) {
+      if (k.replace(/\D/g, '') === digits) return v;
+    }
+  }
+  return '';
+}
+
+function normalizeTemplate(msg) {
+  let s = String(msg || '').trim();
+  s = s.replace(/\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g, '{PHONE}');
+  s = s.replace(/\((\d{3,6})\)\s*$/g, '({CODE})');
+  s = s.replace(/\d+/g, '{NUM}');
+  s = s.replace(/\s+/g, ' ').trim().toLowerCase();
+  return s;
+}
+
+// ════════════════════════════════════════════════════════════════════
+// NUMBER PARSING
+// ════════════════════════════════════════════════════════════════════
+function parseNum(v) {
+  if (v === null || v === undefined || v === '') return 0;
+  const s = String(v).replace(/[$,%\s]/g, '').replace(/,/g, '');
+  const m = s.match(/^([\d.]+)([KkMmBb]?)$/);
+  if (!m) return 0;
+  const mult = { k: 1e3, m: 1e6, b: 1e9 }[m[2].toLowerCase()] || 1;
+  return parseFloat(m[1]) * mult;
+}
+
+function parsePct(v) {
+  const s = String(v || '').replace(/[%\s]/g, '');
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n / 100;
+}
+
+function parseUsersYoY(v) {
+  // Format: "1,271  (44.3%)" — extract just the first number
+  const m = String(v || '').match(/([\d,]+)/);
+  return m ? parseInt(m[1].replace(/,/g, ''), 10) : 0;
+}
+
+function fmtN(n, d=0) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+
+function fmtCur(n) {
+  if (!n) return '—';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(1) + 'K';
+  return '$' + n.toFixed(0);
+}
+
+function fmtPct(n) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return (n * 100).toFixed(1) + '%';
+}
+
+function fmtDeltaPct(n) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  const sign = n > 0 ? '+' : '';
+  return sign + (n * 100).toFixed(1) + '%';
+}
+
+function safeDivide(a, b) {
+  return b && b !== 0 ? a / b : null;
+}
+
+// ════════════════════════════════════════════════════════════════════
+// CSV PARSING
+// ════════════════════════════════════════════════════════════════════
+function detectColIdx(headers, patterns) {
+  const low = headers.map(h => String(h || '').toLowerCase().replace(/\s+/g, ' ').trim());
+  for (const pat of patterns) {
+    const i = low.findIndex(h => h.includes(pat));
+    if (i >= 0) return i;
+  }
+  return -1;
+}
+
+function guessFileType(headers) {
+  const low = headers.map(h => String(h || '').toLowerCase());
+  if (low.some(h => h.includes('billing_and_payment errors') || h.includes('distinct users') || h.includes('conversion failure')))
+    return 'errors';
+  if (low.some(h => h.includes('checkout submit payment')) && low.some(h => h.includes('checkout failures by users')))
+    return 'dimension';
+  return 'breakdown'; // weekly breakdown: error | users (YoY) | cart
+}
+
+function parseErrorsCSV(rows) {
+  if (!rows.length) return [];
+  const hdrs = Object.keys(rows[0]);
+  const type = guessFileType(hdrs);
+
+  if (type === 'dimension') return []; // wrong file type
+
+  const errIdx = detectColIdx(hdrs, ['billing_and_payment errors', 'checkout', 'error message', 'errors', 'message']);
+  const errCol = hdrs[errIdx >= 0 ? errIdx : 0];
+
+  if (type === 'errors') {
+    // Format: error | distinct users | conversion failures | abandoned cart
+    const userIdx  = detectColIdx(hdrs, ['distinct users', 'users with error', 'users']);
+    const failIdx  = detectColIdx(hdrs, ['conversion failure', 'failures with error', 'failure']);
+    const cartIdx  = detectColIdx(hdrs, ['abandoned cart value', 'cart value', 'cart']);
+    const userCol  = hdrs[userIdx  >= 0 ? userIdx  : 1];
+    const failCol  = hdrs[failIdx  >= 0 ? failIdx  : 2];
+    const cartCol  = hdrs[cartIdx  >= 0 ? cartIdx  : 3];
+
+    return rows
+      .map(r => {
+        const errorText = String(r[errCol] || '').trim();
+        if (!errorText) return null;
+        const users    = parseNum(r[userCol]);
+        const failures = parseNum(r[failCol]);
+        const cart     = parseNum(r[cartCol]);
+        return annotate({ errorText, users, failures, cart });
+      })
+      .filter(Boolean);
+  } else {
+    // Breakdown format: error | users (YoY) | cart
+    const userIdx  = detectColIdx(hdrs, ['users clicked', 'users', 'submit', "didn't convert"]);
+    const cartIdx  = detectColIdx(hdrs, ['abandoned cart', 'cart value', 'cart']);
+    const userCol  = hdrs[userIdx >= 0 ? userIdx : 1];
+    const cartCol  = hdrs[cartIdx >= 0 ? cartIdx : 2];
+
+    return rows
+      .map(r => {
+        const errorText = String(r[errCol] || '').trim();
+        if (!errorText) return null;
+        const users = parseUsersYoY(r[userCol]);
+        const cart  = parseNum(r[cartCol]);
+        return annotate({ errorText, users, failures: 0, cart });
+      })
+      .filter(Boolean);
+  }
+}
+
+function annotate(row) {
+  const phone = extractPhone(row.errorText);
+  const code  = extractCode(row.errorText);
+  return {
+    ...row,
+    group:    classifyGroup(row.errorText),
+    template: normalizeTemplate(row.errorText),
+    language: detectLanguage(row.errorText),
+    phone,
+    code,
+    park:     lookupPark(code, phone),
+  };
+}
+
+function parseDimensionCSV(rows) {
+  if (!rows.length) return null;
+  const hdrs = Object.keys(rows[0]);
+  const attIdx  = detectColIdx(hdrs, ['checkout submit payment', 'checkout attempts', 'attempts']);
+  const failIdx = detectColIdx(hdrs, ['checkout failures by users', 'checkout failures', 'failures by']);
+  const rateIdx = detectColIdx(hdrs, ['checkout failure rate', 'failure rate', 'digexp']);
+  const cartIdx = detectColIdx(hdrs, ['abandoned cart value', 'cart value', 'cart']);
+  const r = rows[0];
+  const attempts = parseNum(r[hdrs[attIdx >= 0 ? attIdx : 1]]);
+  const failures = parseNum(r[hdrs[failIdx >= 0 ? failIdx : 2]]);
+  const rate     = parsePct(r[hdrs[rateIdx >= 0 ? rateIdx : 3]]);
+  const cart     = parseNum(r[hdrs[cartIdx >= 0 ? cartIdx : 4]]);
+  return {
+    attempts,
+    failures,
+    failureRate: rate !== null ? rate : safeDivide(failures, attempts),
+    cart,
+  };
+}
+
+// ════════════════════════════════════════════════════════════════════
+// AGGREGATION
+// ════════════════════════════════════════════════════════════════════
+function buildGroupSummary(parsedRows, dim) {
+  const agg = {};
+  for (const r of parsedRows) {
+    if (!agg[r.group]) {
+      agg[r.group] = {
+        group: r.group,
+        rawCount: 0,
+        users: 0,
+        failures: 0,
+        cart: 0,
+        templates: new Set(),
+        phones: new Set(),
+        codes: new Set(),
+        langs: new Set(),
+      };
+    }
+    const g = agg[r.group];
+    g.rawCount++;
+    g.users    += r.users;
+    g.failures += r.failures;
+    g.cart     += r.cart;
+    g.templates.add(r.template);
+    if (r.phone) g.phones.add(r.phone);
+    if (r.code)  g.codes.add(r.code);
+    g.langs.add(r.language);
+  }
+
+  const totalUsers    = Object.values(agg).reduce((s, g) => s + g.users, 0);
+  const totalFailures = dim ? dim.failures : Object.values(agg).reduce((s, g) => s + g.failures, 0);
+
+  return Object.values(agg).map(g => ({
+    ...g,
+    templateCount:  g.templates.size,
+    phoneCount:     g.phones.size,
+    codeCount:      g.codes.size,
+    langList:       [...g.langs].join(', '),
+    errorShare:     safeDivide(g.users, totalUsers),
+    contribution:   totalFailures ? safeDivide(g.failures, totalFailures) : null,
+    failureRate:    safeDivide(g.failures, g.users),
+    cartPerUser:    safeDivide(g.cart, g.users),
+    templates: undefined,
+    phones: undefined,
+    codes: undefined,
+    langs: undefined,
+  })).sort((a, b) => (b.failures || b.users) - (a.failures || a.users));
+}
+
+function buildComparison(curRows, baseRows, curDim, baseDim) {
+  const curSummary  = buildGroupSummary(curRows,  curDim);
+  const baseSummary = buildGroupSummary(baseRows, baseDim);
+
+  const curByGroup  = Object.fromEntries(curSummary.map(g  => [g.group, g]));
+  const baseByGroup = Object.fromEntries(baseSummary.map(g => [g.group, g]));
+
+  const allGroups = [...new Set([...Object.keys(curByGroup), ...Object.keys(baseByGroup)])];
+
+  return allGroups.map(group => {
+    const cur  = curByGroup[group]  || null;
+    const base = baseByGroup[group] || null;
+
+    const failuresDelta     = (cur?.failures  || 0) - (base?.failures  || 0);
+    const usersDelta        = (cur?.users     || 0) - (base?.users     || 0);
+    const cartDelta         = (cur?.cart      || 0) - (base?.cart      || 0);
+    const contributionDelta = (cur?.contribution ?? 0) - (base?.contribution ?? 0);
+    const severityDelta     = ((cur?.failureRate ?? 0) - (base?.failureRate ?? 0));
+
+    const failuresRelDelta  = base?.failures  ? (failuresDelta / base.failures)    : null;
+    const usersRelDelta     = base?.users     ? (usersDelta    / base.users)       : null;
+
+    const direction =
+      failuresDelta > 0.5  ? 'Up'   :
+      failuresDelta < -0.5 ? 'Down' : 'Flat';
+
+    const isNew  = !base && !!cur;
+    const isGone = !!base && !cur;
+
+    return {
+      group,
+      direction,
+      isNew,
+      isGone,
+      // Current
+      failures_cur:     cur?.failures     ?? 0,
+      users_cur:        cur?.users        ?? 0,
+      cart_cur:         cur?.cart         ?? 0,
+      contribution_cur: cur?.contribution ?? null,
+      failureRate_cur:  cur?.failureRate  ?? null,
+      // Baseline
+      failures_base:    base?.failures     ?? 0,
+      users_base:       base?.users        ?? 0,
+      cart_base:        base?.cart         ?? 0,
+      contribution_base:base?.contribution ?? null,
+      // Deltas
+      failuresDelta,
+      failuresRelDelta,
+      usersDelta,
+      usersRelDelta,
+      cartDelta,
+      contributionDelta,
+      severityDelta,
+    };
+  }).sort((a, b) => Math.abs(b.failuresDelta) - Math.abs(a.failuresDelta));
+}
+
+// ════════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════════
+const st = {
+  mode: 'single',          // 'single' | 'compare'
+  singleRows:  null,       // parsed rows
+  singleDim:   null,       // totals for single period
+  curRows:     null,
+  baseRows:    null,
+  curDim:      null,
+  baseDim:     null,
+  // derived
+  singleSummary: null,
+  comparison:    null,
+  // filters
+  groupBucketFilter: '',   // '' = all, 'System Error', 'User Error', 'Bank/External'
+  // detail table
+  detailRows:    [],
+  detailFiltered:[],
+  detailSortCol: 'users',
+  detailSortDir: 'desc',
+};
+
+// ════════════════════════════════════════════════════════════════════
+// MODE + FILE SWITCHING
+// ════════════════════════════════════════════════════════════════════
+function switchMode(mode) {
+  st.mode = mode;
+  document.getElementById('btnModeSingle').classList.toggle('active', mode === 'single');
+  document.getElementById('btnModeCompare').classList.toggle('active', mode === 'compare');
+  document.getElementById('singleInputs').classList.toggle('hidden', mode !== 'single');
+  document.getElementById('compareInputs').classList.toggle('hidden', mode !== 'compare');
+  document.getElementById('compareInputsBase').classList.toggle('hidden', mode !== 'compare');
+  document.getElementById('tabDelta').classList.toggle('hidden', mode !== 'compare');
+  document.getElementById('headerMode').textContent =
+    mode === 'single' ? 'SINGLE PERIOD' : 'COMPARISON';
+  // reset data
+  st.singleRows = st.singleDim = null;
+  st.curRows = st.baseRows = null;
+  st.curDim = st.baseDim = null;
+  st.singleSummary = st.comparison = null;
+  st.groupBucketFilter = '';
+  render();
+}
+
+function setPill(id, text, ok) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.style.display = '';
+  el.className = 'loaded-pill ' + (ok ? 'ok' : 'warn');
+}
+
+function loadCSV(fileEl, onParsed) {
+  const file = fileEl.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const result = Papa.parse(e.target.result, { header: true, skipEmptyLines: true });
+    onParsed(result.data, file.name);
+  };
+  reader.readAsText(file);
+  fileEl.value = '';
+}
+
+// ════════════════════════════════════════════════════════════════════
+// FILE HANDLERS
+// ════════════════════════════════════════════════════════════════════
+document.getElementById('singleFile').addEventListener('change', function () {
+  loadCSV(this, (rows, name) => {
+    st.singleRows = parseErrorsCSV(rows);
+    setPill('pillSingle', `${name} (${st.singleRows.length} rows)`, true);
+    buildDerived();
+    render();
+  });
+});
+
+document.getElementById('singleDimFile').addEventListener('change', function () {
+  loadCSV(this, (rows, name) => {
+    st.singleDim = parseDimensionCSV(rows);
+    setPill('pillSingleDim', `${name} ✓`, st.singleDim !== null);
+    buildDerived();
+    render();
+  });
+});
+
+document.getElementById('curErrFile').addEventListener('change', function () {
+  loadCSV(this, (rows, name) => {
+    st.curRows = parseErrorsCSV(rows);
+    setPill('pillCurErr', `${name} (${st.curRows.length})`, true);
+    buildDerived();
+    render();
+  });
+});
+
+document.getElementById('baseErrFile').addEventListener('change', function () {
+  loadCSV(this, (rows, name) => {
+    st.baseRows = parseErrorsCSV(rows);
+    setPill('pillBaseErr', `${name} (${st.baseRows.length})`, true);
+    buildDerived();
+    render();
+  });
+});
+
+document.getElementById('curDimFile').addEventListener('change', function () {
+  loadCSV(this, (rows, name) => {
+    st.curDim = parseDimensionCSV(rows);
+    setPill('pillCurDim', `${name} ✓`, st.curDim !== null);
+    buildDerived();
+    render();
+  });
+});
+
+document.getElementById('baseDimFile').addEventListener('change', function () {
+  loadCSV(this, (rows, name) => {
+    st.baseDim = parseDimensionCSV(rows);
+    setPill('pillBaseDim', `${name} ✓`, st.baseDim !== null);
+    buildDerived();
+    render();
+  });
+});
+
+function buildDerived() {
+  if (st.mode === 'single' && st.singleRows) {
+    st.singleSummary = buildGroupSummary(st.singleRows, st.singleDim);
+    st.detailRows    = st.singleRows.map(r => ({ ...r, period: 'current' }));
+  } else if (st.mode === 'compare' && st.curRows && st.baseRows) {
+    st.comparison = buildComparison(st.curRows, st.baseRows, st.curDim, st.baseDim);
+    // Merge detail rows from both periods
+    st.detailRows = [
+      ...st.curRows.map(r  => ({ ...r, period: 'current'  })),
+      ...st.baseRows.map(r => ({ ...r, period: 'baseline' })),
+    ];
+  }
+  document.getElementById('exportBtn').classList.toggle('hidden',
+    !(st.singleSummary || st.comparison));
+}
+
+// ════════════════════════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════════════════════════
+function render() {
+  const hasData = st.singleSummary || st.comparison;
+  document.getElementById('emptyOverview').classList.toggle('hidden', !!hasData);
+  document.getElementById('overviewContent').classList.toggle('hidden', !hasData);
+  document.getElementById('emptyDelta').classList.toggle('hidden', !!st.comparison);
+  document.getElementById('deltaContent').classList.toggle('hidden', !st.comparison);
+  document.getElementById('emptyDetail').classList.toggle('hidden', st.detailRows.length > 0);
+  document.getElementById('detailContent').classList.toggle('hidden', st.detailRows.length === 0);
+
+  if (hasData) {
+    renderSummaryCards();
+    renderCompareBanner();
+    renderBucketSummary();
+    renderGroupSummaryTable();
+  }
+  if (st.comparison) {
+    renderDeltaDashboard();
+    document.getElementById('deltaBadge').textContent = st.comparison.length;
+  }
+  if (st.detailRows.length) {
+    document.getElementById('detailBadge').textContent = st.detailRows.length;
+    document.getElementById('detailPeriodFilter').classList.toggle('hidden', st.mode !== 'compare');
+    populateDetailFilters();
+    applyDetailFilter();
+  }
+
+  // Always refresh group dictionary with current row counts
+  const allRows = st.mode === 'single'
+    ? (st.singleRows || [])
+    : [...(st.curRows || []), ...(st.baseRows || [])];
+  renderGroupDictionary(allRows.length ? allRows : null);
+}
+
+// ── Summary cards ──────────────────────────────────────────────────
+function renderSummaryCards() {
+  const rows = st.mode === 'single'
+    ? (st.singleRows || [])
+    : [...(st.curRows || []), ...(st.baseRows || [])];
+
+  if (st.mode === 'single' && st.singleSummary) {
+    const summary = st.singleSummary;
+    const totalUsers  = summary.reduce((s, g) => s + g.users, 0);
+    const totalCart   = summary.reduce((s, g) => s + g.cart, 0);
+    const otherGroup  = summary.find(g => g.group === 'Other');
+    const otherShare  = totalUsers ? (otherGroup?.users || 0) / totalUsers : 0;
+    const groupCount  = summary.length;
+
+    document.getElementById('summaryCards').innerHTML = `
+      <div class="card">
+        <div class="card-label">Error Rows</div>
+        <div class="card-value">${fmtN(rows.length)}</div>
+        <div class="card-sub">${groupCount} groups assigned</div>
+      </div>
+      <div class="card green">
+        <div class="card-label">Users Affected</div>
+        <div class="card-value">${fmtN(totalUsers)}</div>
+        <div class="card-sub">distinct users with error</div>
+      </div>
+      <div class="card orange">
+        <div class="card-label">Abandoned Cart</div>
+        <div class="card-value">${fmtCur(totalCart)}</div>
+        <div class="card-sub">at-risk revenue</div>
+      </div>
+      <div class="card ${otherShare > 0.05 ? 'red' : ''}">
+        <div class="card-label">Ungrouped (Other)</div>
+        <div class="card-value">${fmtPct(otherShare)}</div>
+        <div class="card-sub">${fmtN(otherGroup?.rawCount || 0)} rows need group expansion</div>
+      </div>
+    `;
+    document.getElementById('headerSub').textContent = `${rows.length} error rows — ${groupCount} groups`;
+  } else if (st.mode === 'compare' && st.comparison) {
+    const comp = st.comparison;
+    const upCount   = comp.filter(g => g.direction === 'Up').length;
+    const downCount = comp.filter(g => g.direction === 'Down').length;
+    const newCount  = comp.filter(g => g.isNew).length;
+    const totalCurFailures  = comp.reduce((s, g) => s + g.failures_cur,  0);
+    const totalBaseFailures = comp.reduce((s, g) => s + g.failures_base, 0);
+    const failuresDelta = totalCurFailures - totalBaseFailures;
+
+    document.getElementById('summaryCards').innerHTML = `
+      <div class="card ${failuresDelta > 0 ? 'red' : 'green'}">
+        <div class="card-label">Total Failure Delta</div>
+        <div class="card-value">${failuresDelta > 0 ? '+' : ''}${fmtN(failuresDelta)}</div>
+        <div class="card-sub">${fmtN(totalCurFailures)} current vs ${fmtN(totalBaseFailures)} baseline</div>
+      </div>
+      <div class="card red">
+        <div class="card-label">Groups Worsened</div>
+        <div class="card-value">${upCount}</div>
+        <div class="card-sub">failure count increased</div>
+      </div>
+      <div class="card green">
+        <div class="card-label">Groups Improved</div>
+        <div class="card-value">${downCount}</div>
+        <div class="card-sub">failure count decreased</div>
+      </div>
+      <div class="card purple">
+        <div class="card-label">New / Resolved</div>
+        <div class="card-value">${newCount}</div>
+        <div class="card-sub">groups appearing this period</div>
+      </div>
+    `;
+    document.getElementById('headerSub').textContent = `${comp.length} error groups compared`;
+  }
+}
+
+// ── Comparison banner (overall checkout metrics) ───────────────────
+function renderCompareBanner() {
+  const wrap = document.getElementById('compareBannerWrap');
+  if (st.mode !== 'compare' || (!st.curDim && !st.baseDim)) { wrap.innerHTML = ''; return; }
+  const c = st.curDim  || {};
+  const b = st.baseDim || {};
+
+  function metricHtml(label, cur, base, isCur, isPct, isCur2) {
+    const curFmt = isPct ? fmtPct(cur) : fmtCur(cur) || fmtN(cur);
+    const baseFmt = base !== undefined ? (isPct ? fmtPct(base) : fmtCur(base) || fmtN(base)) : null;
+    const delta = (cur !== null && base !== null) ? cur - base : null;
+    const relDelta = (base && delta !== null) ? delta / base : null;
+    let deltaHtml = '';
+    if (delta !== null) {
+      const dir = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
+      const sign = delta > 0 ? '+' : '';
+      const relStr = relDelta !== null ? ` (${sign}${(relDelta*100).toFixed(1)}%)` : '';
+      deltaHtml = `<span class="delta ${dir === 'up' ? (isPct?'delta-up':'delta-up') : 'delta-down'}">
+        ${sign}${isPct ? ((delta*100).toFixed(2)+'pp') : (isCur2 ? fmtN(delta,0) : fmtCur(Math.abs(delta)))}${relStr}
+      </span>`;
+    }
+    return `<div class="compare-metric">
+      <span class="label">${esc(label)}</span>
+      <span class="cur">${curFmt}</span>
+      ${baseFmt ? `<span class="base">vs ${baseFmt}</span>` : ''}
+      ${deltaHtml}
+    </div>`;
+  }
+
+  wrap.innerHTML = `<div class="compare-banner sec-title" style="font-size:.72rem;margin-top:0;">
+    Overall Checkout Metrics
+  </div>
+  <div class="compare-banner">
+    ${metricHtml('Checkout Attempts',  c.attempts,    b.attempts,    true, false, true)}
+    ${metricHtml('Checkout Failures',  c.failures,    b.failures,    true, false, true)}
+    ${metricHtml('Failure Rate',       c.failureRate, b.failureRate, true, true)}
+    ${metricHtml('Abandoned Cart',     c.cart,        b.cart,        true, false, false)}
+  </div>`;
+}
+
+// ── Bucket summary ─────────────────────────────────────────────────
+function renderBucketSummary() {
+  const wrap = document.getElementById('bucketSummaryWrap');
+
+  // Aggregate per bucket from whichever data is loaded
+  const BUCKETS = ['System Error', 'User Error', 'Bank/External'];
+  const agg = {};
+  BUCKETS.forEach(b => agg[b] = { users: 0, failures: 0, cart: 0, failuresDelta: 0, groups: new Set() });
+
+  if (st.mode === 'single' && st.singleSummary) {
+    for (const g of st.singleSummary) {
+      const b = getBucket(g.group);
+      agg[b].users    += g.users;
+      agg[b].failures += g.failures || 0;
+      agg[b].cart     += g.cart;
+      agg[b].groups.add(g.group);
+    }
+  } else if (st.mode === 'compare' && st.comparison) {
+    for (const g of st.comparison) {
+      const b = getBucket(g.group);
+      agg[b].users       += g.users_cur || 0;
+      agg[b].failures    += g.failures_cur || 0;
+      agg[b].cart        += g.cart_cur || 0;
+      agg[b].failuresDelta += g.failuresDelta || 0;
+      agg[b].groups.add(g.group);
+    }
+  } else {
+    wrap.innerHTML = '';
+    return;
+  }
+
+  const isCompare = st.mode === 'compare';
+  // Total users across all buckets — for share calculation
+  const grandTotalUsers = BUCKETS.reduce((s, b) => s + agg[b].users, 0);
+
+  function bucketCard(bucketName, cssClass, isActive, isDimmed) {
+    const d = agg[bucketName];
+    const groupList = [...d.groups].sort().map(g =>
+      `<span class="tag tag-group" style="font-size:.62rem">${esc(g)}</span>`
+    ).join('');
+
+    // Error-exposed failure rate: failures ÷ users who encountered this error
+    // NOT overall checkout failure rate — denominator is error-exposed users only
+    const exposedRate = d.users > 0 && d.failures > 0 ? d.failures / d.users : null;
+    const share = grandTotalUsers > 0 ? d.users / grandTotalUsers : null;
+
+    const primaryMetric = isCompare ? `${fmtN(d.failures)}` : `${fmtN(d.users)}`;
+    const primaryLabel  = isCompare ? 'Failures (cur)' : 'Users';
+
+    const rateHtml = exposedRate !== null
+      ? `<div style="font-size:.75rem;margin-top:3px;color:#64748b">
+           Err-exposed failure rate: <strong style="color:#dc2626">${fmtPct(exposedRate)}</strong>
+         </div>`
+      : '';
+
+    const shareHtml = share !== null
+      ? `<div style="font-size:.75rem;margin-top:2px;color:#64748b">
+           Share of error users: <strong>${fmtPct(share)}</strong>
+         </div>`
+      : '';
+
+    const cartHtml = `<div style="font-size:.75rem;margin-top:2px;color:#64748b">
+      Abandoned cart: <strong>${fmtCur(d.cart) !== '—' ? fmtCur(d.cart) : '—'}</strong>
+    </div>`;
+
+    const deltaHtml = isCompare && d.failuresDelta !== 0
+      ? `<div style="font-size:.75rem;font-weight:700;margin-top:4px" class="${d.failuresDelta > 0 ? 'delta-up' : 'delta-down'}">
+           ${d.failuresDelta > 0 ? '+' : ''}${fmtN(d.failuresDelta)} failures YoY
+         </div>`
+      : '';
+
+    const extraCls = (isActive ? ' active-filter' : '') + (isDimmed ? ' dimmed' : '');
+    return `<div class="bucket-card ${cssClass}${extraCls}" onclick="filterGroupsByBucket('${bucketName}')">
+      <div class="bk-label">${esc(bucketName)}${isActive ? ' <span style="font-size:.65rem;opacity:.7">✕ clear</span>' : ''}</div>
+      <div class="bk-users">${primaryMetric}</div>
+      <div style="font-size:.72rem;color:#64748b;margin-top:3px">${esc(primaryLabel)}</div>
+      ${rateHtml}${shareHtml}${cartHtml}${deltaHtml}
+      <div class="bk-groups" style="margin-top:8px">${groupList}</div>
+    </div>`;
+  }
+
+  const activeBucket = st.groupBucketFilter;
+
+  function bucketCardHtml(bucketName, cssClass) {
+    const isActive = activeBucket === bucketName;
+    const isDimmed = activeBucket && !isActive;
+    return bucketCard(bucketName, cssClass, isActive, isDimmed);
+  }
+
+  wrap.innerHTML = `
+    <div class="sec-title" style="margin-top:0;margin-bottom:6px">Error Buckets
+      <span style="font-size:.72rem;font-weight:400;text-transform:none;letter-spacing:0;color:#94a3b8">— click a card to filter the group table</span>
+    </div>
+    <div class="bucket-strip">
+      ${bucketCardHtml('System Error',  'sys')}
+      ${bucketCardHtml('User Error',    'user')}
+      ${bucketCardHtml('Bank/External', 'bank')}
+    </div>`;
+}
+
+function filterGroupsByBucket(bucket) {
+  // Toggle: clicking the active bucket clears the filter
+  st.groupBucketFilter = st.groupBucketFilter === bucket ? '' : bucket;
+  renderBucketSummary();
+  renderGroupSummaryTable();
+}
+
+// ── Group summary table ────────────────────────────────────────────
+function renderGroupSummaryTable() {
+  const title = document.getElementById('groupTableTitle');
+  title.textContent = st.mode === 'compare' ? 'Group Comparison Summary' : 'Group Summary';
+
+  if (st.mode === 'single' && st.singleSummary) {
+    const allRows = st.singleSummary;
+    // Totals always from the FULL dataset regardless of filter
+    const totalCart     = allRows.reduce((s, g) => s + g.cart, 0);
+    const totalUsers    = allRows.reduce((s, g) => s + g.users, 0);
+    const totalFailures = allRows.reduce((s, g) => s + (g.failures || 0), 0);
+    const hasFailures   = totalFailures > 0;
+    const overallRate   = st.singleDim?.failureRate ?? safeDivide(totalFailures, totalUsers);
+
+    // Visible rows respect bucket filter
+    const bucketFilter = st.groupBucketFilter;
+    const rows = bucketFilter ? allRows.filter(g => getBucket(g.group) === bucketFilter) : allRows;
+    const filterHint = bucketFilter
+      ? `<div class="group-filter-hint">Filtered: <strong>${esc(bucketFilter)}</strong> — ${rows.length} of ${allRows.length} groups shown &nbsp;·&nbsp; <a href="#" onclick="filterGroupsByBucket('${bucketFilter}');return false;" style="color:#2563eb">clear filter</a></div>`
+      : '';
+
+    const thead = `<thead><tr>
+      <th class="no-sort">Group</th>
+      <th class="no-sort">Bucket</th>
+      <th>Users</th>
+      ${hasFailures ? '<th>Failures</th><th title="Failures ÷ users who saw this error">Err-Exposed Failure Rate</th>' : ''}
+      <th>Cart Value</th>
+      <th>Share of Users</th>
+      <th>Templates</th>
+      <th>Languages</th>
+    </tr></thead>`;
+
+    const tbody = rows.map(g => `<tr>
+      <td>${groupTag(g.group)}</td>
+      <td><span class="tag ${getBucket(g.group) === 'System Error' ? 'tag-sys' : getBucket(g.group) === 'User Error' ? 'tag-user' : 'tag-bank'}">${esc(getBucket(g.group))}</span></td>
+      <td class="td-num">${fmtN(g.users)}</td>
+      ${hasFailures ? `<td class="td-num">${fmtN(g.failures)}</td><td class="td-num">${g.failureRate !== null ? fmtPct(g.failureRate) : '—'}</td>` : ''}
+      <td class="td-num">${fmtCur(g.cart)}</td>
+      <td class="td-num">${fmtPct(g.errorShare)}</td>
+      <td class="td-num">${g.templateCount}</td>
+      <td>${g.langList.split(', ').map(langTag).join(' ')}</td>
+    </tr>`).join('');
+
+    // Subtotal row — only when a bucket filter is active; sums just the visible rows
+    let subtotalRow = '';
+    if (bucketFilter) {
+      const subUsers    = rows.reduce((s, g) => s + g.users, 0);
+      const subFailures = rows.reduce((s, g) => s + (g.failures || 0), 0);
+      const subCart     = rows.reduce((s, g) => s + g.cart, 0);
+      const subRate     = safeDivide(subFailures, subUsers);
+      const subShare    = totalUsers ? subUsers / totalUsers : null;
+      const bucketCss   = bucketFilter === 'System Error' ? 'tag-sys' : bucketFilter === 'User Error' ? 'tag-user' : 'tag-bank';
+      subtotalRow = `<tr style="background:#f0f7ff;font-weight:700;border-top:2px solid #bfdbfe">
+        <td><strong>SUBTOTAL</strong> — <span class="tag ${bucketCss}">${esc(bucketFilter)}</span></td>
+        <td></td>
+        <td class="td-num">${fmtN(subUsers)}</td>
+        ${hasFailures ? `<td class="td-num">${fmtN(subFailures)}</td><td class="td-num">${subRate !== null ? fmtPct(subRate) : '—'}</td>` : ''}
+        <td class="td-num">${fmtCur(subCart)}</td>
+        <td class="td-num">${subShare !== null ? fmtPct(subShare) : '—'}</td>
+        <td></td><td></td>
+      </tr>`;
+    }
+
+    // Total footer always shows full-dataset totals
+    const tfoot = `<tfoot>
+      ${subtotalRow}
+      <tr style="background:#f8fafc;font-weight:700;border-top:2px solid #e2e8f0">
+        <td><strong>TOTAL — all buckets</strong></td>
+        <td></td>
+        <td class="td-num">${fmtN(totalUsers)}</td>
+        ${hasFailures ? `<td class="td-num">${fmtN(totalFailures)}</td><td class="td-num">${overallRate !== null ? fmtPct(overallRate) : '—'}</td>` : ''}
+        <td class="td-num">${fmtCur(totalCart)}</td>
+        <td class="td-num">100%</td>
+        <td></td><td></td>
+      </tr>
+    </tfoot>`;
+
+    document.getElementById('groupSummaryTable').innerHTML = filterHint + thead + `<tbody>${tbody}</tbody>` + tfoot;
+
+  } else if (st.mode === 'compare' && st.comparison) {
+    const allRows = st.comparison;
+    const bucketFilter = st.groupBucketFilter;
+    const rows = bucketFilter ? allRows.filter(g => getBucket(g.group) === bucketFilter) : allRows;
+    const filterHint = bucketFilter
+      ? `<div class="group-filter-hint">Filtered: <strong>${esc(bucketFilter)}</strong> — ${rows.length} of ${allRows.length} groups shown &nbsp;·&nbsp; <a href="#" onclick="filterGroupsByBucket('${bucketFilter}');return false;" style="color:#2563eb">clear filter</a></div>`
+      : '';
+
+    // Full-dataset totals for footer
+    const totalFailCur  = allRows.reduce((s, g) => s + (g.failures_cur  || 0), 0);
+    const totalFailBase = allRows.reduce((s, g) => s + (g.failures_base || 0), 0);
+    const totalUsersCur = allRows.reduce((s, g) => s + (g.users_cur     || 0), 0);
+    const totalFailDelta = totalFailCur - totalFailBase;
+    const totalUsersDelta = totalUsersCur - allRows.reduce((s, g) => s + (g.users_base || 0), 0);
+
+    const thead = `<thead><tr>
+      <th class="no-sort">Group</th>
+      <th class="no-sort">Bucket</th>
+      <th class="no-sort">Dir</th>
+      <th>Failures Δ</th>
+      <th>Contrib Δ</th>
+      <th>Failures (cur)</th>
+      <th>Failures (base)</th>
+      <th>Users (cur)</th>
+      <th>Users Δ</th>
+    </tr></thead>`;
+
+    const tbody = rows.map(g => `<tr>
+      <td>${groupTag(g.group)}${g.isNew ? ' <span class="tag tag-new">NEW</span>' : ''}${g.isGone ? ' <span class="tag tag-gone">GONE</span>' : ''}</td>
+      <td><span class="tag ${getBucket(g.group) === 'System Error' ? 'tag-sys' : getBucket(g.group) === 'User Error' ? 'tag-user' : 'tag-bank'}">${esc(getBucket(g.group))}</span></td>
+      <td>${dirTag(g.direction)}</td>
+      <td class="td-num ${g.failuresDelta > 0 ? 'delta-up' : g.failuresDelta < 0 ? 'delta-down' : ''}">
+        ${g.failuresDelta > 0 ? '+' : ''}${fmtN(g.failuresDelta)}
+        ${g.failuresRelDelta !== null ? `<br><small>${fmtDeltaPct(g.failuresRelDelta)}</small>` : ''}
+      </td>
+      <td class="td-num ${g.contributionDelta > 0.001 ? 'delta-up' : g.contributionDelta < -0.001 ? 'delta-down' : ''}">
+        ${g.contributionDelta > 0 ? '+' : ''}${((g.contributionDelta||0)*100).toFixed(2)} pp
+      </td>
+      <td class="td-num">${fmtN(g.failures_cur)}</td>
+      <td class="td-num">${fmtN(g.failures_base)}</td>
+      <td class="td-num">${fmtN(g.users_cur)}</td>
+      <td class="td-num ${g.usersDelta > 0 ? 'delta-up' : g.usersDelta < 0 ? 'delta-down' : ''}">
+        ${g.usersDelta > 0 ? '+' : ''}${fmtN(g.usersDelta)}
+      </td>
+    </tr>`).join('');
+
+    // Subtotal for filtered bucket
+    let subtotalRow = '';
+    if (bucketFilter) {
+      const subFailCur   = rows.reduce((s, g) => s + (g.failures_cur  || 0), 0);
+      const subFailBase  = rows.reduce((s, g) => s + (g.failures_base || 0), 0);
+      const subUsersCur  = rows.reduce((s, g) => s + (g.users_cur     || 0), 0);
+      const subFailDelta = subFailCur - subFailBase;
+      const subUsersDelta = subUsersCur - rows.reduce((s, g) => s + (g.users_base || 0), 0);
+      const bucketCss = bucketFilter === 'System Error' ? 'tag-sys' : bucketFilter === 'User Error' ? 'tag-user' : 'tag-bank';
+      subtotalRow = `<tr style="background:#f0f7ff;font-weight:700;border-top:2px solid #bfdbfe">
+        <td><strong>SUBTOTAL</strong> — <span class="tag ${bucketCss}">${esc(bucketFilter)}</span></td>
+        <td></td><td></td>
+        <td class="td-num ${subFailDelta > 0 ? 'delta-up' : subFailDelta < 0 ? 'delta-down' : ''}">
+          ${subFailDelta > 0 ? '+' : ''}${fmtN(subFailDelta)}
+        </td>
+        <td></td>
+        <td class="td-num">${fmtN(subFailCur)}</td>
+        <td class="td-num">${fmtN(subFailBase)}</td>
+        <td class="td-num">${fmtN(subUsersCur)}</td>
+        <td class="td-num ${subUsersDelta > 0 ? 'delta-up' : subUsersDelta < 0 ? 'delta-down' : ''}">
+          ${subUsersDelta > 0 ? '+' : ''}${fmtN(subUsersDelta)}
+        </td>
+      </tr>`;
+    }
+
+    const tfoot = `<tfoot>
+      ${subtotalRow}
+      <tr style="background:#f8fafc;font-weight:700;border-top:2px solid #e2e8f0">
+        <td><strong>TOTAL — all buckets</strong></td>
+        <td></td><td></td>
+        <td class="td-num ${totalFailDelta > 0 ? 'delta-up' : totalFailDelta < 0 ? 'delta-down' : ''}">
+          ${totalFailDelta > 0 ? '+' : ''}${fmtN(totalFailDelta)}
+        </td>
+        <td></td>
+        <td class="td-num">${fmtN(totalFailCur)}</td>
+        <td class="td-num">${fmtN(totalFailBase)}</td>
+        <td class="td-num">${fmtN(totalUsersCur)}</td>
+        <td class="td-num ${totalUsersDelta > 0 ? 'delta-up' : totalUsersDelta < 0 ? 'delta-down' : ''}">
+          ${totalUsersDelta > 0 ? '+' : ''}${fmtN(totalUsersDelta)}
+        </td>
+      </tr>
+    </tfoot>`;
+
+    document.getElementById('groupSummaryTable').innerHTML = filterHint + thead + `<tbody>${tbody}</tbody>` + tfoot;
+  }
+}
+
+// ── Delta Dashboard ────────────────────────────────────────────────
+function renderDeltaDashboard() {
+  if (!st.comparison) return;
+  const rows = st.comparison; // already sorted by |failuresDelta| desc
+
+  const thead = `<thead><tr>
+    <th class="no-sort" style="width:36px">#</th>
+    <th class="no-sort">Group</th>
+    <th class="no-sort">Direction</th>
+    <th class="no-sort">Failures Δ</th>
+    <th class="no-sort">Failures Δ%</th>
+    <th class="no-sort">Contrib Δ (pp)</th>
+    <th class="no-sort">Severity Δ</th>
+    <th class="no-sort">Users Δ</th>
+    <th class="no-sort">Cart Δ</th>
+    <th class="no-sort">Failures (cur)</th>
+    <th class="no-sort">Failures (base)</th>
+    <th class="no-sort">Contrib (cur)</th>
+  </tr></thead>`;
+
+  const tbody = rows.map((g, i) => {
+    const isTop = i < 3 && g.direction === 'Up';
+    const rank = `<span class="rank-badge ${isTop ? 'top' : ''}">${i + 1}</span>`;
+
+    return `<tr>
+      <td>${rank}</td>
+      <td>${groupTag(g.group)}${g.isNew ? ' <span class="tag tag-new" style="font-size:.62rem">NEW</span>' : ''}${g.isGone ? ' <span class="tag tag-gone" style="font-size:.62rem">GONE</span>' : ''}</td>
+      <td>${dirTag(g.direction)}</td>
+      <td class="td-num ${g.failuresDelta > 0 ? 'delta-up' : g.failuresDelta < 0 ? 'delta-down' : ''}">
+        <strong>${g.failuresDelta > 0 ? '+' : ''}${fmtN(g.failuresDelta)}</strong>
+      </td>
+      <td class="td-num ${g.failuresRelDelta > 0 ? 'delta-up' : g.failuresRelDelta < 0 ? 'delta-down' : ''}">
+        ${g.failuresRelDelta !== null ? fmtDeltaPct(g.failuresRelDelta) : '—'}
+      </td>
+      <td class="td-num ${g.contributionDelta > 0.001 ? 'delta-up' : g.contributionDelta < -0.001 ? 'delta-down' : ''}">
+        ${g.contributionDelta > 0 ? '+' : ''}${((g.contributionDelta||0)*100).toFixed(2)}
+      </td>
+      <td class="td-num ${g.severityDelta > 0.001 ? 'delta-up' : g.severityDelta < -0.001 ? 'delta-down' : ''}">
+        ${g.severityDelta > 0 ? '+' : ''}${((g.severityDelta||0)*100).toFixed(2)} pp
+      </td>
+      <td class="td-num ${g.usersDelta > 0 ? 'delta-up' : g.usersDelta < 0 ? 'delta-down' : ''}">
+        ${g.usersDelta > 0 ? '+' : ''}${fmtN(g.usersDelta)}
+      </td>
+      <td class="td-num ${g.cartDelta > 0 ? 'delta-up' : g.cartDelta < 0 ? 'delta-down' : ''}">
+        ${g.cartDelta > 0 ? '+' : ''}${fmtCur(Math.abs(g.cartDelta)) !== '—' ? (g.cartDelta < 0 ? '-' : '') + fmtCur(Math.abs(g.cartDelta)) : '—'}
+      </td>
+      <td class="td-num">${fmtN(g.failures_cur)}</td>
+      <td class="td-num">${fmtN(g.failures_base)}</td>
+      <td class="td-num">${g.contribution_cur !== null ? fmtPct(g.contribution_cur) : '—'}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('deltaDashTable').innerHTML = thead + `<tbody>${tbody}</tbody>`;
+}
+
+// ── Message Detail ─────────────────────────────────────────────────
+function populateDetailFilters() {
+  const groups = [...new Set(st.detailRows.map(r => r.group))].sort((a, b) => {
+    if (a === 'Other') return 1;
+    if (b === 'Other') return -1;
+    return a.localeCompare(b);
+  });
+  const sel = document.getElementById('detailGroupFilter');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">All Groups</option>' +
+    groups.map(g => `<option value="${esc(g)}"${g === prev ? ' selected' : ''}>${esc(g)}</option>`).join('');
+
+  // Park filter — only show parks that appear in data
+  const parks = [...new Set(st.detailRows.map(r => r.park).filter(Boolean))].sort();
+  const parkSel = document.getElementById('detailParkFilter');
+  const prevPark = parkSel.value;
+  parkSel.innerHTML = '<option value="">All Parks</option>' +
+    parks.map(p => `<option value="${esc(p)}"${p === prevPark ? ' selected' : ''}>${esc(p)}</option>`).join('');
+}
+
+function applyDetailFilter() {
+  const search  = String(document.getElementById('detailSearch').value || '').toLowerCase().trim();
+  const group   = document.getElementById('detailGroupFilter').value;
+  const lang    = document.getElementById('detailLangFilter').value;
+  const period  = document.getElementById('detailPeriodFilter').value;
+  const park    = document.getElementById('detailParkFilter').value;
+
+  st.detailFiltered = st.detailRows.filter(r => {
+    if (group  && r.group    !== group)  return false;
+    if (lang   && r.language !== lang)   return false;
+    if (period && r.period   !== period) return false;
+    if (park   && r.park     !== park)   return false;
+    if (search) {
+      const hay = [r.errorText, r.group, r.language, r.code, r.phone, r.park, r.template]
+        .join(' ').toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  st.detailFiltered.sort((a, b) => {
+    const col = st.detailSortCol;
+    const dir = st.detailSortDir === 'asc' ? 1 : -1;
+    if (col === 'users' || col === 'failures' || col === 'cart') {
+      return dir * ((b[col] || 0) - (a[col] || 0));
+    }
+    return dir * String(a[col] || '').localeCompare(String(b[col] || ''));
+  });
+
+  renderDetailTable();
+  document.getElementById('detailCount').textContent =
+    `${st.detailFiltered.length.toLocaleString()} of ${st.detailRows.length.toLocaleString()} rows`;
+}
+
+function setDetailSort(col) {
+  st.detailSortDir = st.detailSortCol === col
+    ? (st.detailSortDir === 'asc' ? 'desc' : 'asc')
+    : 'desc';
+  st.detailSortCol = col;
+  applyDetailFilter();
+}
+
+function renderDetailTable() {
+  const showPeriod = st.mode === 'compare';
+  const showFailures = st.detailRows.some(r => r.failures > 0);
+
+  const cols = [
+    { key: 'errorText', label: 'Error Message',   sort: 'errorText', cls: 'td-msg' },
+    { key: 'group',     label: 'Group',            sort: 'group' },
+    { key: 'park',      label: 'Park',             sort: 'park' },
+    { key: 'language',  label: 'Lang',             sort: 'language' },
+    { key: 'users',     label: 'Users',            sort: 'users',    cls: 'td-num' },
+    ...(showFailures ? [{ key: 'failures', label: 'Failures', sort: 'failures', cls: 'td-num' }] : []),
+    { key: 'cart',      label: 'Abandoned Cart',   sort: 'cart',     cls: 'td-num' },
+    { key: 'code',      label: 'Code',             sort: 'code' },
+    ...(showPeriod ? [{ key: 'period', label: 'Period', sort: 'period' }] : []),
+    { key: 'template',  label: 'Template',         sort: 'template', cls: 'td-msg' },
+  ];
+
+  const thead = '<thead><tr>' + cols.map(c => {
+    const active = st.detailSortCol === c.sort;
+    return `<th class="${active ? 'sort-' + st.detailSortDir : ''}" onclick="setDetailSort('${c.sort}')">${c.label}</th>`;
+  }).join('') + '</tr></thead>';
+
+  const tbody = st.detailFiltered.length === 0
+    ? `<tr><td colspan="${cols.length}" style="text-align:center;color:#94a3b8;padding:32px">No rows match current filters</td></tr>`
+    : st.detailFiltered.map(r =>
+        '<tr>' + cols.map(c => {
+          let v = r[c.key];
+          if (c.key === 'group')    return `<td>${groupTag(v)}</td>`;
+          if (c.key === 'language') return `<td>${langTag(v)}</td>`;
+          if (c.key === 'park')     return `<td style="font-size:.72rem;white-space:nowrap;color:${v ? '#0369a1' : '#94a3b8'}">${v ? esc(v) : '—'}</td>`;
+          if (c.key === 'cart')     return `<td class="${c.cls || ''}">${fmtCur(v)}</td>`;
+          if (c.key === 'users' || c.key === 'failures') return `<td class="${c.cls || ''}">${fmtN(v)}</td>`;
+          if (c.key === 'period')   return `<td><span class="tag ${v === 'current' ? 'tag-group' : 'tag-flat'}">${v}</span></td>`;
+          return `<td class="${c.cls || ''}">${esc(String(v || ''))}</td>`;
+        }).join('') + '</tr>'
+      ).join('');
+
+  // Totals footer — sum users/failures/cart; failure rate = sum(failures)/sum(users), NOT avg of rates
+  const totalUsers    = st.detailFiltered.reduce((s, r) => s + (r.users    || 0), 0);
+  const totalFailures = st.detailFiltered.reduce((s, r) => s + (r.failures || 0), 0);
+  const totalCart     = st.detailFiltered.reduce((s, r) => s + (r.cart     || 0), 0);
+  const totalRate     = totalUsers > 0 && totalFailures > 0 ? totalFailures / totalUsers : null;
+  const rowCount      = st.detailFiltered.length;
+
+  const tfootCells = cols.map(c => {
+    if (c.key === 'errorText') return `<td><strong>${rowCount.toLocaleString()} rows</strong></td>`;
+    if (c.key === 'users')     return `<td class="td-num"><strong>${fmtN(totalUsers)}</strong></td>`;
+    if (c.key === 'failures')  return `<td class="td-num"><strong>${fmtN(totalFailures)}</strong>${totalRate !== null ? `<br><small>${fmtPct(totalRate)} rate</small>` : ''}</td>`;
+    if (c.key === 'cart')      return `<td class="td-num"><strong>${fmtCur(totalCart)}</strong></td>`;
+    return `<td></td>`;
+  }).join('');
+
+  const tfoot = rowCount > 0
+    ? `<tfoot><tr style="background:#f8fafc;font-weight:700;border-top:2px solid #e2e8f0">${tfootCells}</tr></tfoot>`
+    : '';
+
+  document.getElementById('detailTable').innerHTML = thead + `<tbody>${tbody}</tbody>` + tfoot;
+}
+
+// ── Group Dictionary ───────────────────────────────────────────────
+function renderGroupDictionary(rows) {
+  // Count matched rows per group from loaded data (if any)
+  const groupCounts = {};
+  if (rows && rows.length) {
+    for (const r of rows) {
+      groupCounts[r.group] = (groupCounts[r.group] || 0) + 1;
+    }
+  }
+  const hasData = rows && rows.length > 0;
+  const countCol = hasData ? `<th class="no-sort" style="text-align:right">Rows Matched</th>` : '';
+
+  const thead = `<thead><tr>
+    <th class="no-sort">#</th>
+    <th class="no-sort">Group</th>
+    <th class="no-sort">Bucket</th>
+    <th class="no-sort">Backend System</th>
+    <th class="no-sort">English Keywords</th>
+    <th class="no-sort">Spanish Keywords</th>
+    <th class="no-sort">Portuguese Keywords</th>
+    <th class="no-sort">Notes</th>
+    ${countCol}
+  </tr></thead>`;
+
+  const tbody = GROUP_RULES.map((rule, i) => {
+    const count  = groupCounts[rule.name] || 0;
+    const bucket = getBucket(rule.name);
+    const system = getSystem(rule.name);
+    const bucketCss = bucket === 'System Error' ? 'tag-sys' : bucket === 'User Error' ? 'tag-user' : 'tag-bank';
+    const countCell = hasData
+      ? `<td style="text-align:right;font-variant-numeric:tabular-nums">${count > 0 ? `<strong>${count.toLocaleString()}</strong>` : '<span style="color:#94a3b8">0</span>'}</td>`
+      : '';
+    return `<tr>
+      <td style="color:#94a3b8;font-size:.72rem">${i + 1}</td>
+      <td>${groupTag(rule.name)}</td>
+      <td><span class="tag ${bucketCss}">${esc(bucket)}</span></td>
+      <td><span class="tag-system-label">${esc(system)}</span></td>
+      <td class="dict-kw">${rule.keywords_en.map(k => `<span>${esc(k)}</span>`).join('')}</td>
+      <td class="dict-kw">${rule.keywords_es.map(k => `<span>${esc(k)}</span>`).join('') || '<span style="color:#94a3b8">—</span>'}</td>
+      <td class="dict-kw">${rule.keywords_pt.map(k => `<span>${esc(k)}</span>`).join('') || '<span style="color:#94a3b8">—</span>'}</td>
+      <td style="font-size:.72rem;color:#64748b">${esc(rule.notes || '')}</td>
+      ${countCell}
+    </tr>`;
+  }).join('');
+
+  const otherCount = groupCounts['Other'] || 0;
+  const otherCountCell = hasData
+    ? `<td style="text-align:right">${otherCount > 0 ? `<strong style="color:#dc2626">${otherCount.toLocaleString()}</strong>` : '<span style="color:#94a3b8">0</span>'}</td>`
+    : '';
+
+  const otherRow = `<tr>
+    <td style="color:#94a3b8;font-size:.72rem">${GROUP_RULES.length + 1}</td>
+    <td><span class="tag tag-other">Other</span></td>
+    <td><span class="tag tag-sys">System Error</span></td>
+    <td><span class="tag-system-label">Unknown</span></td>
+    <td class="dict-kw"><span style="color:#94a3b8">(catchall — no pattern matched)</span></td>
+    <td></td><td></td>
+    <td style="font-size:.72rem;color:#64748b">Filter Message Detail tab to "Other" to see which messages need a new rule</td>
+    ${otherCountCell}
+  </tr>`;
+
+  document.getElementById('dictTable').innerHTML = thead + `<tbody>${tbody}${otherRow}</tbody>`;
+}
+
+// ════════════════════════════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => {
+    p.classList.remove('active');
+    p.classList.remove('hidden'); // remove hidden so .tab-pane.active can take effect
+  });
+  const id = name.charAt(0).toUpperCase() + name.slice(1);
+  document.getElementById('tab' + id).classList.add('active');
+  document.getElementById('pane' + id).classList.add('active');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// EXPORT
+// ════════════════════════════════════════════════════════════════════
+function exportExcel() {
+  const wb = XLSX.utils.book_new();
+
+  // Sheet: group_summary or delta_dashboard
+  if (st.mode === 'single' && st.singleSummary) {
+    const data = st.singleSummary.map(g => ({
+      group_name:         g.group,
+      raw_message_count:  g.rawCount,
+      users:              g.users,
+      cart_value:         g.cart,
+      error_share:        g.errorShare !== null ? (g.errorShare * 100).toFixed(2) + '%' : '',
+      template_count:     g.templateCount,
+      phone_count:        g.phoneCount,
+      code_count:         g.codeCount,
+      languages:          g.langList,
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), 'group_summary');
+
+  } else if (st.mode === 'compare' && st.comparison) {
+    // delta_dashboard
+    const dash = st.comparison.map((g, i) => ({
+      rank:                    i + 1,
+      group_name:              g.group,
+      direction:               g.direction,
+      is_new:                  g.isNew ? 'Yes' : '',
+      is_gone:                 g.isGone ? 'Yes' : '',
+      failures_delta:          g.failuresDelta,
+      failures_delta_pct:      g.failuresRelDelta !== null ? (g.failuresRelDelta * 100).toFixed(1) + '%' : '',
+      contribution_delta_pp:   ((g.contributionDelta || 0) * 100).toFixed(2),
+      severity_delta_pp:       ((g.severityDelta || 0) * 100).toFixed(2),
+      users_delta:             g.usersDelta,
+      cart_delta:              g.cartDelta.toFixed(0),
+      failures_current:        g.failures_cur,
+      failures_baseline:       g.failures_base,
+      users_current:           g.users_cur,
+      users_baseline:          g.users_base,
+      contribution_current:    g.contribution_cur !== null ? (g.contribution_cur * 100).toFixed(2) + '%' : '',
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dash), 'delta_dashboard');
+
+    // group_comparison
+    const comp = st.comparison.map(g => ({
+      group_name:       g.group,
+      direction:        g.direction,
+      failures_current: g.failures_cur,
+      failures_baseline:g.failures_base,
+      failures_delta:   g.failuresDelta,
+      users_current:    g.users_cur,
+      users_baseline:   g.users_base,
+      users_delta:      g.usersDelta,
+      cart_current:     g.cart_cur?.toFixed(0) || '',
+      cart_baseline:    g.cart_base?.toFixed(0) || '',
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(comp), 'group_comparison');
+  }
+
+  // message_detail
+  const detail = st.detailRows.map(r => ({
+    period:       r.period || 'current',
+    group_name:   r.group,
+    bucket:       getBucket(r.group),
+    backend_system: getSystem(r.group),
+    park:         r.park || '',
+    language:     r.language,
+    error_message:r.errorText,
+    users:        r.users,
+    failures:     r.failures || 0,
+    cart_value:   r.cart || 0,
+    code:         r.code,
+    phone:        r.phone,
+    template:     r.template,
+  }));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(detail), 'message_detail');
+
+  // group_dictionary
+  const dictData = GROUP_RULES.map((rule, i) => ({
+    '#':                 i + 1,
+    group_name:          rule.name,
+    bucket:              getBucket(rule.name),
+    backend_system:      getSystem(rule.name),
+    match_keywords_en:   rule.keywords_en.join(' | '),
+    match_keywords_es:   rule.keywords_es.join(' | '),
+    match_keywords_pt:   rule.keywords_pt.join(' | '),
+    notes:               rule.notes || '',
+  }));
+  dictData.push({ '#': GROUP_RULES.length + 1, group_name: 'Other',
+    bucket: 'System Error', backend_system: 'Unknown',
+    match_keywords_en: '(catchall)', match_keywords_es: '', match_keywords_pt: '', notes: '' });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dictData), 'group_dictionary');
+
+  const fname = `checkout_errors_${new Date().toISOString().slice(0,10)}.xlsx`;
+  XLSX.writeFile(wb, fname);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════════
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function groupTag(name) {
+  const cls = name === 'Other' ? 'tag-other' : 'tag-group';
+  return `<span class="tag ${cls}">${esc(name)}</span>`;
+}
+
+function langTag(lang) {
+  const cls = { Spanish: 'tag-lang-es', Portuguese: 'tag-lang-pt', English: 'tag-lang-en' }[lang] || 'tag-lang-en';
+  return `<span class="tag ${cls}">${esc(lang)}</span>`;
+}
+
+function dirTag(dir) {
+  if (dir === 'Up')   return '<span class="tag tag-up">▲ Up</span>';
+  if (dir === 'Down') return '<span class="tag tag-down">▼ Down</span>';
+  return '<span class="tag tag-flat">→ Flat</span>';
+}
+
+// ════════════════════════════════════════════════════════════════════
+// RESET
+// ════════════════════════════════════════════════════════════════════
+function resetAll() {
+  st.singleRows = st.curRows = st.baseRows = null;
+  st.curDim = st.baseDim = null;
+  st.singleSummary = st.comparison = null;
+  st.detailRows = [];
+  ['pillSingle','pillSingleDim','pillCurErr','pillCurDim','pillBaseErr','pillBaseDim'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('exportBtn').classList.add('hidden');
+  document.getElementById('headerSub').textContent = 'Load files to begin — no dictionary needed';
+  render();
+}
+
+// ════════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════════
+switchMode('single');
+render(); // render() now calls renderGroupDictionary() internally
+</script>
+</body>
+</html>
