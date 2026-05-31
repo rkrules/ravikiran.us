@@ -1,0 +1,10 @@
+To publish a post:
+
+  1. Create newsletter/YYYY-MM-DD-slug.md or abk/YYYY-MM-DD-slug.md with
+  frontmatter (title, date, description)
+  2. Write content in standard markdown — tables, images, code blocks all work
+  now
+  3. For images: sips -Z 1200 photo.jpg --out uploads/your-folder/photo.jpg (add
+  sips -s format jpeg photo.HEIC --out photo.jpg first if iPhone photos)
+  4. python3 extract_posts.py && git add -A && git commit -m "..." && git push
+
