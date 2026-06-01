@@ -108,9 +108,30 @@ Now go ahead and laugh a little !
 Cheers!
 Tara Sparkle </div>
 
-## Teeth #5 & #6
+## Tooth #5
 
 Your 5th tooth fell a long time ago. You invited tooth fairy "When you are free come here and go"
+
+
+
+![Arya's invitation on heart note (back of paper)](/uploads/abk/twelve.png)
+
+
+<div class="letter-box letter-child">Hello miss
+when your free
+come here okay 
+and go</div>
+
+![Tooth fairy reply on heart note](/uploads/abk/eleven.png)
+
+<div class="letter-box letter-fairy">Dear Arya,
+    Will do!
+Thanks for brushing daily! You will get strong tooth!
+Make a wish next time!
+    -Tooth fairy</div>
+
+## Tooth #6 - 10/26/2025
+
 
 Your 6th fell on 10/26/2025. You quizzed tooth fairy this time.
 
@@ -132,24 +153,6 @@ YOU LOOK BEAUTIFUL! THANK YOU FOR MINT CANDY :)
 HAPPY HALOWEEN :)</div>
 
 Day before, first you suspected if your dad stole the presents Santa gave you, but in a split second you asked if your dad was the one who kept presents. Somehow the topic was changed, but it is funny to switch from a thief to a donor in a split second. 
-
-
-![Arya's invitation on heart note (back of paper)](/uploads/abk/twelve.png)
-
-
-<div class="letter-box letter-child">Hello miss
-when your free
-come here okay 
-and go</div>
-
-![Tooth fairy reply on heart note](/uploads/abk/eleven.png)
-
-<div class="letter-box letter-fairy">Dear Arya,
-    Will do!
-Thanks for brushing daily! You will get strong tooth!
-Make a wish next time!
-    -Tooth fairy</div>
-
 
 
 Currently there is still magic in fairy land and your life. 🥰
@@ -176,7 +179,7 @@ You have done a lot this year and grown tall...
 Your tooth magic fairy dust is helping me a lot. Read a lot... I have some books for you.... Be kind and nice... Ho! Ho! Ho!! 
 Santa</div>
 
-## January 2026
+## Tooth #7 January 2026
 
 one tooth on 1/5 or so.
 
@@ -245,7 +248,7 @@ who hides gold and plays tricks. I don't
 usually give gifts. But found something
 for you!</div>
 
-## May 25, 2026
+## Tooth #8 May 25, 2026
 
 latest tooth fell on 5/25 or so.
 
