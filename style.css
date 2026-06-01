@@ -7,13 +7,13 @@ body {
 .container { max-width: 760px; margin: 0 auto; padding: 24px; }
 
 /* ── Header ── */
-header { background: #f8f8f8; border-bottom: 1px solid #eee; }
-header .container { display: flex; flex-direction: column; align-items: flex-start; }
-header h1 { margin: 12px 0 0; font-size: 22px; }
-header h1 a { color: #111; text-decoration: none; }
-header .tagline { margin: 0 0 12px; color: #666; font-size: 14px; }
+body > header { background: #f8f8f8; border-bottom: 1px solid #eee; }
+body > header .container { display: flex; flex-direction: column; align-items: flex-start; }
+body > header h1 { margin: 12px 0 0; font-size: 22px; }
+body > header h1 a { color: #111; text-decoration: none; }
+body > header .tagline { margin: 0 0 12px; color: #666; font-size: 14px; }
 @media (min-width: 760px) {
-  header .container { flex-direction: row; justify-content: space-between; align-items: center; }
+  body > header .container { flex-direction: row; justify-content: space-between; align-items: center; }
 }
 
 /* ── Links ── */
@@ -116,4 +116,70 @@ footer { border-top: 1px solid #eee; padding: 24px; text-align: center; color: #
 .letter-fairy {
   background: #fff8dc;
   border-left: 4px solid #d4a017;
+}
+
+
+/* ── Collection pages without the main site masthead ── */
+.plain-post-page main.container,
+.abk-page main.container { padding-top: 42px; }
+
+.plain-post-page .post-header,
+.abk-page .post-header { border-bottom: 1px solid #eee; margin-bottom: 24px; padding-bottom: 12px; }
+
+/* ── ABK pages — warmer family-story theme ── */
+body.abk-page {
+  background:
+    radial-gradient(circle at top left, rgba(255, 210, 153, 0.45), transparent 34rem),
+    linear-gradient(180deg, #fffaf1 0%, #fff 44rem);
+  color: #3d2b1f;
+}
+
+.abk-page .container { max-width: 820px; }
+
+.abk-page main.container {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(139, 92, 49, 0.14);
+  border-radius: 18px;
+  box-shadow: 0 18px 55px rgba(95, 58, 20, 0.09);
+  margin-top: 28px;
+}
+
+.abk-page h2 { color: #7a3e18; letter-spacing: -0.02em; }
+
+.abk-page a { color: #9a4f16; }
+
+.abk-page .nav-home {
+  display: inline-block;
+  margin-bottom: 18px;
+  color: #7a3e18;
+  font-weight: 600;
+}
+
+.abk-page .post-list li {
+  background: #fff8e8;
+  border: 1px solid rgba(154, 79, 22, 0.16);
+  border-radius: 12px;
+  margin: 10px 0;
+  padding: 14px 16px;
+}
+
+.abk-page .post-content img {
+  border: 10px solid #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(64, 40, 19, 0.15);
+}
+
+.abk-page .letter-box {
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(64, 40, 19, 0.08);
+}
+
+.abk-page .letter-child {
+  background: #f5ecff;
+  border-left-color: #9b6bd3;
+}
+
+.abk-page .letter-fairy {
+  background: #fff4c8;
+  border-left-color: #d79218;
 }
