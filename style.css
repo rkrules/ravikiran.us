@@ -98,3 +98,22 @@ footer { border-top: 1px solid #eee; padding: 24px; text-align: center; color: #
 
 /* ── Nav home link ── */
 .nav-home { font-size: 14px; }
+
+/* ── Letter transcription boxes ── */
+.letter-box {
+  border-radius: 6px;
+  padding: 1em 1.25em;
+  margin: 0.75em 0 1.25em 0;
+  font-family: Georgia, serif;
+  font-size: 0.95em;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.letter-child {
+  background: #f3eaff;
+  border-left: 4px solid #a77fd4;
+}
+.letter-fairy {
+  background: #fff8dc;
+  border-left: 4px solid #d4a017;
+}

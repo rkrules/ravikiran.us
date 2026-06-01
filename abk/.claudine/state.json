@@ -1,0 +1,74 @@
+{
+  "conversations": [
+    {
+      "id": "a8a36726-8e30-4a7c-ae4b-1ee1bab7b1a7",
+      "title": "In my previous attempt when you took the tooth fairy draft and modified conte...",
+      "description": "Let me explore the current state of the tooth fairy post and draft before planning.",
+      "category": "task",
+      "status": "in-review",
+      "lastMessage": "Done. HTML regenerated at `abk/the-tooth-fairy-chronicles.html`.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Bash",
+        "summary": "cd /Users/ravikiran/Apps/claude/ravikiran.us && python3 extract_posts.py 2>&1...",
+        "outputHint": "6 lines of output",
+        "status": "completed"
+      },
+      "referencedImage": "/Users/ravikiran/Apps/claude/ravikiran.us/uploads/tooth-fairy/four.jpg",
+      "createdAt": "2026-05-31T20:30:57.851Z",
+      "updatedAt": "2026-05-31T23:29:00.163Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us-abk/a8a36726-8e30-4a7c-ae4b-1ee1bab7b1a7.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us/abk",
+      "provider": "claude-code",
+      "shortId": "T-275",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%236b7280%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2214%22%20y%3D%2222%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(340%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2226%2C28%2032%2C40%2020%2C40%22%20fill%3D%22hsl(340%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Ccircle%20cx%3D%2234%22%20cy%3D%2242%22%20r%3D%228%22%20fill%3D%22hsl(340%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2238%22%20y%3D%2246%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(340%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E"
+    },
+    {
+      "id": "74ebfb16-9730-4845-a146-8d969920410a",
+      "title": "create a post based on content in tooth_fairy.md - reformat and resize images...",
+      "description": "There's a gstack upgrade available (1.15.0.0 → 1.54.0.0). Let me check the upgrade options.",
+      "category": "bug",
+      "status": "in-review",
+      "lastMessage": "Pushed. Give it ~60 seconds then check **ravikiran.us/abk/the-tooth-fairy-chronicles.html**.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Bash",
+        "summary": "cd /Users/ravikiran/Apps/claude/ravikiran.us && git push",
+        "outputHint": "To github.com:rkrules/ravikiran.us.git\n   c525ab7..86788ec  main -> main\nShell cwd was reset to /Use...",
+        "status": "completed"
+      },
+      "createdAt": "2026-05-30T20:01:05.919Z",
+      "updatedAt": "2026-05-30T20:47:06.245Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us-abk/74ebfb16-9730-4845-a146-8d969920410a.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us/abk",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%23ef4444%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2226%22%20cy%3D%2242%22%20r%3D%224%22%20fill%3D%22hsl(120%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2238%22%20y%3D%2210%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(120%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2214%2C26%2018%2C34%2010%2C34%22%20fill%3D%22hsl(120%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-273"
+    }
+  ],
+  "lastUpdated": "2026-06-01T00:54:59.459Z"
+}
