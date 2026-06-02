@@ -296,6 +296,16 @@ def read_md_posts(directory):
     return posts
 
 
+BODY_CLASSES = {
+    'abk':        'abk-page',
+    'wedding':    'plain-post-page',
+    'blog':       'plain-post-page',
+    'notes':      'plain-post-page',
+    'status':     'plain-post-page',
+    'journal':    'plain-post-page',
+    'newsletter': 'plain-post-page',
+}
+
 def generate_html(post, blog_type='main'):
     title = html.escape(post['title'] if post['title'] else 'Untitled')
     content = clean_wp_content(post['content'])
@@ -319,6 +329,17 @@ def generate_html(post, blog_type='main'):
         tags = ' '.join(f'<span class="tag">{html.escape(c)}</span>' for c in cats)
         cats_html = f'\n      <div class="post-tags">{tags}</div>'
 
+    body_class = BODY_CLASSES.get(blog_type, '')
+    body_tag = f'<body class="{body_class}">' if body_class else '<body>'
+    masthead = '' if body_class else '''  <header>
+    <div class="container">
+      <h1><a href="/">Ravikiran Rajagopal</a></h1>
+      <p class="tagline">Product, tech, and life</p>
+    </div>
+  </header>
+
+'''
+
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -327,15 +348,8 @@ def generate_html(post, blog_type='main'):
   <title>{title} - Ravikiran Rajagopal</title>
   <link rel="stylesheet" href="/style.css">
 </head>
-<body>
-  <header>
-    <div class="container">
-      <h1><a href="/">Ravikiran Rajagopal</a></h1>
-      <p class="tagline">Product, tech, and life</p>
-    </div>
-  </header>
-
-  <main class="container">
+{body_tag}
+{masthead}  <main class="container">
     <article>
       <header class="post-header">
         <h2>{title}</h2>
@@ -359,7 +373,7 @@ def generate_html(post, blog_type='main'):
 </html>'''
 
 
-def generate_index(posts, title, description, show_back=False, note=None):
+def generate_index(posts, title, description, show_back=False, note=None, body_class='plain-post-page'):
     items = []
     for p in posts:
         pt = html.escape(p['title'] if p['title'] else 'Untitled')
@@ -370,6 +384,15 @@ def generate_index(posts, title, description, show_back=False, note=None):
     items_html = "\n".join(items)
     nav = '<p><a href="/" class="nav-home">&larr; Home</a></p>\n      ' if show_back else ''
     note_html = f'<p class="section-note">{html.escape(note)}</p>\n      ' if note else ''
+    body_tag = f'<body class="{body_class}">' if body_class else '<body>'
+    masthead = '' if body_class else f'''  <header>
+    <div class="container">
+      <h1><a href="/">Ravikiran Rajagopal</a></h1>
+      <p class="tagline">{html.escape(description)}</p>
+    </div>
+  </header>
+
+'''
 
     return f'''<!DOCTYPE html>
 <html lang="en">
@@ -379,15 +402,8 @@ def generate_index(posts, title, description, show_back=False, note=None):
   <title>{html.escape(title)} - Ravikiran Rajagopal</title>
   <link rel="stylesheet" href="/style.css">
 </head>
-<body>
-  <header>
-    <div class="container">
-      <h1><a href="/">Ravikiran Rajagopal</a></h1>
-      <p class="tagline">{html.escape(description)}</p>
-    </div>
-  </header>
-
-  <main class="container">
+{body_tag}
+{masthead}  <main class="container">
     <section>
       <h2>{html.escape(title)}</h2>
       {nav}{note_html}<ul class="post-list">
@@ -494,7 +510,7 @@ def main():
     with open('abk/index.html', 'w', encoding='utf-8') as f:
         f.write(generate_index(
             abk_posts, 'ABK', 'Family stories and memories',
-            show_back=True,
+            show_back=True, body_class='abk-page',
         ))
 
     print(f"\nDone!")
