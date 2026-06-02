@@ -298,7 +298,7 @@ def read_md_posts(directory):
 
 BODY_CLASSES = {
     'abk':        'abk-page',
-    'wedding':    'plain-post-page',
+    'wedding':    'wedding-page',
     'blog':       'plain-post-page',
     'notes':      'plain-post-page',
     'status':     'plain-post-page',
@@ -492,7 +492,7 @@ def main():
         f.write(generate_index(status_posts, 'Status Updates', 'Short thoughts and links', show_back=True))
 
     with open('wedding/index.html', 'w', encoding='utf-8') as f:
-        f.write(generate_index(wedding_posts, 'Wedding', 'Our wedding, 2012–2013', show_back=True))
+        f.write(generate_index(wedding_posts, 'Wedding', 'Our wedding, 2012–2013', show_back=True, body_class='wedding-page'))
 
     with open('journal/index.html', 'w', encoding='utf-8') as f:
         f.write(generate_index(
