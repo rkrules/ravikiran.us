@@ -183,3 +183,9 @@ body.abk-page {
   background: #fff4c8;
   border-left-color: #d79218;
 }
+
+@media (max-width: 600px) {
+  .letter-box {
+    white-space: normal;
+  }
+}

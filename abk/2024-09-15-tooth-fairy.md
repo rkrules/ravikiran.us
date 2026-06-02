@@ -137,7 +137,7 @@ Your 6th fell on 10/26/2025. You quizzed tooth fairy this time.
 
 ![The quiz letter](/uploads/abk/nine.jpg)
 
-<div class="letter-box letter-child">anything Dear Tooth fairy can I have some
+<div class="letter-box letter-child"> Dear Tooth fairy can I have some
 Toothfairy dust? I will ask
 Santa for leftover tooth
 dust. anything you want. I will give you a quiz.
@@ -228,9 +228,9 @@ Tooth fairy sent the below picture to Arya's mom's phone
 ![Fairyland](/uploads/abk/nineteen.jpg)
 
 
-## Casual letter to Leprachaun
+## Casual letter to Leprechaun
 
-casual letter to Leprachaun
+casual letter to Leprechaun
 
 ![Casual letter to Leprechaun](/uploads/abk/fifteen.jpg)
 
