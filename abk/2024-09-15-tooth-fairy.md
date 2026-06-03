@@ -55,9 +55,9 @@ Also you recruited Tooth Fairy to give you idea to continue your story ! Talk ab
 
 <div class="letter-box letter-child">Dear Thooth Firy
 What is your name 
-(write name here with a box)
+(write name here with a box)becareful
 here is a present for you. and What should I put in my story
-becareful
+
 </div>
 
 
@@ -265,7 +265,7 @@ place... TELL Me Were. I wish
 you knew about me! What really
 bothers a dragon? Having a inflamed thr
 oat!
-*I want the boy, tooth fairys in there favorite background!</div>
+</div>
 
 <div class="letter-box letter-fairy">Dear Arya,
     I did hear about your injury. Be gentle with it, because 
