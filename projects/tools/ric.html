@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<!-- Source: /Users/ravikiran/Apps/claude/RIC/RIC/index.html -->
+<html>
+  <head>
+    <title>Retirement Income Calculator</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      .container {
+        display: flex;
+      }
+      .d-flex { display: flex; }
+      .d-inline-flex { display: inline-flex; }
+      .flex-row            { flex-direction: row; }
+      .flex-row-reverse    { flex-direction: row-reverse; }
+      .flex-column         { flex-direction: column; }
+      .flex-column-reverse { flex-direction: column-reverse; }
+      .flex-1        { flex: 1; }
+      .flex-auto     { flex: auto; }
+      .flex-grow-0   { flex-grow: 0; }
+      .flex-shrink-0 { flex-shrink: 0; }
+
+      .some-page-wrapper {
+        margin: 15px;
+      }
+
+      .row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+      }
+
+      .column {
+        display: flex;
+        flex-direction: column;
+        flex-basis: 100%;
+        flex: 1;
+      }
+
+      canvas {
+        width: 400px !important;
+        height: 600px !important;
+      }
+
+      input.form-control,
+      textarea.form-control,
+      select.form-control {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0.5rem 0.6rem !important;
+        margin: 0.25rem 0 0.5rem 0 !important;
+        border: 1px solid rgba(0, 0, 0, 0.15) !important;
+        border-radius: 4px !important;
+        background: #fff !important;
+        color: #222 !important;
+        font-size: 1rem !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+      }
+
+      input.input-lg {
+        padding: 0.7rem 0.8rem;
+        font-size: 1.125rem;
+      }
+
+      .btn {
+        padding: 0.45rem 0.9rem;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Hello Calculator!</h1>
+    <div class="some-page-wrapper">
+      <div class="row">
+        <div class="column">
+          <div class="chart-container">
+            <canvas id="myChart"></canvas>
+          </div>
+        </div>
+        <div class="column">
+          Inputs
+          <form>
+            <div class="row">
+              <div class="column">Enter Years Left to Retirement</div>
+              <div class="column">
+                <input class="form-control input-lg" type="number" placeholder="Retirement Age" aria-label="Large input" id="retage" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="column">Current Savings</div>
+              <div class="column">
+                <input class="form-control input-lg" type="number" placeholder="Current Savings" aria-label="Large input" id="savings" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="column">Yearly Recurring Savings</div>
+              <div class="column">
+                <input class="form-control input-lg" type="number" placeholder="Yearly Recurring Savings" aria-label="Large input" id="yearly" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="column">Salary</div>
+              <div class="column">
+                <input class="form-control input-lg" type="number" placeholder="Salary" aria-label="Large input" id="salary" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="column">Savings Rate</div>
+              <div class="column">
+                <input class="form-control input-lg" type="number" placeholder="Savings Rate" aria-label="Large input" id="savingsrate" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="column">Current Monthly Expenses</div>
+              <div class="column">
+                <input class="form-control input-lg" type="number" placeholder="Monthly Expenses" aria-label="Large input" id="expenses" />
+              </div>
+              <div class="row">
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-large btn-outline-blue mr-2" id="submitbutton">
+                    Save changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="column" align="right">
+          Notes:<br />
+          Takes in input ... and tells you how much you will have in retirement.
+          Savings rate will be converted to %. Expenses is monthly, and the graph is monthly in future.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- calc.js ---
+      const IncomeReplacement = 2; // 0 for income replacement, 1 for expenses, 2 for comparison
+      const ExpenseReplacement = 1; // 0 for expenses future value, 1 for expenses of year -1 and income replacement ratio applied
+
+      let numInput = [0, 0, 0];
+      let strLabels = ["Income Need", "Your Savings", "Gap"];
+
+      let numYearsToRetirement = 25;
+      let numCurrentSavings = 50000;
+      let numYearlySavings = 0;
+      let numYearlySavingsRate = 4 / 100;
+      let numSalary = 100000;
+      let numCurrentExpenses = 0;
+
+      // Assumptions
+      const numSalaryGrowthRate = 0.01;
+      const numYearsinRetirement = 2;
+      const numInvestmentGrowthRate = 0.02;
+      const numIncomeReplacementRatio = 0.8;
+      const numInflationRate = numSalaryGrowthRate;
+
+      let numIncomeNeed = 0;
+      let numGap = 0;
+      let numFutureMonthly = 0;
+      let numExpInRet = 0;
+
+      function getUInput(num1, num2, num3, num4, num5, num6) {
+        numYearsToRetirement = num1;
+        numSalary = num2;
+        numCurrentSavings = num3;
+        numYearlySavings = num4;
+        numYearlySavingsRate = num5 / 100;
+        numCurrentExpenses = num6 * 12;
+        doCalc();
+      }
+
+      function calcFV(numPV, numYears, numRate) {
+        return numPV * Math.pow(1 + numRate, numYears);
+      }
+
+      function calcFVofAnnuity(numYearly, numYears, numRate) {
+        let temp = Math.pow(1 + numRate, numYears) - 1;
+        return numYearly * (temp / numRate);
+      }
+
+      function calcIncomeNeed() {
+        let numIncomeBeforeRetirement = calcFV(numSalary, numYearsToRetirement - 1, numSalaryGrowthRate);
+        return numIncomeBeforeRetirement * numIncomeReplacementRatio;
+      }
+
+      function calcMoneyAtRetirement() {
+        let numFVofCurrentSavings = calcFV(numCurrentSavings, numYearsToRetirement, numInvestmentGrowthRate);
+        let numFVofYearlySavings = calcFVofAnnuity(numYearlySavings, numYearsToRetirement, numInvestmentGrowthRate);
+        let numFVofYearlySavingsBasedOnRate = calcFVofAnnuity(
+          numYearlySavingsRate * numSalary,
+          numYearsToRetirement,
+          numInvestmentGrowthRate + numSalaryGrowthRate
+        );
+        return numFVofCurrentSavings + numFVofYearlySavings + numFVofYearlySavingsBasedOnRate;
+      }
+
+      function calcExpensesInRet() {
+        if (ExpenseReplacement === 0) {
+          numExpInRet = calcFV(numCurrentExpenses, numYearsToRetirement, numInflationRate);
+        } else {
+          numExpInRet = numIncomeReplacementRatio * calcFV(numCurrentExpenses, numYearsToRetirement - 1, numInflationRate);
+        }
+        return numExpInRet;
+      }
+
+      function doCalc() {
+        numExpInRet = calcExpensesInRet() / 12;
+        numIncomeNeed = calcIncomeNeed() / 12;
+        numFutureMonthly = calcMoneyAtRetirement() / (12 * numYearsinRetirement);
+
+        if (IncomeReplacement === 1) {
+          numIncomeNeed = numExpInRet;
+        } else if (IncomeReplacement === 2) {
+          numIncomeNeed = Math.max(numIncomeNeed, numExpInRet);
+        }
+
+        numGap = numIncomeNeed - numFutureMonthly;
+
+        if (numGap > 0) {
+          numInput[0] = Math.round(numFutureMonthly);
+          numInput[1] = Math.round(numGap);
+          numInput[2] = Math.round(numIncomeNeed);
+          strLabels[0] = "Money At Retirement";
+          strLabels[1] = "Gap";
+          strLabels[2] = "Income Need";
+        } else {
+          numInput[0] = Math.round(numIncomeNeed);
+          numInput[1] = -1 * Math.round(numGap);
+          numInput[2] = Math.round(numFutureMonthly);
+          strLabels[2] = "Money At Retirement";
+          strLabels[1] = "Surplus";
+          strLabels[0] = "Income Need";
+        }
+      }
+
+      // --- index.js ---
+      var myChart;
+
+      function numberWithCommas(x) {
+        return (
+          "$ " +
+          x.toFixed(0).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+        );
+      }
+
+      function drawGraph() {
+        var ctx = document.getElementById("myChart").getContext("2d");
+        myChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: ["Calculator"],
+            datasets: [
+              {
+                label: strLabels[0],
+                data: [numInput[0]],
+                backgroundColor: "rgba(192, 75, 192, 0.5)"
+              },
+              {
+                label: strLabels[1],
+                data: [numInput[1]],
+                backgroundColor: "rgba(192, 0, 0, 1)"
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: "right"
+            },
+            layout: {
+              padding: { left: 0, right: 0, top: 0, bottom: 0 }
+            },
+            tooltips: {
+              callbacks: {
+                label: function (tooltipItem, data) {
+                  var label = data.datasets[tooltipItem.datasetIndex].label || "";
+                  if (label) { label += ": "; }
+                  label += numberWithCommas(tooltipItem.yLabel);
+                  return label;
+                }
+              }
+            },
+            scales: {
+              xAxes: [
+                {
+                  beginAtZero: false,
+                  stacked: true,
+                  gridLines: {
+                    color: "rgba(0, 0, 0, 0)",
+                    display: false,
+                    offsetGridLines: true,
+                    offset: false
+                  }
+                }
+              ],
+              yAxes: [
+                {
+                  gridLines: {
+                    color: "rgba(0, 0, 0, 0)",
+                    display: false
+                  },
+                  stacked: true,
+                  ticks: {
+                    beginAtZero: false,
+                    callback: function (value) {
+                      return numberWithCommas(value);
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        });
+      }
+
+      document.getElementById("submitbutton").addEventListener("click", function (event) {
+        getUInput(
+          document.getElementById("retage").value,
+          document.getElementById("salary").value,
+          document.getElementById("savings").value,
+          document.getElementById("yearly").value,
+          document.getElementById("savingsrate").value,
+          document.getElementById("expenses").value
+        );
+        if (myChart) {
+          myChart.destroy();
+        }
+        drawGraph();
+        event.preventDefault();
+      });
+    </script>
+  </body>
+</html>

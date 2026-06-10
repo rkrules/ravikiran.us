@@ -1,0 +1,51 @@
+Fix: Duplicated letter content in tooth fairy HTML
+
+ Context
+
+ The generated HTML for the-tooth-fairy-chronicles.html contains the line
+ *I want the boy, tooth fairys in there favorite background! appearing twice —
+ once
+ correctly in the "Casual letter to Tooth Fairy" section, and again incorrectly
+ at the end
+ of the "Tooth #8" child letter div. It doesn't belong there at all.
+
+ Root cause
+
+ In extract_posts.py line 287:
+
+ content = md_lib.markdown(content, extensions=['extra', 'smarty'])
+
+ The extra extension in Python-markdown 3.x bundles the md_in_html
+ sub-extension, which
+ processes markdown syntax inside raw HTML blocks. When the Python markdown
+ parser sees
+ the * at the start of *I want the boy... inside a <div>, it treats it as a
+ markdown
+ token (italic/list marker). This corrupts the internal stash/placeholder
+ mechanism that
+ Python markdown uses for raw HTML blocks, causing that content to spill into
+ the next
+ <div> block — the Tooth #8 child letter.
+
+ The bug reproduces because:
+ - The "Casual letter" div ends with *I want the boy...</div> on one line (no
+ blank line before </div>)
+ - The * triggers md_in_html processing mid-block
+ - The next raw HTML div (Tooth #8) inherits the leaked content when the stash
+ is flushed
+
+ Fix
+
+ File: extract_posts.py — line 287
+
+ Change:
+ content = md_lib.markdown(content, extensions=['extra', 'smarty'])
+ To:
+ content = md_lib.markdown(content, extensions=['tables', 'smarty'])
+
+ This drops md_in_html (and other unused extra sub-extensions like fenced_code,
+ footnotes, abbr, def_list, attr_list) while keeping tables (used throughout
+ the
+ site per CLAUDE.md) and smarty (smart quotes). Raw HTML <div
+ class="letter-box"> blocks
+ will be passed through untouched as they should be.

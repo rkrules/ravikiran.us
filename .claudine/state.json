@@ -1,0 +1,350 @@
+{
+  "conversations": [
+    {
+      "id": "b8074085-7666-45a9-9552-06e2677b4507",
+      "title": "I updated the md file 2024-09-15-tooth-fairy.md , can",
+      "description": "This is a straightforward task — the CLAUDE.md already documents the exact command needed. Let me write a quick plan and get approval.",
+      "category": "improvement",
+      "status": "in-review",
+      "lastMessage": "Pushed. Both `ravikiran_us_briefing.md` and `resume-copy-update.md` are now in the repo.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": true
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Bash",
+        "summary": "git -C /Users/ravikiran/Apps/claude/ravikiran.us add ravikiran_us_briefing.md...",
+        "outputHint": "6 lines of output",
+        "status": "completed"
+      },
+      "createdAt": "2026-06-01T16:27:55.309Z",
+      "updatedAt": "2026-06-02T02:21:35.754Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-Users-ravikiran-Apps-claude-ravikiran-us-abk/b8074085-7666-45a9-9552-06e2677b4507.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us/abk",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%23f59e0b%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2220%22%20cy%3D%2230%22%20r%3D%227%22%20fill%3D%22hsl(246%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2226%22%20y%3D%2236%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(246%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2240%2C43%2047%2C57%2033%2C57%22%20fill%3D%22hsl(246%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-300",
+      "previousStatus": "in-review"
+    },
+    {
+      "id": "a8a36726-8e30-4a7c-ae4b-1ee1bab7b1a7",
+      "title": "In my previous attempt when you took the tooth fairy draft and modified conte...",
+      "description": "Let me explore the current state of the tooth fairy post and draft before planning.",
+      "category": "task",
+      "status": "in-review",
+      "lastMessage": "Done. HTML regenerated at `abk/the-tooth-fairy-chronicles.html`.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Bash",
+        "summary": "cd /Users/ravikiran/Apps/claude/ravikiran.us && python3 extract_posts.py 2>&1...",
+        "outputHint": "6 lines of output",
+        "status": "completed"
+      },
+      "referencedImage": "/Users/ravikiran/Apps/claude/ravikiran.us/uploads/tooth-fairy/four.jpg",
+      "createdAt": "2026-05-31T20:30:57.851Z",
+      "updatedAt": "2026-05-31T23:29:00.163Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us-abk/a8a36726-8e30-4a7c-ae4b-1ee1bab7b1a7.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us/abk",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%236b7280%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2214%22%20y%3D%2222%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(340%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2226%2C28%2032%2C40%2020%2C40%22%20fill%3D%22hsl(340%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Ccircle%20cx%3D%2234%22%20cy%3D%2242%22%20r%3D%228%22%20fill%3D%22hsl(340%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2238%22%20y%3D%2246%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(340%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-275"
+    },
+    {
+      "id": "74ebfb16-9730-4845-a146-8d969920410a",
+      "title": "create a post based on content in tooth_fairy.md - reformat and resize images...",
+      "description": "There's a gstack upgrade available (1.15.0.0 → 1.54.0.0). Let me check the upgrade options.",
+      "category": "bug",
+      "status": "in-review",
+      "lastMessage": "Pushed. Give it ~60 seconds then check **ravikiran.us/abk/the-tooth-fairy-chronicles.html**.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Bash",
+        "summary": "cd /Users/ravikiran/Apps/claude/ravikiran.us && git push",
+        "outputHint": "To github.com:rkrules/ravikiran.us.git\n   c525ab7..86788ec  main -> main\nShell cwd was reset to /Use...",
+        "status": "completed"
+      },
+      "createdAt": "2026-05-30T20:01:05.919Z",
+      "updatedAt": "2026-05-30T20:47:06.245Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us-abk/74ebfb16-9730-4845-a146-8d969920410a.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us/abk",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%23ef4444%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2226%22%20cy%3D%2242%22%20r%3D%224%22%20fill%3D%22hsl(120%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2238%22%20y%3D%2210%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(120%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2214%2C26%2018%2C34%2010%2C34%22%20fill%3D%22hsl(120%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-273"
+    },
+    {
+      "id": "915f2c11-27c3-4d1a-8708-465428dc8e4d",
+      "title": "do one thing - in the ravikiran.us/projects, remove links for GA4 scripts sin...",
+      "description": "Let me explore the current projects section and the ai-products directory in parallel.",
+      "category": "task",
+      "status": "in-progress",
+      "lastMessage": "[...] tml`. The tools will be live at `ravikiran.us/projects/tools/` once GitHub Pages deploys (usually under a minute).",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": true,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Bash",
+        "summary": "cat /Users/ravikiran/Apps/claude/ravikiran.us/projects.md 2>/dev/null || echo...",
+        "outputHint": "10 lines of output",
+        "status": "completed"
+      },
+      "lastStatusText": "Interrupted",
+      "createdAt": "2026-05-30T02:10:35.757Z",
+      "updatedAt": "2026-05-30T02:52:11.136Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us/915f2c11-27c3-4d1a-8708-465428dc8e4d.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%236b7280%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpolygon%20points%3D%2221%2C23.5%2029.5%2C40.5%2012.5%2C40.5%22%20fill%3D%22hsl(95%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Ccircle%20cx%3D%2232%22%20cy%3D%2243%22%20r%3D%228%22%20fill%3D%22hsl(95%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2235.5%22%20y%3D%222.5%22%20width%3D%2215%22%20height%3D%2215%22%20fill%3D%22hsl(95%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2210%2C14%2017%2C28%203%2C28%22%20fill%3D%22hsl(95%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Ccircle%20cx%3D%2221%22%20cy%3D%2232%22%20r%3D%226.5%22%20fill%3D%22hsl(95%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-263",
+      "previousStatus": "in-review"
+    },
+    {
+      "id": "ee588eac-e625-45d8-9f8f-a86857183e44",
+      "title": "link these two in awards and resume html pages where relevant. https://www.qu...",
+      "description": "I'll explore the codebase to find the awards and resume HTML pages, and fetch both URLs simultaneously.",
+      "category": "improvement",
+      "status": "in-review",
+      "lastMessage": "[...] ighlights, /projects/ is the exhaustive directory. Anything on the homepage should have a full card on /projects/.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Edit",
+        "summary": ".../projects/index.html",
+        "outputHint": "The file /Users/ravikiran/Apps/claude/ravikiran.us/projects/index.html has been updated successfully...",
+        "status": "completed"
+      },
+      "createdAt": "2026-05-29T03:43:03.278Z",
+      "updatedAt": "2026-05-29T04:20:16.901Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us/ee588eac-e625-45d8-9f8f-a86857183e44.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%23f59e0b%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpolygon%20points%3D%2242%2C26%2046%2C34%2038%2C34%22%20fill%3D%22hsl(236%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Ccircle%20cx%3D%2230%22%20cy%3D%2218%22%20r%3D%228%22%20fill%3D%22hsl(236%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2212%22%20y%3D%2244%22%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22hsl(236%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2250%2C34%2054%2C42%2046%2C42%22%20fill%3D%22hsl(236%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Ccircle%20cx%3D%2238%22%20cy%3D%2226%22%20r%3D%228%22%20fill%3D%22hsl(236%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-264"
+    },
+    {
+      "id": "fd13774c-9a6d-4afd-b416-b82d9102739a",
+      "title": "1. http://ravikiran.us/resume/ resize images and present it better 2. email s...",
+      "description": "I'll explore the codebase in parallel to understand the current structure before planning.",
+      "category": "feature",
+      "status": "in-review",
+      "lastMessage": "[...] oys within 1–2 minutes of a push — if you're seeing stale content, a hard refresh (`Cmd+Shift+R`) should clear it.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Bash",
+        "summary": "git ls-remote origin HEAD",
+        "outputHint": "de3b3d2d61334082ba9d2f4eb69560d751d16f6c\tHEAD",
+        "status": "completed"
+      },
+      "createdAt": "2026-05-28T00:12:57.200Z",
+      "updatedAt": "2026-05-28T01:47:09.086Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us/fd13774c-9a6d-4afd-b416-b82d9102739a.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%2310b981%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpolygon%20points%3D%2219%2C22.5%2024.5%2C33.5%2013.5%2C33.5%22%20fill%3D%22hsl(317%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Ccircle%20cx%3D%2228%22%20cy%3D%2237%22%20r%3D%228%22%20fill%3D%22hsl(317%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2232.5%22%20y%3D%2241.5%22%20width%3D%229%22%20height%3D%229%22%20fill%3D%22hsl(317%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2246%2C4%2053%2C18%2039%2C18%22%20fill%3D%22hsl(317%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Ccircle%20cx%3D%2211%22%20cy%3D%2220%22%20r%3D%229.5%22%20fill%3D%22hsl(317%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-265"
+    },
+    {
+      "id": "3a78555e-6205-46a7-b0cb-844256b77c31",
+      "title": "I want you to create a html page with 2 tabs .. serves as my directory of AI ...",
+      "description": "Good, I have a solid picture of the projects and design language. Let me read the design system docs and the style.css to inform the plan.",
+      "category": "feature",
+      "status": "in-review",
+      "lastMessage": "[...] (Walk Challenge, Journal, ABK Math by those names) may have been renamed or replaced by you. Nothing left to push.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Bash",
+        "summary": "git fetch && git status",
+        "outputHint": "On branch main\nYour branch is up to date with 'origin/main'.\n\nnothing to commit, working tree clean",
+        "status": "completed"
+      },
+      "createdAt": "2026-05-24T21:53:17.557Z",
+      "updatedAt": "2026-05-28T01:45:17.695Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us/3a78555e-6205-46a7-b0cb-844256b77c31.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%2310b981%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2253%22%20cy%3D%2252%22%20r%3D%228.5%22%20fill%3D%22hsl(291%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2248%22%20y%3D%2247%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(291%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2251%2C44.5%2056.5%2C55.5%2045.5%2C55.5%22%20fill%3D%22hsl(291%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-254"
+    },
+    {
+      "id": "09175951-65ad-4818-8f3c-9dcc3af44245",
+      "title": "Hide most of the writing from index file except Newsletter, the resume is not...",
+      "description": "I'll start by exploring the site structure in parallel — index.html, the content sections, and the post inventory.",
+      "category": "feature",
+      "status": "in-review",
+      "lastMessage": "Committed — 871 files changed across the name rename, new pages, resume images, and audit CSV.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Bash",
+        "summary": "git commit -m \"$(cat <<'EOF'\nRename to Ravikiran Rajagopal, rebuild homepage/...",
+        "outputHint": "15 lines of output",
+        "status": "completed"
+      },
+      "createdAt": "2026-05-26T16:03:00.530Z",
+      "updatedAt": "2026-05-26T17:18:27.680Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us/09175951-65ad-4818-8f3c-9dcc3af44245.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%2310b981%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2242%22%20cy%3D%2230%22%20r%3D%224%22%20fill%3D%22hsl(312%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2226%22%20y%3D%2214%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(312%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2218%2C46%2022%2C54%2014%2C54%22%20fill%3D%22hsl(312%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-255"
+    },
+    {
+      "id": "047ab8ac-0785-4336-b314-7a415f8d32ab",
+      "title": "Doesn't look posts have images eg http://ravikiran.us/wedding/165.html",
+      "description": "Let me explore the site structure to understand the current state of images.",
+      "category": "task",
+      "status": "in-review",
+      "lastMessage": "```\nOr type `! git push origin main` in the prompt to run it here directly.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Bash",
+        "summary": "git push origin main",
+        "outputHint": "Permission for this action was denied by the Claude Code auto mode classifier. Reason: Pushing direc...",
+        "status": "completed"
+      },
+      "createdAt": "2026-05-24T21:46:18.271Z",
+      "updatedAt": "2026-05-24T21:55:17.061Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us/047ab8ac-0785-4336-b314-7a415f8d32ab.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%236b7280%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2226%22%20y%3D%2246%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(316%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2250%2C20%2056%2C32%2044%2C32%22%20fill%3D%22hsl(316%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%2246%22%20r%3D%228%22%20fill%3D%22hsl(316%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2242%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%228%22%20fill%3D%22hsl(316%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-253"
+    },
+    {
+      "id": "6e9b1043-7242-4dab-bf49-deaf0535d19e",
+      "title": "wp_rkblogs_2023_04_04.zip folder was the downloads I was provided from my hos...",
+      "description": "I'll explore the current state of the repository and the ZIP export before designing the restoration plan. Also, to answer your permissions question right away:",
+      "category": "feature",
+      "status": "in-review",
+      "lastMessage": "[...] ravikiran.us** — HTTPS will self-provision within the hour, then you can flip the switch in GitHub Pages settings.",
+      "agents": [
+        {
+          "id": "claude-main",
+          "name": "Claude",
+          "avatar": "",
+          "isActive": false
+        }
+      ],
+      "gitBranch": "main",
+      "hasError": false,
+      "isInterrupted": false,
+      "hasQuestion": false,
+      "isRateLimited": false,
+      "lastActivity": {
+        "toolName": "Write",
+        "summary": ".../memory/MEMORY.md",
+        "outputHint": "File created successfully at: /Users/ravikiran/.claude/projects/-Users-ravikiran-Apps-claude-ravikir...",
+        "status": "completed"
+      },
+      "createdAt": "2026-05-23T21:00:55.462Z",
+      "updatedAt": "2026-05-24T21:48:43.273Z",
+      "filePath": "/Users/ravikiran/.claude/projects/-users-ravikiran-apps-claude-ravikiran-us/6e9b1043-7242-4dab-bf49-deaf0535d19e.jsonl",
+      "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us",
+      "provider": "claude-code",
+      "icon": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%2310b981%22%20opacity%3D%220.1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%224.5%22%20y%3D%227.5%22%20width%3D%2217%22%20height%3D%2217%22%20fill%3D%22hsl(211%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Cpolygon%20points%3D%2216%2C13%2022%2C25%2010%2C25%22%20fill%3D%22hsl(211%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Ccircle%20cx%3D%2219%22%20cy%3D%2222%22%20r%3D%229.5%22%20fill%3D%22hsl(211%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%3Crect%20x%3D%2215%22%20y%3D%2218%22%20width%3D%2214%22%20height%3D%2214%22%20fill%3D%22hsl(211%2C%2060%25%2C%2050%25)%22%20opacity%3D%220.7%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E",
+      "shortId": "T-251",
+      "previousStatus": "todo"
+    }
+  ],
+  "lastUpdated": "2026-06-02T02:21:47.570Z"
+}

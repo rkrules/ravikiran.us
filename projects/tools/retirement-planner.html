@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<!-- Source: /Users/ravikiran/Apps/claude/RIC/RetirementPlanner/index.html -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Retirement Planner</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+  <style>
+    body {
+      background: #f4f6f9;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+    .app-header {
+      background: linear-gradient(135deg, #151965 0%, #1a3a8f 100%);
+      color: white;
+      padding: 2rem 0 1.5rem;
+    }
+    .app-header h1 { font-size: 1.8rem; font-weight: 700; margin: 0; }
+    .app-header p  { margin: 0.3rem 0 0; opacity: 0.8; font-size: 0.95rem; }
+
+    .card { border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    .card-title { font-weight: 600; font-size: 1rem; color: #151965; margin-bottom: 1.25rem; }
+
+    .form-label { font-size: 0.875rem; font-weight: 500; color: #444; margin-bottom: 0.3rem; }
+    .form-control { border-radius: 8px; border-color: #dce1ea; }
+    .form-control:focus { border-color: #46b5d1; box-shadow: 0 0 0 3px rgba(70,181,209,0.2); }
+    .input-prefix {
+      background: #f0f2f7;
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .input-group .form-control { border-radius: 0 8px 8px 0; }
+
+    .btn-calculate {
+      background: linear-gradient(135deg, #151965, #1a3a8f);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 2rem;
+      font-weight: 600;
+      width: 100%;
+      transition: opacity 0.2s;
+    }
+    .btn-calculate:hover { opacity: 0.88; color: white; }
+
+    /* Result badges */
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem; }
+    .result-item {
+      background: #f0f2f7;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      text-align: center;
+    }
+    .result-item .label { font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.04em; }
+    .result-item .value { font-size: 1.1rem; font-weight: 700; color: #151965; margin-top: 0.2rem; }
+    .result-item.gap    .value { color: #c0392b; }
+    .result-item.surplus .value { color: #27ae60; }
+
+    .chart-wrap {
+      position: relative;
+      height: 320px;
+    }
+
+    /* Advanced settings */
+    .adv-toggle {
+      background: none;
+      border: none;
+      color: #46b5d1;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0;
+      cursor: pointer;
+    }
+    .adv-toggle:hover { text-decoration: underline; }
+
+    .adv-row label { font-size: 0.82rem; color: #555; }
+    .adv-row .form-control { font-size: 0.875rem; padding: 0.35rem 0.6rem; }
+
+    .note-text { font-size: 0.8rem; color: #888; margin-top: 0.5rem; }
+
+    footer { background: #151965; color: rgba(255,255,255,0.6); font-size: 0.8rem; padding: 1rem 0; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="app-header mb-4">
+  <div class="container">
+    <h1>Retirement Planner</h1>
+    <p>Estimate your retirement income gap and plan ahead.</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="row g-4">
+
+    <!-- Inputs -->
+    <div class="col-lg-5">
+      <div class="card p-4 h-100">
+        <div class="card-title">Your Information</div>
+
+        <div class="mb-3">
+          <label class="form-label">Years Left to Retire</label>
+          <input type="number" id="retage" class="form-control" placeholder="e.g. 25" value="25" min="1" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Current Savings</label>
+          <div class="input-group">
+            <span class="input-group-text input-prefix">$</span>
+            <input type="number" id="savings" class="form-control" placeholder="e.g. 50000" value="50000" min="0" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Yearly Savings (fixed amount)</label>
+          <div class="input-group">
+            <span class="input-group-text input-prefix">$</span>
+            <input type="number" id="yearly" class="form-control" placeholder="e.g. 500" value="500" min="0" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Current Salary</label>
+          <div class="input-group">
+            <span class="input-group-text input-prefix">$</span>
+            <input type="number" id="salary" class="form-control" placeholder="e.g. 45000" value="45000" min="0" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Yearly Savings Rate <span class="text-muted">(% of salary)</span></label>
+          <div class="input-group">
+            <input type="number" id="savingsrate" class="form-control" placeholder="e.g. 4" value="4" min="0" max="100" />
+            <span class="input-group-text" style="border-radius:0 8px 8px 0;background:#f0f2f7;font-size:.85rem;color:#666">%</span>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Current Monthly Expenses</label>
+          <div class="input-group">
+            <span class="input-group-text input-prefix">$</span>
+            <input type="number" id="expenses" class="form-control" placeholder="e.g. 4000" value="4000" min="0" />
+          </div>
+        </div>
+
+        <!-- Advanced Settings -->
+        <div class="mb-3">
+          <button class="adv-toggle" type="button" onclick="toggleAdv()">
+            ▸ Advanced Assumptions
+          </button>
+          <div id="advSection" style="display:none;margin-top:0.75rem">
+            <div class="row g-2 adv-row">
+              <div class="col-6">
+                <label class="form-label">Investment Growth Rate</label>
+                <div class="input-group input-group-sm">
+                  <input type="number" id="adv-growth" class="form-control" value="2" step="0.1" min="0" />
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Salary Growth Rate</label>
+                <div class="input-group input-group-sm">
+                  <input type="number" id="adv-salarygrowth" class="form-control" value="1" step="0.1" min="0" />
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Inflation Rate</label>
+                <div class="input-group input-group-sm">
+                  <input type="number" id="adv-inflation" class="form-control" value="2" step="0.1" min="0" />
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Income Replacement</label>
+                <div class="input-group input-group-sm">
+                  <input type="number" id="adv-replacement" class="form-control" value="80" min="0" max="100" />
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Years in Retirement</label>
+                <input type="number" id="adv-retirementyears" class="form-control form-control-sm" value="2" min="1" />
+              </div>
+              <div class="col-12 mt-1">
+                <label class="form-label d-block">Income Need Model</label>
+                <select id="adv-incomemodel" class="form-control form-control-sm">
+                  <option value="0">Salary replacement (80% of final salary)</option>
+                  <option value="1">Expense replacement (inflation-adjusted)</option>
+                  <option value="2">Higher of both (conservative)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-calculate" onclick="calculate()">Calculate</button>
+        <p class="note-text">Savings rate % is applied to your salary on top of fixed yearly savings.</p>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="col-lg-7">
+      <div class="card p-4 mb-4">
+        <div class="card-title">Retirement Outlook</div>
+        <div id="noResultMsg" class="text-muted text-center py-4" style="font-size:0.9rem">
+          Enter your details and click <strong>Calculate</strong> to see your projection.
+        </div>
+        <div id="chartSection" style="display:none">
+          <div class="chart-wrap">
+            <canvas id="myChart"></canvas>
+          </div>
+          <div class="result-grid" id="resultGrid"></div>
+        </div>
+      </div>
+
+      <div class="card p-4">
+        <div class="card-title">How This Works</div>
+        <ul class="mb-0" style="font-size:0.875rem;color:#555;padding-left:1.2rem">
+          <li><strong>Money at Retirement</strong> = future value of your current savings + fixed yearly savings + salary-rate-based savings, all compounded at the investment growth rate.</li>
+          <li class="mt-2"><strong>Monthly Income Need</strong> = your projected final salary × income replacement ratio ÷ 12 (or expense-based, depending on your model).</li>
+          <li class="mt-2"><strong>Gap</strong> = Income Need − Monthly income your retirement pot can provide.</li>
+          <li class="mt-2">All values are expressed in <em>monthly</em> terms at retirement.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">Retirement Planner · Values are estimates. Consult a financial advisor for personalised advice.</div>
+</footer>
+
+<script>
+  // ── Calculation logic (from calcLogic.js) ──────────────────────────────────
+
+  function calcFV(pv, years, rate) {
+    return pv * Math.pow(1 + rate, years);
+  }
+
+  function calcFVofAnnuity(yearly, years, rate) {
+    return yearly * (Math.pow(1 + rate, years) - 1) / rate;
+  }
+
+  function calcMoneyAtRetirement(inputs) {
+    const fvSavings  = calcFV(inputs.currentSavings, inputs.years, inputs.growthRate);
+    const fvYearly   = calcFVofAnnuity(inputs.yearlySavings, inputs.years, inputs.growthRate);
+    const fvRateSavings = calcFVofAnnuity(
+      (inputs.savingsRate / 100) * inputs.salary,
+      inputs.years,
+      inputs.growthRate + inputs.salaryGrowth
+    );
+    return fvSavings + fvYearly + fvRateSavings;
+  }
+
+  function calcIncomeNeed(inputs) {
+    const finalSalary = calcFV(inputs.salary, inputs.years - 1, inputs.salaryGrowth);
+    return finalSalary * (inputs.replacementRatio / 100);
+  }
+
+  function calcExpensesInRet(inputs) {
+    const annualExpenses = inputs.monthlyExpenses * 12;
+    // ExpenseReplacement === 0 in the original default
+    return calcFV(annualExpenses, inputs.years, inputs.inflation);
+  }
+
+  function doCalc(inputs) {
+    const moneyAtRetirement = calcMoneyAtRetirement(inputs);
+    const monthlyAvailable  = moneyAtRetirement / (12 * inputs.retirementYears);
+
+    const incomeNeedAnnual  = calcIncomeNeed(inputs);
+    const expenseNeedAnnual = calcExpensesInRet(inputs);
+
+    let annualNeed;
+    if (inputs.incomeModel === 1) {
+      annualNeed = expenseNeedAnnual;
+    } else if (inputs.incomeModel === 2) {
+      annualNeed = Math.max(incomeNeedAnnual, expenseNeedAnnual);
+    } else {
+      annualNeed = incomeNeedAnnual;
+    }
+
+    const monthlyNeed = annualNeed / 12;
+    const gap = monthlyNeed - monthlyAvailable;
+
+    return {
+      monthlyAvailable: Math.round(monthlyAvailable),
+      monthlyNeed:      Math.round(monthlyNeed),
+      gap:              Math.round(gap),
+      totalAtRetirement: Math.round(moneyAtRetirement),
+    };
+  }
+
+  // ── UI helpers ─────────────────────────────────────────────────────────────
+
+  function fmt(n) {
+    return '$' + Math.abs(n).toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+
+  function toggleAdv() {
+    const sec = document.getElementById('advSection');
+    const btn = document.querySelector('.adv-toggle');
+    const open = sec.style.display === 'none';
+    sec.style.display = open ? 'block' : 'none';
+    btn.textContent = (open ? '▾' : '▸') + ' Advanced Assumptions';
+  }
+
+  var myChart = null;
+
+  function calculate() {
+    const inputs = {
+      years:           parseFloat(document.getElementById('retage').value)       || 25,
+      currentSavings:  parseFloat(document.getElementById('savings').value)      || 0,
+      yearlySavings:   parseFloat(document.getElementById('yearly').value)       || 0,
+      salary:          parseFloat(document.getElementById('salary').value)       || 0,
+      savingsRate:     parseFloat(document.getElementById('savingsrate').value)  || 0,
+      monthlyExpenses: parseFloat(document.getElementById('expenses').value)     || 0,
+      // advanced
+      growthRate:       parseFloat(document.getElementById('adv-growth').value)        / 100,
+      salaryGrowth:     parseFloat(document.getElementById('adv-salarygrowth').value)  / 100,
+      inflation:        parseFloat(document.getElementById('adv-inflation').value)     / 100,
+      replacementRatio: parseFloat(document.getElementById('adv-replacement').value),
+      retirementYears:  parseFloat(document.getElementById('adv-retirementyears').value),
+      incomeModel:      parseInt(document.getElementById('adv-incomemodel').value),
+    };
+
+    const result = doCalc(inputs);
+    renderChart(result);
+    renderSummary(result);
+
+    document.getElementById('noResultMsg').style.display  = 'none';
+    document.getElementById('chartSection').style.display = 'block';
+  }
+
+  function renderChart(result) {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    if (myChart) myChart.destroy();
+
+    const hasGap = result.gap > 0;
+    const bar1Val   = hasGap ? result.monthlyAvailable : result.monthlyNeed;
+    const bar2Val   = hasGap ? result.gap              : -result.gap;
+    const bar1Label = hasGap ? 'Money at Retirement (monthly)' : 'Income Need (monthly)';
+    const bar2Label = hasGap ? 'Gap'                           : 'Surplus';
+    const bar2Color = hasGap ? 'rgba(192,57,43,0.85)'         : 'rgba(39,174,96,0.85)';
+
+    myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Monthly Projection'],
+        datasets: [
+          {
+            label: bar1Label,
+            data: [bar1Val],
+            backgroundColor: 'rgba(21,25,101,0.75)',
+          },
+          {
+            label: bar2Label,
+            data: [bar2Val],
+            backgroundColor: bar2Color,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: { position: 'bottom' },
+        tooltips: {
+          callbacks: {
+            label: function(item, data) {
+              var lbl = data.datasets[item.datasetIndex].label + ': ';
+              return lbl + fmt(item.yLabel);
+            }
+          }
+        },
+        scales: {
+          xAxes: [{ stacked: true, gridLines: { display: false } }],
+          yAxes: [{
+            stacked: true,
+            gridLines: { color: 'rgba(0,0,0,0.05)' },
+            ticks: {
+              beginAtZero: true,
+              callback: function(v) { return fmt(v); }
+            }
+          }]
+        }
+      }
+    });
+  }
+
+  function renderSummary(result) {
+    const hasGap = result.gap > 0;
+    const grid = document.getElementById('resultGrid');
+    grid.innerHTML = `
+      <div class="result-item">
+        <div class="label">Money at Retirement</div>
+        <div class="value">${fmt(result.totalAtRetirement)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Monthly Income Need</div>
+        <div class="value">${fmt(result.monthlyNeed)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Monthly Available</div>
+        <div class="value">${fmt(result.monthlyAvailable)}</div>
+      </div>
+      <div class="result-item ${hasGap ? 'gap' : 'surplus'}">
+        <div class="label">${hasGap ? 'Monthly Gap' : 'Monthly Surplus'}</div>
+        <div class="value">${hasGap ? '-' : '+'}${fmt(result.gap)}</div>
+      </div>
+    `;
+  }
+
+  // Run with defaults on page load so the chart is visible immediately
+  window.addEventListener('DOMContentLoaded', calculate);
+</script>
+</body>
+</html>

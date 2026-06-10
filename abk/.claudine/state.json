@@ -5,8 +5,8 @@
       "title": "I updated the md file 2024-09-15-tooth-fairy.md , can",
       "description": "This is a straightforward task — the CLAUDE.md already documents the exact command needed. Let me write a quick plan and get approval.",
       "category": "improvement",
-      "status": "in-progress",
-      "lastMessage": "And update the wedding index call to pass `body_class='wedding-page'`:",
+      "status": "in-review",
+      "lastMessage": "Pushed. Both `ravikiran_us_briefing.md` and `resume-copy-update.md` are now in the repo.",
       "agents": [
         {
           "id": "claude-main",
@@ -22,12 +22,12 @@
       "isRateLimited": false,
       "lastActivity": {
         "toolName": "Bash",
-        "summary": "grep \"body class\" /Users/ravikiran/Apps/claude/ravikiran.us/wedding/about-us....",
-        "outputHint": "<body class=\"wedding-page\">",
+        "summary": "git -C /Users/ravikiran/Apps/claude/ravikiran.us add ravikiran_us_briefing.md...",
+        "outputHint": "6 lines of output",
         "status": "completed"
       },
       "createdAt": "2026-06-01T16:27:55.309Z",
-      "updatedAt": "2026-06-02T02:02:07.559Z",
+      "updatedAt": "2026-06-02T02:21:35.754Z",
       "filePath": "/Users/ravikiran/.claude/projects/-Users-ravikiran-Apps-claude-ravikiran-us-abk/b8074085-7666-45a9-9552-06e2677b4507.jsonl",
       "workspacePath": "/Users/ravikiran/Apps/claude/ravikiran.us/abk",
       "provider": "claude-code",
@@ -105,5 +105,5 @@
       "shortId": "T-273"
     }
   ],
-  "lastUpdated": "2026-06-02T02:02:07.992Z"
+  "lastUpdated": "2026-06-02T02:21:47.567Z"
 }
