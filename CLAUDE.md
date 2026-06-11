@@ -160,3 +160,16 @@ subfolder (`uploads/tooth-fairy/`, etc.) and are committed normally.
 
 Raw source images (originals, HEICs) in `abk/` are gitignored via `abk/.gitignore`.
 Only the processed copies in `uploads/` go into the repo.
+
+## index.html structure (hand-edited, do not regenerate)
+
+Sections in order:
+
+1. **About** (`section-about`) — bio paragraphs + LinkedIn/Resume/Email CTAs
+2. **Work** (`section-work`) — 5 cards (SeaWorld, Prudential App, Prudential Alexa, AccuWeather, Research) + case study links
+3. **Recognition** (`section-awards`) — 6 award cards (Optimizely 2022, Quantum Metric 2022, P&I Eddy 2019, Prudential BVA 2019, MarCom Platinum 2020, Google Play 2015)
+4. **Writing** (`section-writing`) — Newsletter link only
+
+**Revenue figures:** Public `index.html` uses generic language ("significant revenue", "strong ROI"). Specific dollar figures ($20M+, $10M+, $15M) are preserved in `me/index.html` (private copy, same content as original).
+
+**Private copy:** `me/index.html` — full-detail version with specific figures and the Projects section. Not linked from public nav.

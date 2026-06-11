@@ -1,0 +1,109 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - heading "Ravikiran Rajagopal" [level=1] [ref=e4]:
+        - link "Ravikiran Rajagopal" [ref=e5] [cursor=pointer]:
+          - /url: /
+      - paragraph [ref=e6]: Product Manager · Builder · Lifelong Learner
+  - main [ref=e7]:
+    - generic [ref=e8]:
+      - paragraph [ref=e9]: Ravikiran Rajagopal is a Director of Product Management (Technology) specializing in digital platform transformation, advanced A/B experimentation, and data-driven product strategy across Parks & Entertainment, Financial Services, and Consumer sectors.
+      - paragraph [ref=e10]:
+        - text: At SeaWorld Parks & Entertainment he has delivered
+        - strong [ref=e11]: $18M+
+        - text: in documented business impact — reducing checkout failure rates from 20% to 5%, executing 250+ A/B experiments across 12 branded websites, and driving $10M+ annual ROI from an enterprise experimentation program he designed from the ground up.
+      - paragraph [ref=e12]:
+        - text: "His work has been published and peer-reviewed: he is a co-author of “Power Analysis is Essential” ("
+        - emphasis [ref=e13]: Econ Journal Watch
+        - text: ", Vol. 23, No. 1, March 2026) alongside Nobel laureate Guido Imbens, Andrew Gelman, and Ron Kohavi, and a Co-Investigator on an AEA-registered randomized controlled trial spanning 2.9 million website visitors."
+      - paragraph [ref=e14]: Earlier, at Prudential Financial, he shipped the industry’s first native mobile retirement app (844K users) and first Alexa skill for retirement account management. He is a five-time industry award winner (Optimizely North America, Quantum Metric, P&I Eddy, MarCom Platinum, Google Play Top Developer) and a judge for Globee Awards and the UConn Entrepreneurship Bootcamp for Veterans.
+      - generic [ref=e15]:
+        - link "LinkedIn" [ref=e16] [cursor=pointer]:
+          - /url: https://www.linkedin.com/in/ravikiranrajagopal
+        - link "Resume" [ref=e17] [cursor=pointer]:
+          - /url: /resume/
+        - link "Email" [ref=e18] [cursor=pointer]:
+          - /url: mailto:ravikiran.rajagopal@gmail.com
+    - generic [ref=e19]:
+      - heading "Work" [level=2] [ref=e20]
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - heading "SeaWorld eCommerce Platform" [level=3] [ref=e23]
+          - paragraph [ref=e24]: Director of Product Management. Drove $20M+ in annual revenue through funnel experimentation, improved customer satisfaction by 50%, and generated $10M+ via site performance improvements across 12 park websites.
+        - generic [ref=e25]:
+          - heading "Prudential Retirement App" [level=3] [ref=e26]
+          - paragraph [ref=e27]: Led and launched Prudential Retirement’s first consumer-facing mobile app, reaching 700K downloads with 100K+ monthly active users and improving ratings from 1.8 to 4.8.
+        - generic [ref=e28]:
+          - heading "Prudential Alexa Experience" [level=3] [ref=e29]
+          - paragraph [ref=e30]: Helped launch the first authenticated Alexa experience in retirement and finance, enabling participants to check account balance and investment performance by voice.
+        - generic [ref=e31]:
+          - heading "AccuWeather Android & Platforms" [level=3] [ref=e32]
+          - paragraph [ref=e33]: Led Android app growth to 35M+ users and 10M+ MAU, increasing ad revenue by 150%. Launched on 25+ platforms including Connected TVs, BlackBerry, and wearables.
+      - paragraph [ref=e34]:
+        - link "SeaWorld case study →" [ref=e35] [cursor=pointer]:
+          - /url: /work/seaworld/
+        - text: ·
+        - link "Optimizely case study →" [ref=e36] [cursor=pointer]:
+          - /url: https://www.optimizely.com/insights/seaworld/
+        - text: ·
+        - link "Prudential case study →" [ref=e37] [cursor=pointer]:
+          - /url: /work/prudential/
+        - text: ·
+        - link "AccuWeather case study →" [ref=e38] [cursor=pointer]:
+          - /url: /work/accuweather/
+    - generic [ref=e39]:
+      - heading "Recognition" [level=2] [ref=e40]
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]: "2022"
+          - heading "Optimizely Best Experimentation Practice" [level=3] [ref=e44]
+          - paragraph [ref=e45]: North America winner for SeaWorld’s A/B testing program — $15M documented lift across 85 experiments.
+        - generic [ref=e46]:
+          - generic [ref=e47]: "2022"
+          - heading "Quantum Metric CPD Signal Award" [level=3] [ref=e48]
+          - paragraph [ref=e49]: Customer-Centric Team of the Year — SeaWorld Digital Team, recognized for data-driven product decisions.
+        - generic [ref=e50]:
+          - generic [ref=e51]: "2019"
+          - heading "P&I Eddy Award — Second Place, Special Projects" [level=3] [ref=e52]
+          - paragraph [ref=e53]: Prudential Retirement Alexa Skill — first authenticated voice skill in retirement. Recognized for easy setup and incorporating new technology into retirement plans.
+        - generic [ref=e54]:
+          - generic [ref=e55]: "2019"
+          - heading "Prudential Business Value Award for Innovation" [level=3] [ref=e56]
+          - paragraph [ref=e57]: Internal Prudential award for leading the Alexa skill launch — the first authenticated voice experience in the retirement industry.
+        - generic [ref=e58]:
+          - generic [ref=e59]: "2020"
+          - heading "MarCom Platinum Award" [level=3] [ref=e60]
+          - paragraph [ref=e61]: Prudential Retirement Mobile App (“Retirement Planning at Participants’ Fingertips”). Platinum is the top tier, awarded to fewer than 15% of entries.
+        - generic [ref=e62]:
+          - generic [ref=e63]: "2015"
+          - heading "Google Play Top Developer Badge" [level=3] [ref=e64]
+          - paragraph [ref=e65]: AccuWeather Android — 1.19M ratings at 4.5 stars. Fewer than 1% of all Play Store apps qualify for this designation.
+    - generic [ref=e66]:
+      - heading "Writing" [level=2] [ref=e67]
+      - link "Newsletter — The Lens 11 editions on product management, prioritization, metrics, and leadership. 2020–2021." [ref=e68] [cursor=pointer]:
+        - /url: /newsletter/
+        - heading "Newsletter — The Lens" [level=3] [ref=e69]
+        - paragraph [ref=e70]: 11 editions on product management, prioritization, metrics, and leadership. 2020–2021.
+    - generic [ref=e71]:
+      - heading "Projects" [level=2] [ref=e72]
+      - generic [ref=e73]:
+        - generic [ref=e74]:
+          - heading "StreakMates" [level=3] [ref=e75]
+          - paragraph [ref=e76]: Mobile-first PWA where friends challenge each other to build daily activity habits. Streak tracking, leaderboards, and shareable cards.
+        - generic [ref=e77]:
+          - heading "likita" [level=3] [ref=e78]
+          - paragraph [ref=e79]: Daily journaling app with AI-generated prompts, Claude-powered reflections, speech-to-text, streak tracking, and a calendar view.
+        - generic [ref=e80]:
+          - heading "GA Analytics Dashboard" [level=3] [ref=e81]
+          - paragraph [ref=e82]: Upload GA4 exports and get instant visual dashboards — sessions, conversions, funnel performance, and device breakdowns. Runs in the browser, no backend.
+        - generic [ref=e83]:
+          - heading "Smart Todo" [level=3] [ref=e84]
+          - paragraph [ref=e85]: Custom todo app with priorities, due dates, and recurring tasks. Single-file, PIN-secured, runs entirely in the browser via localStorage — no login, no server.
+      - paragraph [ref=e86]:
+        - link "View all projects →" [ref=e87] [cursor=pointer]:
+          - /url: /projects/
+  - contentinfo [ref=e88]:
+    - paragraph [ref=e90]:
+      - text: © 2024 Ravikiran Rajagopal ·
+      - link "ravikiran.rajagopal@gmail.com" [ref=e91] [cursor=pointer]:
+        - /url: mailto:ravikiran.rajagopal@gmail.com
