@@ -161,6 +161,12 @@ subfolder (`uploads/tooth-fairy/`, etc.) and are committed normally.
 Raw source images (originals, HEICs) in `abk/` are gitignored via `abk/.gitignore`.
 Only the processed copies in `uploads/` go into the repo.
 
+## Canonical metrics
+
+All figures used across the site (revenue, user counts, ratings, awards) are documented in `_data/metrics.md`. **Check this file before editing any number on any page.** Update it first, then propagate to affected pages.
+
+Pages that use figures: `index.html`, `me/index.html`, `resume/index.html`, `work/seaworld/index.html`, `work/prudential/index.html`, `work/accuweather/index.html`.
+
 ## index.html structure (hand-edited, do not regenerate)
 
 Sections in order:
