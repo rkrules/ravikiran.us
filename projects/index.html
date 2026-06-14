@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
       rel="stylesheet">
     <style>
       /* ── Analytical Warmth Design System ── */
@@ -22,16 +22,16 @@
         --aw-teal: #2a5069;
         --aw-teal-mid: #2a5069;
         --aw-teal-bright: #7aaabb;
-        --aw-teal-pale: #fcca46;
+        --aw-teal-pale: rgba(255,255,255,0.65);
         --aw-teal-ghost: #e5f1f5;
 
         --aw-amber: #fe7f2d;
         --aw-amber-bright: #fcca46;
         --aw-amber-pale: #fff4cc;
 
-        --aw-paper: #F4F2EE;
-        --aw-surface: #F0F4F3;
-        --aw-white: #FAFAFA;
+        --aw-paper: #ffffff;
+        --aw-surface: #f8f8f8;
+        --aw-white: #ffffff;
         --aw-line: #D8D5CC;
 
         /* fallback greens (retained) */
@@ -55,16 +55,15 @@
         padding: 0;
         background: var(--aw-paper);
         color: var(--aw-ink);
-        font-family: 'Outfit', -apple-system, sans-serif;
+        font-family: 'Inter', -apple-system, sans-serif;
         line-height: 1.6;
       }
 
       /* ── Header ── */
       header {
-        background: var(--aw-teal-deep);
-        color: #fff;
+        background: var(--aw-amber-bright);
+        color: var(--aw-teal-deep);
         padding: 36px 24px 32px;
-        border-bottom: 3px solid var(--aw-amber);
       }
 
       .header-inner {
@@ -78,26 +77,27 @@
       }
 
       .header-title {
-        font-family: 'DM Serif Display', Georgia, serif;
+        font-family: 'Inter', -apple-system, sans-serif;
         font-size: 32px;
-        font-weight: 400;
+        font-weight: 700;
         margin: 0 0 4px;
-        letter-spacing: -0.3px;
+        letter-spacing: -0.5px;
       }
 
       .header-sub {
         margin: 0;
         font-size: 15px;
-        color: var(--aw-teal-pale);
-        font-weight: 300;
+        color: var(--aw-teal-deep);
+        font-weight: 400;
+        opacity: 0.75;
       }
 
       .header-back {
         font-size: 13px;
-        color: var(--aw-teal-pale);
+        color: var(--aw-teal-deep);
         text-decoration: none;
         font-family: 'DM Mono', monospace;
-        opacity: 0.8;
+        opacity: 0.7;
         transition: opacity 0.15s;
         white-space: nowrap;
       }
@@ -109,7 +109,7 @@
       /* ── Tab bar ── */
       .tab-bar-wrap {
         background: var(--aw-teal-deep);
-        border-bottom: 1px solid var(--aw-teal);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
       }
 
       .tab-bar {
@@ -126,7 +126,7 @@
         border: none;
         border-bottom: 3px solid transparent;
         color: var(--aw-teal-pale);
-        font-family: 'Outfit', sans-serif;
+        font-family: 'Inter', sans-serif;
         font-size: 14px;
         font-weight: 500;
         cursor: pointer;
@@ -211,7 +211,7 @@
       }
 
       .card-title {
-        font-family: 'Outfit', sans-serif;
+        font-family: 'Inter', sans-serif;
         font-size: 16px;
         font-weight: 600;
         color: var(--aw-ink);
@@ -276,7 +276,7 @@
         border-radius: 6px;
         background: none;
         color: var(--aw-ink-muted);
-        font-family: 'Outfit', sans-serif;
+        font-family: 'Inter', sans-serif;
         font-size: 13px;
         cursor: pointer;
         transition: color 0.15s, border-color 0.15s;
