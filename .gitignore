@@ -3,3 +3,4 @@ wp_rkblogs_2023_04_04.zip
 *.pyc
 __pycache__/
 .DS_Store
+.gstack/

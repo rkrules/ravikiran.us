@@ -324,6 +324,129 @@
           padding: 28px 16px 48px;
         }
       }
+
+      /* ── Card faces (personal cards) ── */
+      .card-front,
+      .card-back {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex: 1;
+      }
+
+      .card-back {
+        display: none;
+      }
+
+      .card.flipped .card-front {
+        display: none;
+      }
+
+      .card.flipped .card-back {
+        display: flex;
+      }
+
+      /* card-header: title+tags left, share btn right */
+      .card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      /* link + story btn row */
+      .card-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: auto;
+      }
+
+      /* share icon button */
+      .card-share-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--aw-ink-faint);
+        font-size: 14px;
+        padding: 2px 5px;
+        border-radius: 3px;
+        line-height: 1;
+        flex-shrink: 0;
+        transition: color 0.15s, background 0.15s;
+      }
+
+      .card-share-btn:hover {
+        color: var(--aw-teal-bright);
+        background: var(--aw-teal-ghost);
+      }
+
+      .card-share-btn.copied {
+        color: var(--aw-amber);
+      }
+
+      /* story toggle button (front) */
+      .card-story-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--aw-teal-bright);
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 0;
+        white-space: nowrap;
+        transition: color 0.15s;
+      }
+
+      .card-story-btn:hover {
+        color: var(--aw-teal);
+      }
+
+      /* back face */
+      .card-back-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .card-back-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--aw-ink-faint);
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        padding: 0;
+        white-space: nowrap;
+        transition: color 0.15s;
+        flex-shrink: 0;
+      }
+
+      .card-back-close:hover {
+        color: var(--aw-ink-muted);
+      }
+
+      .card-story-text {
+        font-size: 13.5px;
+        color: var(--aw-ink-muted);
+        line-height: 1.6;
+        margin: 0;
+        flex: 1;
+        font-style: italic;
+      }
+
+      /* deeplink highlight flash */
+      @keyframes card-highlight {
+        0%   { border-color: var(--aw-amber); box-shadow: 0 0 0 3px rgba(254,127,45,0.2); }
+        100% { border-color: var(--aw-line);  box-shadow: none; }
+      }
+
+      .card.highlight-flash {
+        animation: card-highlight 1.8s ease-out forwards;
+      }
     </style>
   </head>
 
@@ -356,82 +479,100 @@
 
         <div class="card-grid" id="work-grid">
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">GA Analytics Dashboard</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Analytics</span>
-                <span class="tag">HTML</span>
+          <div class="card" id="ga-dashboard">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">GA Analytics Dashboard</h3>
+                <div class="card-tags">
+                  <span class="tag amber">AI-assisted</span>
+                  <span class="tag">Analytics</span>
+                  <span class="tag">HTML</span>
+                </div>
               </div>
+              <button class="card-share-btn" title="Copy link" aria-label="Copy link to GA Analytics Dashboard">⎘</button>
             </div>
             <p class="card-desc">Upload GA4 exports and get instant visual dashboards — sessions, conversions, funnel
               performance, and device breakdowns. Single-file, no backend, runs entirely in the browser.</p>
             <a class="card-link" href="tools/ga-dashboard.html">Open dashboard →</a>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">Smart Todo</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Productivity</span>
-                <span class="tag">HTML</span>
+          <div class="card" id="smart-todo">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Smart Todo</h3>
+                <div class="card-tags">
+                  <span class="tag amber">AI-assisted</span>
+                  <span class="tag">Productivity</span>
+                  <span class="tag">HTML</span>
+                </div>
               </div>
+              <button class="card-share-btn" title="Copy link" aria-label="Copy link to Smart Todo">⎘</button>
             </div>
             <p class="card-desc">Custom single-file todo app with priorities, due dates, recurring tasks, and a
               PIN-secured setup flow. Runs entirely in the browser with localStorage — no backend, no dependencies.</p>
             <a class="card-link" href="tools/smart-todo.html">Open app →</a>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">Analytics Hub</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Analytics</span>
+          <div class="card" id="analytics-hub">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Analytics Hub</h3>
+                <div class="card-tags">
+                  <span class="tag amber">AI-assisted</span>
+                  <span class="tag">Analytics</span>
+                </div>
               </div>
+              <button class="card-share-btn" title="Copy link" aria-label="Copy link to Analytics Hub">⎘</button>
             </div>
             <p class="card-desc">QM, Power BI, GA, and Looker in one window — a unified dashboard launcher for work
               analytics tools.</p>
             <a class="card-link" href="tools/tool-hub.html">Open hub →</a>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">GSC Dashboard</h3>
-              <div class="card-tags">
-                <span class="tag">SEO</span>
-                <span class="tag">Analytics</span>
-                <span class="tag">HTML</span>
+          <div class="card" id="gsc-dashboard">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">GSC Dashboard</h3>
+                <div class="card-tags">
+                  <span class="tag">SEO</span>
+                  <span class="tag">Analytics</span>
+                  <span class="tag">HTML</span>
+                </div>
               </div>
+              <button class="card-share-btn" title="Copy link" aria-label="Copy link to GSC Dashboard">⎘</button>
             </div>
             <p class="card-desc">Google Search Console data dashboard — impressions, clicks, CTR, and query trends.
               Upload a GSC export and explore it in the browser.</p>
             <a class="card-link" href="tools/gsc-dashboard.html">Open dashboard →</a>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">Checkout Error Analyzer</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Analytics</span>
-                <span class="tag">HTML</span>
+          <div class="card" id="checkout-error-analyzer">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Checkout Error Analyzer</h3>
+                <div class="card-tags">
+                  <span class="tag amber">AI-assisted</span>
+                  <span class="tag">Analytics</span>
+                  <span class="tag">HTML</span>
+                </div>
               </div>
+              <button class="card-share-btn" title="Copy link" aria-label="Copy link to Checkout Error Analyzer">⎘</button>
             </div>
             <p class="card-desc">Interactive tool for analyzing checkout errors by type, park, and date range. Upload
               error data and surface patterns instantly in the browser.</p>
             <a class="card-link" href="tools/error-analyzer.html">Open tool →</a>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">PLU Reference</h3>
-              <div class="card-tags">
-                <span class="tag">Reference</span>
-                <span class="tag">HTML</span>
+          <div class="card" id="plu-reference">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">PLU Reference</h3>
+                <div class="card-tags">
+                  <span class="tag">Reference</span>
+                  <span class="tag">HTML</span>
+                </div>
               </div>
+              <button class="card-share-btn" title="Copy link" aria-label="Copy link to PLU Reference">⎘</button>
             </div>
             <p class="card-desc">Product lookup unit reference across all parks — searchable and filterable in the
               browser, no backend needed.</p>
@@ -448,220 +589,442 @@
 
         <div class="card-grid" id="personal-grid">
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">StreakMates</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">React</span>
-                <span class="tag">PWA</span>
+          <div class="card" id="streakmates">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">StreakMates</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">React</span>
+                    <span class="tag">PWA</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to StreakMates">⎘</button>
+              </div>
+              <p class="card-desc">Mobile-first PWA where friends challenge each other to build daily activity habits. Log
+                walks, runs, or custom activities; track streaks and leaderboards; share branded streak cards. React +
+                Supabase.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://streakmates.lovable.app" target="_blank" rel="noopener">Open app →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Mobile-first PWA where friends challenge each other to build daily activity habits. Log
-              walks, runs, or custom activities; track streaks and leaderboards; share branded streak cards. React +
-              Supabase.</p>
-            <a class="card-link" href="https://streakmates.lovable.app" target="_blank" rel="noopener">Open app →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">StreakMates</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">Prudential Mobile App Demo</h3>
-              <div class="card-tags">
-                <span class="tag">React</span>
-                <span class="tag">Gatsby</span>
-                <span class="tag">Material-UI</span>
-                <span class="tag">PWA</span>
+          <div class="card" id="prudential-demo">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Prudential Mobile App Demo</h3>
+                  <div class="card-tags">
+                    <span class="tag">React</span>
+                    <span class="tag">Gatsby</span>
+                    <span class="tag">Material-UI</span>
+                    <span class="tag">PWA</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Prudential Mobile App Demo">⎘</button>
+              </div>
+              <p class="card-desc">Interactive retirement account prototype hand-coded in React and Gatsby — no template, no low-code. Simulates account overview, investment allocation, and contribution flows built to demo UX concepts during Prudential product work.</p>
+              <div class="card-actions">
+                <a class="card-link" href="others/mobileapp_g/index1/">Open demo →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Interactive retirement account prototype hand-coded in React and Gatsby — no template, no low-code. Simulates account overview, investment allocation, and contribution flows built to demo UX concepts during Prudential product work.</p>
-            <a class="card-link" href="others/mobileapp_g/index1/">Open demo →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Prudential Mobile App Demo</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">likita</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">React</span>
-                <span class="tag">Web app</span>
+          <div class="card" id="likita">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">likita</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">React</span>
+                    <span class="tag">Web app</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to likita">⎘</button>
+              </div>
+              <p class="card-desc">Personal journaling app with multi-field daily entries across family, health, work,
+                relationships, and reflection. AI-generated prompts, speech-to-text dictation, Claude-powered reflections,
+                streak tracking, and calendar view. React + Supabase.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://likita.lovable.app" target="_blank" rel="noopener">Open app →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Personal journaling app with multi-field daily entries across family, health, work,
-              relationships, and reflection. AI-generated prompts, speech-to-text dictation, Claude-powered reflections,
-              streak tracking, and calendar view. React + Supabase.</p>
-            <a class="card-link" href="https://likita.lovable.app" target="_blank" rel="noopener">Open app →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">likita</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">Heart Talks</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Node.js</span>
-                <span class="tag">Web</span>
+          <div class="card" id="heart-talks">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Heart Talks</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Node.js</span>
+                    <span class="tag">Web</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Heart Talks">⎘</button>
+              </div>
+              <p class="card-desc">63-chapter cardiovascular health education site authored by Dr. Keshava Aithal.
+                Bilingual English/Kannada with Google Translate integration and PDF generation.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://rkrules.github.io/heart-talks/" target="_blank" rel="noopener">View site →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">63-chapter cardiovascular health education site authored by Dr. Keshava Aithal.
-              Bilingual English/Kannada with Google Translate integration and PDF generation.</p>
-            <a class="card-link" href="https://rkrules.github.io/heart-talks/" target="_blank" rel="noopener">View site
-              →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Heart Talks</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">Math Practice</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Web app</span>
+          <div class="card" id="math-practice">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Math Practice</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Web app</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Math Practice">⎘</button>
+              </div>
+              <p class="card-desc">Interactive math practice app — exercises to build number sense, arithmetic fluency,
+                and multiplication skills. Built for kids.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://rkrules.github.io/math/" target="_blank" rel="noopener">Open app →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Interactive math practice app — exercises to build number sense, arithmetic fluency,
-              and multiplication skills. Built for kids.</p>
-            <a class="card-link" href="https://rkrules.github.io/math/" target="_blank" rel="noopener">Open app →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Math Practice</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">health-ish</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Web app</span>
-                <span class="tag">Lovable</span>
+          <div class="card" id="health-ish">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">health-ish</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Web app</span>
+                    <span class="tag">Lovable</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to health-ish">⎘</button>
+              </div>
+              <p class="card-desc">Personal health tracker. Log and monitor daily health metrics in a clean, minimal
+                interface. Built with Lovable.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://health-ish.lovable.app" target="_blank" rel="noopener">Open app →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Personal health tracker. Log and monitor daily health metrics in a clean, minimal
-              interface. Built with Lovable.</p>
-            <a class="card-link" href="https://health-ish.lovable.app" target="_blank" rel="noopener">Open app →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">health-ish</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">Aadu-Huli</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Web app</span>
-                <span class="tag">Lovable</span>
+          <div class="card" id="aadu-huli">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Aadu-Huli</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Web app</span>
+                    <span class="tag">Lovable</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Aadu-Huli">⎘</button>
+              </div>
+              <p class="card-desc">Digital version of the traditional South Indian board game Aadu-Huli (Goats and
+                Tigers). Built to preserve and share a classic strategy game.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://aadu-huli.lovable.app" target="_blank" rel="noopener">Play →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Digital version of the traditional South Indian board game Aadu-Huli (Goats and
-              Tigers). Built to preserve and share a classic strategy game.</p>
-            <a class="card-link" href="https://aadu-huli.lovable.app" target="_blank" rel="noopener">Play →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Aadu-Huli</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">Drink &amp; Dine AI</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Web app</span>
-                <span class="tag">Lovable</span>
+          <div class="card" id="drink-dine-ai">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Drink &amp; Dine AI</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Web app</span>
+                    <span class="tag">Lovable</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Drink &amp; Dine AI">⎘</button>
+              </div>
+              <p class="card-desc">AI-powered food and drink discovery app. Get personalized recommendations for
+                restaurants and cocktails based on your mood, preferences, and location.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://drink-n-dine-ai.lovable.app" target="_blank" rel="noopener">Open app →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">AI-powered food and drink discovery app. Get personalized recommendations for
-              restaurants and cocktails based on your mood, preferences, and location.</p>
-            <a class="card-link" href="https://drink-n-dine-ai.lovable.app" target="_blank" rel="noopener">Open app
-              →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Drink &amp; Dine AI</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">rufree <span style="font-size:0.75rem;color:#8a9bb0;font-weight:400">in
-                  progress</span></h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Web app</span>
-                <span class="tag">Lovable</span>
+          <div class="card" id="rufree">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">rufree <span style="font-size:0.75rem;color:#8a9bb0;font-weight:400">in progress</span></h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Web app</span>
+                    <span class="tag">Lovable</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to rufree">⎘</button>
+              </div>
+              <p class="card-desc">Doodle-style group scheduling app — pick your availability on a visual grid, share a
+                link, and see when everyone overlaps. Built with Lovable.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://rufree.lovable.app" target="_blank" rel="noopener">Preview →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Doodle-style group scheduling app — pick your availability on a visual grid, share a
-              link, and see when everyone overlaps. Built with Lovable.</p>
-            <a class="card-link" href="https://rufree.lovable.app" target="_blank" rel="noopener">Preview →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">rufree</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">ravikiran.us</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Python</span>
-                <span class="tag">Web</span>
+          <div class="card" id="ravikiran-us">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">ravikiran.us</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">Web</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to ravikiran.us">⎘</button>
+              </div>
+              <p class="card-desc">This site. A static personal site re-generated from older technologies. No build tools,
+                no framework. Hosted on GitHub Pages.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://ravikiran.us">View site →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">This site. A static personal site re-generated from older technologies. No build tools,
-              no framework. Hosted on GitHub Pages.</p>
-            <a class="card-link" href="https://ravikiran.us">View site →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">ravikiran.us</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card">
-            <div>
-              <h3 class="card-title">Kanyady</h3>
-              <div class="card-tags">
-                <span class="tag amber">HTML5</span>
-                <span class="tag">Web</span>
-                <span class="tag">GitHub Pages</span>
+          <div class="card" id="kanyady">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Kanyady</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">HTML5</span>
+                    <span class="tag">Web</span>
+                    <span class="tag">GitHub Pages</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Kanyady">⎘</button>
+              </div>
+              <p class="card-desc">Data analyst portfolio site for Padmashree Ravikiran — projects, skills, and capstone
+                work. Built on GitHub Pages.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://kanyady.github.io/" target="_blank" rel="noopener">View site →</a>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Data analyst portfolio site for Padmashree Ravikiran — projects, skills, and capstone
-              work. Built on GitHub Pages.</p>
-            <a class="card-link" href="https://kanyady.github.io/" target="_blank" rel="noopener">View site →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Kanyady</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-
-          <div class="card">
-            <div>
-              <h3 class="card-title">Retirement Tools</h3>
-              <div class="card-tags">
-                <span class="tag">Finance</span>
-                <span class="tag">HTML</span>
-                <span class="tag">React Native</span>
+          <div class="card" id="retirement-tools">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Retirement Tools</h3>
+                  <div class="card-tags">
+                    <span class="tag">Finance</span>
+                    <span class="tag">HTML</span>
+                    <span class="tag">React Native</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Retirement Tools">⎘</button>
+              </div>
+              <p class="card-desc">Two retirement calculators hand-coded during COVID while reskilling in app development. The income calculator started as a React Native mobile app; the planner was built in HTML/JS. Both ported here to showcase.</p>
+              <div class="card-actions" style="flex-wrap:wrap; gap:0.4rem 1rem;">
+                <a class="card-link" href="others/ric.html">Retirement Planner →</a>
+                <a class="card-link" href="others/ric_mvp.html">Income Calculator →</a>
+                <button class="card-story-btn" style="margin-left:auto">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Two retirement calculators hand-coded during COVID while reskilling in app development. The income calculator started as a React Native mobile app; the planner was built in HTML/JS. Both ported here to showcase.</p>
-            <div style="display:flex;gap:1rem;margin-top:auto;">
-              <a class="card-link" href="others/ric.html">Retirement Planner →</a>
-              <a class="card-link" href="others/ric_mvp.html">Income Calculator →</a>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Retirement Tools</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
             </div>
           </div>
 
           <!-- Hidden by default — toggle to reveal -->
 
-          <div class="card" data-hidden>
-            <div>
-              <h3 class="card-title">Résumé System</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Personal admin</span>
-                <span class="tag">Job search</span>
+          <div class="card" id="resume-system" data-hidden>
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Résumé System</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Personal admin</span>
+                    <span class="tag">Job search</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Résumé System">⎘</button>
+              </div>
+              <p class="card-desc">Customizable resume templates with a bullet bank organized by employer, ATS
+                optimization checklists, and job-fit scoring. Version-controlled for full history.</p>
+              <div class="card-actions">
+                <span></span>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Customizable resume templates with a bullet bank organized by employer, ATS
-              optimization checklists, and job-fit scoring. Version-controlled for full history.</p>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Résumé System</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card" data-hidden>
-            <div>
-              <h3 class="card-title">EB-1A Green Card</h3>
-              <div class="card-tags">
-                <span class="tag amber">AI-assisted</span>
-                <span class="tag">Personal admin</span>
-                <span class="tag">Immigration</span>
+          <div class="card" id="eb1a" data-hidden>
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">EB-1A Green Card</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Personal admin</span>
+                    <span class="tag">Immigration</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to EB-1A Green Card">⎘</button>
+              </div>
+              <p class="card-desc">Petition drafting toolkit for the EB-1A employment-based immigration pathway. Stores
+                drafts, attorney feedback, and evidence exhibits in a structured workflow.</p>
+              <div class="card-actions">
+                <span></span>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">Petition drafting toolkit for the EB-1A employment-based immigration pathway. Stores
-              drafts, attorney feedback, and evidence exhibits in a structured workflow.</p>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">EB-1A Green Card</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
-          <div class="card" data-hidden>
-            <div>
-              <h3 class="card-title">Visa-Jobs</h3>
-              <div class="card-tags">
-                <span class="tag">Personal admin</span>
-                <span class="tag">Python</span>
-                <span class="tag">Job search</span>
+          <div class="card" id="visa-jobs" data-hidden>
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Visa-Jobs</h3>
+                  <div class="card-tags">
+                    <span class="tag">Personal admin</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">Job search</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Visa-Jobs">⎘</button>
+              </div>
+              <p class="card-desc">H1B visa sponsorship job finder. Scrapes and analyzes PM role listings in Connecticut
+                that offer visa sponsorship, with structured JSON output.</p>
+              <div class="card-actions">
+                <span></span>
+                <button class="card-story-btn">Story ↩</button>
               </div>
             </div>
-            <p class="card-desc">H1B visa sponsorship job finder. Scrapes and analyzes PM role listings in Connecticut
-              that offer visa sponsorship, with structured JSON output.</p>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Visa-Jobs</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">[Your story here — what prompted this, what you learned, what surprised you]</p>
+            </div>
           </div>
 
         </div>
@@ -696,20 +1059,20 @@
     </footer>
 
     <script>
-      // Tab switching
+      // ── Tab switching ──
       const tabs = document.querySelectorAll('.tab-btn');
       const panels = document.querySelectorAll('.tab-section');
 
-      tabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-          tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
-          panels.forEach(p => p.hidden = true);
-          btn.setAttribute('aria-selected', 'true');
-          document.getElementById(btn.getAttribute('aria-controls')).hidden = false;
-        });
-      });
+      function activateTab(btn) {
+        tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+        panels.forEach(p => p.hidden = true);
+        btn.setAttribute('aria-selected', 'true');
+        document.getElementById(btn.getAttribute('aria-controls')).hidden = false;
+      }
 
-      // Show/hide toggle per grid
+      tabs.forEach(btn => btn.addEventListener('click', () => activateTab(btn)));
+
+      // ── Show/hide toggle per grid ──
       function toggleHidden(gridId, btnId, count) {
         const grid = document.getElementById(gridId);
         const btn = document.getElementById(btnId);
@@ -724,6 +1087,87 @@
           btn.innerHTML = `<span class="icon">●</span> Hide ${count} projects`;
         }
       }
+
+      // ── Card flip ──
+      function animateFlip(card, toBack) {
+        const from = card.querySelector(toBack ? '.card-front' : '.card-back');
+        const to   = card.querySelector(toBack ? '.card-back'  : '.card-front');
+
+        from.style.transition = 'opacity 0.13s ease, transform 0.15s ease';
+        from.style.opacity = '0';
+        from.style.transform = toBack ? 'rotateY(25deg) scale(0.97)' : 'rotateY(-25deg) scale(0.97)';
+
+        setTimeout(() => {
+          card.classList.toggle('flipped', toBack);
+          from.style.transition = '';
+          from.style.opacity = '';
+          from.style.transform = '';
+          to.style.opacity = '0';
+          to.style.transform = toBack ? 'rotateY(-25deg) scale(0.97)' : 'rotateY(25deg) scale(0.97)';
+          requestAnimationFrame(() => {
+            to.style.transition = 'opacity 0.15s ease, transform 0.18s ease';
+            to.style.opacity = '1';
+            to.style.transform = 'none';
+          });
+        }, 140);
+      }
+
+      document.querySelectorAll('.card-story-btn').forEach(btn => {
+        btn.addEventListener('click', () => animateFlip(btn.closest('.card'), true));
+      });
+
+      document.querySelectorAll('.card-back-close').forEach(btn => {
+        btn.addEventListener('click', () => animateFlip(btn.closest('.card'), false));
+      });
+
+      // ── Share / deeplinks ──
+      document.querySelectorAll('.card-share-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const card = btn.closest('.card');
+          const url = window.location.origin + window.location.pathname + '#' + card.id;
+          navigator.clipboard.writeText(url).then(() => {
+            btn.textContent = '✓';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = '⎘';
+              btn.classList.remove('copied');
+            }, 1500);
+          }).catch(() => {
+            // fallback for non-https
+            btn.textContent = '✓';
+            setTimeout(() => { btn.textContent = '⎘'; }, 1500);
+          });
+        });
+      });
+
+      // ── Hash routing on load ──
+      function activateHash() {
+        const hash = window.location.hash.slice(1);
+        if (!hash) return;
+        const card = document.getElementById(hash);
+        if (!card) return;
+
+        // Switch to personal tab if needed
+        const section = card.closest('.tab-section');
+        if (section && section.hidden) {
+          const tabBtn = document.querySelector(`[aria-controls="${section.id}"]`);
+          if (tabBtn) activateTab(tabBtn);
+        }
+
+        // Reveal if hidden
+        if (card.hasAttribute('data-hidden') && !card.classList.contains('revealed')) {
+          card.classList.add('revealed');
+        }
+
+        setTimeout(() => {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.classList.add('highlight-flash');
+          card.addEventListener('animationend', () => card.classList.remove('highlight-flash'), { once: true });
+        }, 100);
+      }
+
+      activateHash();
     </script>
 
   </body>
