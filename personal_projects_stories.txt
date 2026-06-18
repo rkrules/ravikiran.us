@@ -1,0 +1,216 @@
+## StreakMates
+https://streakmates.lovable.app
+
+The seed was a walk challenge at Prudential — a corporate wellness thing that stuck in my head. Years later I tried to do a 100-day challenge with family and a friend named Kayll. We tracked it on a Google Form. It worked, barely. I wanted something that felt more like an actual app.
+
+My first attempt was on Lovable. It failed — Lovable kept hitting limits and couldn't fix its own errors. I walked away. A few months later I tried again. That version became Walk Challenge: built in a single session at the end of a long day when Lovable was already throwing errors, shipped untested. But the idea stuck.
+
+When I came back properly and built StreakMates in Claude Code, it grew. I kept adding more than just walking. I integrated Strava — then they dropped the API limit from 100 users to 10, which stung. I tried to add real GPS tracking, maps, and timed events, but those features really need a native phone app. A PWA has limits. If I'd started native from the beginning I could have hooked into Apple Health. I'm a bit disappointed about that, but I'm happy I can build what I want, how I want it.
+
+The feature I'm most proud of is the certificate — when you complete a challenge, the app generates one. It's a small thing but it feels like a moment. My second favorite is the share-as-link. I also added meditation with audio. This is one I use every day.
+
+Tools used: Lovable, Claude Code, Codex, GitHub Copilot, Open Code.
+
+---
+
+## Likita
+https://likita.lovable.app
+
+I already had Google Docs and Notes on my phone, but I never liked the friction of having to format or organize before I could write. I wanted to just open something, pick a category, and type. That's it. I'd also been thinking about streaks — not just for fitness, but for writing.
+
+The goal was a private journal app with categories, streak tracking, and local encryption. Simple enough to be a one-person app but structured enough to actually use daily. I named it after the Kannada word ಲಿಖಿತ (Likita), which means "written" — that's my language.
+
+I'd been using an early version for a month before I started cleaning it up. Added formatting options, themes, mic input, random prompts to get started, and tried AI sentiment tracking (not sure if I left it on). I thought about syncing to Google Docs but it felt like too much infrastructure for an app with one user. Of everything I've built, this is the one I actually use most consistently. That's probably the best measure of whether something worked.
+
+---
+
+## Are You Free (RUFree)
+https://rufree.lovable.app
+
+In my pickleball group, I post a poll every week. It takes 30 seconds, everyone can see who's in, and we're done. Without me, the group chat turns into 40 messages and no one knows how many people are playing. I've been doing this for 12 months and no one else has ever started a poll. When I don't play, they go back to chaos.
+
+I wanted to build something even simpler than a poll — a Doodle-style grid where you tap your available times, share a link, and see where everyone overlaps. No signup. No account. No reason not to use it.
+
+I've rebuilt the UI seven times and I'm still not happy with it. But the harder problem isn't the design — it's adoption. The bar for getting people to use a new tool, even a frictionless one, is higher than I expected. Adding a Google Meet link felt like a step forward, then I realized I was now competing with Calendly. The real insight: most coordination happens in group chats, and anything that requires leaving the chat is already losing. I haven't solved that yet.
+
+---
+
+## Todo App
+(standalone HTML, local file storage)
+
+LinkedIn Premium gave me access to Lovable's paid tier for a year — five credits a day, use them or lose them. That constraint forced me to build something every single day, and on the days I had nothing planned, I'd build something for myself.
+
+I've never loved todo apps. They all feel like they were designed for someone else's workflow. I wanted one that tracked when I started a task, when I finished it, and what category it fell into — not just a checklist.
+
+I built it as a standalone HTML file with local storage. No backend, no syncing, no accounts. It's deeply personal and probably only works for me, which is fine. The daily credit pressure turned out to be a surprisingly good forcing function for building things I'd been putting off.
+
+---
+
+## Aadu Huli (Tiger and Goat Game)
+https://aadu-huli.lovable.app
+
+About two years ago I came across Aadu Huli — an ancient Indian board game, also known as Goats and Tigers. It's an asymmetric strategy game: one player controls tigers trying to capture goats, the other controls goats trying to trap the tigers. I'd never seen it as a digital game and wanted to build one.
+
+The goal was straightforward: a playable version you could run in a browser.
+
+The hardest part turned out to be the board. The geometry is specific and the game breaks if it's wrong. I went through several failed designs before getting it right, and I kept the earlier variants in the app because they looked interesting in their own way. Once the mechanics worked I kind of lost interest in the polish. The UI could use work. But the game plays.
+
+---
+
+## Healthish (Health Tracker)
+https://health-ish.lovable.app/landing
+
+I was using two separate apps for fitness — one for food, one for fasting. I wanted one app that did both, plus a few other things that were always locked behind paid plans. I started building it in early 2025.
+
+By October I'd given up. Lovable kept hitting limits and couldn't resolve its own errors. I walked away.
+
+When I came back months later, Lovable had improved dramatically. The bugs that had blocked me resolved quickly. I added the core features and threw in some AI capabilities for fun (not sure if I left them on — didn't want a surprise AI bill if it somehow went viral). It still has one passionate user. I haven't spent much time on it since because StreakMates pulled my attention, but the foundation is solid.
+
+---
+
+## Heart Talk
+
+A member of my state's Kannada-language WhatsApp group writes a thoughtful piece on heart health every week. Good content, shared in a chat, disappearing in the scroll. I wanted to give it a proper home — searchable, with a glossary and downloadable PDF.
+
+Built it in a single session of vibe coding. It worked.
+
+What I learned: no one reads a bulk archive. The content was made for a newsletter, one piece at a time. Building a searchable repository for it was the wrong container. The format you use to share something matters as much as the content itself.
+
+---
+
+## Recipes App (Drink & Dine AI)
+https://drink-n-dine-ai.lovable.app
+
+Two people in my life — my wife and a friend named Panna — independently asked me for the same app: something that suggests recipes based on what's already in the fridge. Around the same time I was constantly opening ChatGPT to ask for cocktail variations based on what I had at home. Three separate needs, same general shape.
+
+I built one app that handled both: ingredient-based recipe recommendations and cocktail suggestions.
+
+I knew from the start it was an AI wrapper. I told myself that going in. And sure enough, I couldn't find a way to make it more than that. I couldn't display unique images so I disabled them. It's a bit slow. I've barely used it. The one idea I couldn't answer: if recipes are a commodity, what's the value-add? I'm not a cook, so I genuinely don't know. It was close to a one-shot build and that's probably fine.
+
+---
+
+## ABK Math
+https://abkmath.lovable.app
+
+I built a simple addition app on Lovable last year. Separately, on Claude Code, I built a multiplication tables drill. They lived in different places and my daughter Arya used them on and off. I decided to combine them and actually finish the thing.
+
+The goal is a math practice app she'd want to use — not just correct, but engaging. I want it to eventually save progress, adapt to her level, and let a teacher see how a class is doing with a leaderboard.
+
+What I shipped: multiple choice mode, a range of 3rd grade math topics, a countdown timer you can turn off, and a timed drill mode. The timed drill is what I'm most excited about — I think it'll get regular use. I tried adding a Khan Amigo-style AI coach but the output was embarrassingly bad and I disabled it. That's a feature for another day, if I ever get the patience to make it actually useful.
+
+---
+
+## Retirement Income Calculator (RIC)
+https://ravikiran.us (revived)
+
+At Prudential during COVID, I noticed something odd about the company's retirement planning tool: it asked users to enter their monthly expenses, but those expenses had no effect on the final recommendation. The field existed. The data went nowhere.
+
+I wanted to build a better version — one that actually used the inputs and was honest about its assumptions. Without access to the original codebase, I reverse-engineered the underlying financial logic from scratch, careful not to reuse anything proprietary.
+
+The result supported three retirement spending models: an income replacement model (spend 80% of final salary), an inflation-adjusted model (project current expenses forward), and a conservative model that compares both and uses the higher estimate.
+
+It was also my introduction to React. I started as a web app, began converting it to mobile, then lost interest — not because the calculator wasn't working, but because I realized the real problem was distribution, not the math. Building a good tool and getting it to the people who need it are completely different problems.
+
+Years later I met an entrepreneur who had built a B2B SaaS business around investment fund recommendations for financial advisors. Not the same idea, but close enough to remind me that regulated markets still have room for focused software. I revived the calculator with Claude and published it on ravikiran.us.
+
+---
+
+## Mobile App Demo
+https://ravikiran.us/projects/others/mobileapp_g/index1/
+
+Around the time I was getting really good at CSS, I started working with a product leader at my company named Mike O'Sullivan. He had a product that needed an interactive demo — something polished, clickable, that felt like a real app. He didn't have one. I started building it as a side project, half genuine learning, half quiet daydream about selling it to him on my way out the door.
+
+I was the only potential customer for my own side project, and my customer was someone else.
+
+It took weeks. A lot of it was frustrating — copying block patterns, adjusting spacing, failing at the same thing repeatedly. I learned more about CSS than I'd planned. The AI tools of today would build the same thing in an afternoon. I got bored before I could pitch it. Recently I brought it back to life, and it's on ravikiran.us now.
+
+---
+
+## ravikiran.us (Personal Site)
+https://ravikiran.us
+
+I've had a blog for over 23 years. At some point the free host it was on stopped working and the content became inaccessible. I kept paying for the domain because I couldn't bring myself to let it go.
+
+The goal was to stitch everything together — the old WordPress posts, the newsletter essays, the notes, the projects — in one place that worked. Mostly for me. Partly to share.
+
+Most of the rebuild was done with Claude. We parsed a 70MB WordPress SQL dump, recovered 700+ posts across four different blogs, and built a static site served from GitHub Pages. The domain finally earns its keep.
+
+---
+
+
+# Project Cards
+(short versions for ravikiran.us/projects/)
+
+---
+
+**StreakMates**
+https://streakmates.lovable.app
+Started as a 100-day walk challenge tracked on a Google Form with family and a friend. Two failed Lovable attempts later, rebuilt in Claude Code — and kept growing well past a walk tracker. Yoga, meditation, Strava sync, swim, fasting timer. The certificate generated on challenge completion is the feature I'm most proud of. My most-shipped and most-used personal app.
+
+---
+
+**Likita**
+https://likita.lovable.app
+A private journal app with categories, streak tracking, and local encryption. Built because I wanted to write without formatting. Named after the Kannada word for "written." My most consistently used app.
+
+---
+
+**Are You Free (RUFree)**
+https://rufree.lovable.app
+A no-login group scheduling app — pick availability on a grid, share a link, see when everyone overlaps. Built because I'm the only person in my pickleball group who uses polls. The real challenge turned out to be adoption, not features.
+
+---
+
+**Todo App**
+(standalone HTML)
+A personal todo tracker that logs when each task started, ended, and what category it belongs to. Built as a standalone HTML file with local storage during a period when daily Lovable credits forced me to build something every day.
+
+---
+
+**Aadu Huli**
+https://aadu-huli.lovable.app
+A digital version of Aadu Huli (Goats and Tigers), a traditional Indian strategy board game. The board geometry was the hardest part. Built in March; the earlier failed board designs are preserved in the app.
+
+---
+
+**Healthish**
+https://health-ish.lovable.app/landing
+A health tracker meant to replace two separate fitness apps I was using. Started, abandoned when Lovable hit its limits, then revived months later when the same bugs resolved in minutes. A good benchmark for how much the tools improved.
+
+---
+
+**Heart Talk**
+A searchable archive of weekly heart health essays shared in a Kannada WhatsApp group. One session of vibe coding. Learned that the format you use to share content matters as much as the content itself.
+
+---
+
+**Recipes App (Drink & Dine AI)**
+https://drink-n-dine-ai.lovable.app
+An AI-powered recipe and cocktail recommender — built after two people in my life independently asked for the same app idea. A deliberate one-shot build. I knew it was an AI wrapper from day one and couldn't find a way past that.
+
+---
+
+**ABK Math**
+https://abkmath.lovable.app
+A math practice app for elementary school, started as a simple addition drill and expanded to cover multiple 3rd grade topics with timed challenges. My daughter Arya is its most enthusiastic (and only) user.
+
+---
+
+**Retirement Income Calculator**
+https://ravikiran.us
+Built during COVID after noticing Prudential's tool asked for data it didn't use. Reverse-engineered the retirement math independently and expanded it with three spending models. My first React project. Revived with Claude and published on ravikiran.us.
+
+---
+
+**Mobile App Demo**
+https://ravikiran.us/projects/others/mobileapp_g/index1/
+An interactive mobile app UI demo built when I was teaching myself CSS — and quietly hoping to sell it to a product leader I worked with. One potential customer. Weeks of learning. Now revived and live.
+
+---
+
+**ravikiran.us**
+https://ravikiran.us
+My personal site — 23 years of writing, projects, and things I don't want to lose. Rebuilt with Claude from a 70MB WordPress database. The domain finally earns its keep.
+
+___
+

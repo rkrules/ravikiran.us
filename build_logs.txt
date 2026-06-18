@@ -1,0 +1,225 @@
+# Build Logs
+Chronological milestone history for each project.
+Intended as raw material for LinkedIn posts and "building in public" stories.
+
+---
+
+# StreakMates
+https://streakmates.lovable.app
+Repo: ~/Apps/claude/oda/walk-challenge
+
+## Pre-history — Prudential walk challenge + Google Form era
+Prudential ran a corporate walk challenge at some point — that planted the idea.
+Later tried a 100-day challenge with family and a friend named Kayll. Tracked it on a Google Form. Functional, but felt like it deserved a real app.
+First attempt at building one was on Lovable. Lovable kept hitting limits and couldn't fix its own errors. Gave up.
+Tried again a second time — that became Walk Challenge (the untested one-shot).
+None of this is in the local git repo — it all predates the Claude Code codebase.
+
+## March 8, 2026 — Started on Lovable (third attempt, first with Supabase)
+First commits. Picked Lovable because it handles the backend scaffolding fast.
+Set up Supabase for auth and database, wired Google OAuth, got the shell running.
+The original idea was simple: a walk challenge tracker for a small group.
+Tool: Lovable
+
+## March 9, 2026 — First deployment
+App live. Basic auth, basic logging. Nothing else. But it worked.
+Tool: Lovable
+
+## March 23–24, 2026 — Made it worth using daily
+Two things that reduced friction dramatically:
+- PIN quick access: tap a 4-digit PIN and log your walk. No full login.
+- Magic link auth: email-based login alongside Google OAuth.
+Also added challenge analytics — per-member trend charts so you could see who was keeping up.
+Tool: Claude Code
+
+## March 25–26, 2026 — More than just walking, installable as an app
+Expanded beyond walking to multiple activity types (running, strength, journaling, custom).
+Added past-day backfilling — you could log yesterday if you forgot.
+Push notifications wired in.
+PWA manifest added so you can install it to your phone's home screen like a real app.
+Tool: Claude Code
+
+## March 28–30, 2026 — Renamed to StreakMates
+The app launched as "100 Day Walk" (tagline: "Walk together, stay accountable"). By late March it had grown well past a walk tracker, so it got a new name: StreakMates.
+Built social share image cards — branded streak cards and challenge invite images, generated on-device. This was the hardest thing to get right visually.
+Added activity-tabbed dashboard: one tab per activity type, each with its own streak counter.
+Custom activity types: admins can define anything with custom units (sets, km, pages, whatever).
+Fixed a Chrome scroll bug that had been annoying for weeks.
+Tool: Claude Code
+
+## March 29, 2026 — Share image as the hook
+The share image card was the feature that made the app feel social.
+You finish a challenge, generate a certificate, share it.
+That moment — completing something and having something to show for it — is what I wanted to capture.
+It became my favorite feature.
+Tool: Claude Code
+
+## March 31, 2026 — Polish and integrity
+Challenge analytics now correctly scoped to the challenge's specific activity.
+A day only counts if you actually met the daily goal — not just any log.
+Leave challenge feature added (you could leave and rejoin later).
+iPhone clipboard sharing fixed so images actually paste into Messages.
+Quick-log preset buttons now reflect the challenge goal (a 10,000-step challenge shows 5k/7.5k/10k/12.5k as presets).
+Tool: Claude Code
+
+## Late April 2026 — Timer + Codex joins
+Added a reusable activity timer.
+Added interval timer for HIIT-style workouts — work/rest intervals, configurable.
+This is when Codex started contributing. It would open PRs from branches like
+`codex/fix-gps-activity-saving-issue` and I'd review and merge.
+GPS tracking for runs added.
+Multiple codex PRs merged through the month.
+Tools: Claude Code (features), Codex (bug fixes and smaller tasks via PRs)
+
+## May 1–2, 2026 — Codex heavy lifting
+Several Codex PRs in quick succession:
+Couch-to-5K challenge type, GPS fixes, mixed-activity challenge logging, interval timer collapsing.
+UI pass: dark mode toggle, icon redesign, page transitions.
+Tools: Codex, Claude Code
+
+## May 4–5, 2026 — Decimal distances + Couch to 5K
+Proper support for decimal distances (0.5 miles, 1.2 km).
+Couch-to-5K training plan challenge fully working.
+Tools: Claude Code, Codex
+
+## May 22, 2026 — Strava
+Connected Strava via OAuth so activity can sync in.
+Tool: Claude Code
+
+## May 23–24, 2026 — Meditation
+Added Meditation as a proper activity type with guided sessions.
+TTS audio cues (spoken), synthesis-generated bell, mute toggle.
+This one took real effort to wire right — audio in a mobile PWA is fiddly.
+Still want to find better open-source audio rather than synthesized TTS.
+Tool: Claude Code
+
+## May 27, 2026 — Wake lock (screen stays on during timer)
+The screen locking during a workout timer was a constant annoyance.
+Added wake lock — the screen now stays on while a timer is running.
+Small fix, but one of those things that was quietly broken for weeks.
+Tool: Claude Code
+
+## May 28, 2026 — Swim
+Swimming added as an activity with updated defaults and chart behavior.
+Tool: Claude Code
+
+## May 31, 2026 — Achievements badges
+Badge system for milestones. Something to earn beyond just streaks.
+Tool: Claude Code
+
+## June 2, 2026 — Fasting timer + Reading
+Fasting timer as an activity type — I was using a separate app for this and wanted it in one place.
+Reading activity improved.
+Tool: Claude Code
+
+## June 3, 2026 — Walk distance updated
+Default walk distance target adjusted to 2km.
+Tool: Claude Code
+
+## June 5, 2026 — Strava custom sports
+Mapped Strava's custom sport types so they sync correctly into the right activity buckets.
+Tool: Claude Code
+
+## June 7, 2026 — Fasting timer improvements
+Extended the fasting cap to 72 hours (was hitting a ceiling).
+Fixed timer pause behavior and added a proper start action.
+Tool: Claude Code
+
+## June 14, 2026 — Yoga + pose gallery
+Added Yoga as a full activity type with a pose gallery.
+This one had been in use informally as a custom activity — now it's first-class with visual support.
+Surya Namaskara (sun salutation sequences) fits here as a structured sub-challenge.
+Tool: Claude Code
+
+## User-configured (in-app, not coded)
+- Surya Namaskara as a sub-challenge within Yoga (12-round sequences, not just duration)
+
+---
+
+# Likita (My Journal)
+https://likita.lovable.app
+Repo: ~/Apps/claude/oda/myjournal-oda
+
+## January 28, 2026 — Started on Lovable
+Connected to Lovable Cloud, set up Supabase auth.
+The idea: a structured daily journal with separate fields for different life areas — family, health, work, partner, dreams, gratitude. Not a blank page, but not a rigid form either.
+Tool: Lovable
+
+## January 29–30, 2026 — Core writing + history
+Entries stored with a history view. Export added.
+Long-form field and image support added.
+Date picker so you could navigate to any past day.
+Tool: Lovable
+
+## February 1–4, 2026 — Tag filters, theme
+Tag-aware filtering in history. Date parsing bugs fixed.
+Applied the Glacier theme — the visual identity the app has kept since.
+Tool: Lovable
+
+## March 8, 2026 — Big feature day on Lovable
+One long session, many things landed:
+- Insights tab with writing streak charts
+- Per-user field configuration — show/hide and reorder which categories appear
+- Theme switcher support
+- Writing prompts — AI-generated, rotating per field
+- Random memory: surfaces a past entry at random in the history view
+- Pagination in history
+- Fixed nested scroll bugs on mobile
+Tool: Lovable
+
+## March 28, 2026 — Writing UX polish
+Prompts now lock to a stable value per session so they don't flicker while writing.
+Auto-save drafts every 1.5 seconds — no more losing work on navigate-away.
+Live writing streak counter in the header.
+Serif font (Lora) for the writing area — easier to read than sans-serif at length.
+Unfocused fields dim slightly to keep attention on the active one.
+Calendar navigation in Insights: tap any day to jump to that entry.
+Tool: Claude Code
+
+## March 30, 2026 — PWA (installable)
+Added web app manifest and service worker so the app can be installed to the home screen.
+Scroll CSS carefully scoped to standalone mode only — a lesson hard-learned from StreakMates hitting three separate scroll bugs after PWA conversion.
+Tool: Claude Code
+
+## April 16–17, 2026 — AI + Codex joins
+Added option for users to bring their own OpenAI API key.
+Speech-to-text (Whisper) added but off by default.
+Random memory panel collapsed by default.
+AI insight: after saving an entry, the app generates a short reflection on what you wrote.
+Codex started contributing via PRs — multiple branches merged through this week.
+Tools: Claude Code, Codex
+
+## April 18–19, 2026 — Whisper dictation + focus mode + desktop
+Whisper dictation working properly: tap to toggle, stop flow fixed, errors handled gracefully.
+Per-user API key: paste your OpenAI key once, stored locally.
+Focus mode: full-width distraction-free writing on desktop, animated expand effect.
+Desktop layout with sidebar navigation added.
+Collaborative journal feature started — shared entries between users.
+AI prompts refined to avoid misattributing family vs. personal activities.
+Generic default labels for category fields so the app isn't hardcoded to one person's life.
+Calendar shows dot markers on dates that have entries.
+Tools: Claude Code, Codex
+
+## April 21–24, 2026 — AI reflection UX tuned
+AI reflection changed from auto-pop to an explicit button you tap after saving.
+Mobile PWA scroll overlap with bottom nav fixed.
+iOS PWA history scroll trapping fixed.
+Dictation UX improvements and rollout plan documented.
+Tools: Codex, Claude Code
+
+## May 1, 2026 — Autosave behavior fixed
+Refined the autosave flow — previously the draft restore prompt was intrusive.
+Removed the "you have unsaved changes" warning in favor of silent autosave.
+Tool: Codex
+
+## May 9, 2026 — Client-side encryption
+Added local encryption for journal entries — entries encrypted before leaving the device.
+Drafts made encryption-aware so partial entries aren't stored in plaintext.
+This was the feature that made it feel genuinely private.
+Named the app Likita — Kannada for "written."
+Tool: Claude Code
+
+## May 17, 2026 — Unified view + autosave fix
+Unified view mode: all journal fields in one scrollable page with filter chips to show/hide categories.
+Fixed a bug where autosave was overwriting fresh text — annoying edge case that had been there a while.
+Tool: Claude Code

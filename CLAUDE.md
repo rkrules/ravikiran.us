@@ -167,6 +167,32 @@ All figures used across the site (revenue, user counts, ratings, awards) are doc
 
 Pages that use figures: `index.html`, `me/index.html`, `resume/index.html`, `work/seaworld/index.html`, `work/prudential/index.html`, `work/accuweather/index.html`.
 
+## projects/index.html structure (hand-edited, do not regenerate)
+
+Two tabs: **Work** and **Personal**. Both are hand-edited HTML — do NOT regenerate.
+
+**Personal tab cards** (in order, `id` → project):
+- `streakmates` — StreakMates PWA (streakmates.lovable.app)
+- `prudential-demo` — Mobile App Demo (projects/others/mobileapp_g/index1/)
+- `likita` — Likita journal app (likita.lovable.app)
+- `heart-talks` — Heart Talks Kannada health site (rkrules.github.io/heart-talks/)
+- `math-practice` — ABK Math (abkmath.lovable.app)
+- `health-ish` — Healthish tracker (health-ish.lovable.app)
+- `aadu-huli` — Aadu Huli board game (aadu-huli.lovable.app)
+- `drink-dine-ai` — Drink & Dine AI recipes (drink-n-dine-ai.lovable.app)
+- `rufree` — RUFree scheduling (rufree.lovable.app)
+- `ravikiran-us` — This site (ravikiran.us)
+- `kanyady` — Kanyady portfolio site (kanyady.github.io)
+- `retirement-tools` — RIC calculators (projects/others/ric.html + ric_mvp.html)
+- `resume-system` *(hidden)* — Résumé System
+- `eb1a` *(hidden)* — EB-1A Green Card toolkit
+- `visa-jobs` *(hidden)* — H1B job finder
+
+Each card has a **front** (`.card-front`) with `.card-desc` and a **back** (`.card-back`) with `.card-story-text`.
+Story texts are now filled with real content from `personal_projects_stories.txt`.
+To add a new card, copy an existing card block and update the `id`, title, tags, desc, link, and story text.
+The "Show hidden projects (3)" toggle is controlled by `toggleHidden('personal-grid', 'personal-toggle', 3)`.
+
 ## index.html structure (hand-edited, do not regenerate)
 
 Sections in order:
