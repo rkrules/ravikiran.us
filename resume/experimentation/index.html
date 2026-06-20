@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experimentation &amp; Growth Analytics &mdash; Ravikiran Rajagopal</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .resume-section { margin-bottom: 2.5rem; }
+    .resume-section h2 { border-bottom: 1px solid #e1e4e8; padding-bottom: 0.4rem; margin-bottom: 1.2rem; }
+    .resume-role { margin-bottom: 2rem; }
+    .resume-role-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.25rem; }
+    .resume-role-header h3 { margin: 0; font-size: 1rem; }
+    .resume-role-meta { color: #586069; font-size: 0.9rem; white-space: nowrap; }
+    .resume-role > p.role-subtitle { margin: 0 0 0.5rem; color: #586069; font-size: 0.88rem; font-style: italic; }
+    .resume-role ul { margin: 0.3rem 0 0; padding-left: 1.3rem; color: #444; font-size: 0.95rem; }
+    .resume-role ul li { margin-bottom: 0.3rem; }
+    .skills-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+    .skills-list li { background: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 3px; padding: 0.2rem 0.6rem; font-size: 0.9rem; }
+    .resume-cta { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .education-item { margin-bottom: 1rem; }
+    .education-item h3 { margin: 0; font-size: 1rem; }
+    .education-item p { margin: 0.2rem 0 0; color: #586069; font-size: 0.9rem; }
+    .award-list { list-style: none; padding: 0; margin: 0; }
+    .award-list li { padding: 0.2rem 0; color: #444; font-size: 0.95rem; }
+    .award-list li::before { content: "🏆 "; }
+    .metric { font-weight: 600; }
+
+    .persona-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 1rem 0 1.5rem; }
+    .persona-nav a { padding: 0.35rem 0.85rem; border-radius: 4px; font-size: 0.88rem; border: 1px solid #c8e1ff; color: #0366d6; text-decoration: none; }
+    .persona-nav a.active { background: #0366d6; color: #fff; border-color: #0366d6; }
+    .persona-nav a:hover:not(.active) { background: #f0f6ff; }
+
+    .stat-row { display: flex; gap: 2rem; flex-wrap: wrap; margin: 1.25rem 0 1.5rem; }
+    .stat-block { min-width: 110px; }
+    .stat-num { font-size: 1.75rem; font-weight: 700; color: #0366d6; line-height: 1.1; }
+    .stat-label { font-size: 0.78rem; color: #586069; margin-top: 0.2rem; }
+
+    .pub-callout { background: #f1f8ff; border-left: 3px solid #0366d6; padding: 0.75rem 1rem; border-radius: 0 4px 4px 0; margin: 1rem 0; font-size: 0.92rem; line-height: 1.5; }
+    .pub-callout strong { display: block; margin-bottom: 0.25rem; }
+
+    .awards-hero { display: flex; gap: 1.25rem; flex-wrap: wrap; margin: 0.5rem 0 1rem; }
+    .award-badge { background: #fffbf0; border: 1px solid #f5c842; border-radius: 5px; padding: 0.5rem 0.85rem; font-size: 0.88rem; color: #444; }
+    .award-badge strong { display: block; font-size: 0.8rem; color: #888; font-weight: 400; margin-bottom: 0.15rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1><a href="/">Ravikiran Rajagopal</a></h1>
+      <p class="tagline">Director, PM &middot; Experimentation &amp; Growth Analytics</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <p><a href="/" class="nav-home">&larr; Home</a></p>
+
+    <nav class="persona-nav">
+      <a href="/resume/ecom/">Commerce &amp; Conversion</a>
+      <a href="/resume/experimentation/" class="active">Experimentation &amp; Analytics</a>
+      <a href="/resume/consumer/">Consumer Digital</a>
+      <a href="/resume/enterprise/">Enterprise &amp; Delivery</a>
+    </nav>
+
+    <section class="resume-section">
+      <div class="pub-callout">
+        <strong>Peer-reviewed co-author: <em>Econ Journal Watch</em>, March 2026</strong>
+        Kohavi, R., Rajagopal, R., Imbens, G., et al. &ldquo;Power Analysis is Essential.&rdquo; <em>Econ Journal Watch</em> 23(1), March 2026, pp.&nbsp;139&ndash;172. AEA-registered RCT, 2.9M-sample. Co-authored with Nobel laureate <strong>Guido Imbens</strong> and experimentation pioneer <strong>Ron Kohavi</strong>.
+        <a href="https://econjwatch.org/file_download/1407/KohaviEtAlMarch2026.pdf" target="_blank" rel="noopener" style="margin-left:0.5rem">Read paper &rarr;</a>
+      </div>
+
+      <div class="awards-hero">
+        <div class="award-badge">
+          <strong>Optimizely North America &mdash; 2022</strong>
+          Best Experimentation Practice
+        </div>
+        <div class="award-badge">
+          <strong>Quantum Metric CPD Signal Award &mdash; 2022</strong>
+          Digital Product Excellence
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-block">
+          <div class="stat-num">75+ A/B tests/yr</div>
+          <div class="stat-label">&times; 4 consecutive years</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num">2.9M</div>
+          <div class="stat-label">sample AEA-registered RCT</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num">$8&ndash;10M+</div>
+          <div class="stat-label">validated impact per initiative</div>
+        </div>
+      </div>
+
+      <p class="bio">
+        Built a rigorous experimentation program from zero &mdash; establishing the repeatable A/B testing framework that became the enterprise standard for all digital product decisions. Co-authored peer-reviewed research in <em>Econ Journal Watch</em> (March 2026) alongside Nobel laureate Guido Imbens and experimentation pioneer Ron Kohavi, using a 2.9M-sample AEA-registered RCT on a live eCommerce platform. Recognized externally: <strong>Optimizely Award 2022 &ldquo;Best Experimentation Practice&rdquo;</strong> and <strong>Quantum Metric CPD Signal Award 2022</strong>. Coaches product managers and senior executives from intuition-driven to evidence-based decision-making &mdash; experiment design, analytics interpretation, investment prioritization &mdash; using analytics capabilities that now inform capital investment decisions at the executive level.
+      </p>
+      <div class="resume-cta">
+        <a href="/resume/pdfs/Ravikiran_Rajagopal_Experimentation_Growth_Analytics.pdf" class="btn" target="_blank" rel="noopener">Download PDF Resume</a>
+        <a href="https://www.linkedin.com/in/ravikiranrajagopal/" class="btn btn-outline" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:ravikiran.rajagopal@gmail.com" class="btn btn-outline">Email</a>
+      </div>
+    </section>
+
+    <section class="resume-section">
+      <h2>Experience</h2>
+
+      <div class="resume-role">
+        <div class="resume-role-header">
+          <h3>Director, Product Management &mdash; <a href="https://seaworld.com" target="_blank" rel="noopener">SeaWorld Parks &amp; Entertainment</a></h3>
+          <span class="resume-role-meta">2021 &ndash; Present &middot; Remote</span>
+        </div>
+        <p class="role-subtitle">Built the organization&rsquo;s first experimentation practice; co-investigator on a 2.9M-sample AEA-registered RCT</p>
+        <ul>
+          <li>Established the organization&rsquo;s first experimentation-driven product strategy, identifying and validating growth opportunities through <strong>75+ A/B tests per year</strong> across 4 consecutive years, prioritizing high-ROI improvements before engineering investment.</li>
+          <li>Built analytics and experimentation capabilities used by senior executives to guide pricing, website design, and capital investment decisions.</li>
+          <li>Established guardrails (revenue per visitor, failure rates, refunds, downstream behavior) to prevent false-positive wins and protect downside risk across all digital experiments.</li>
+          <li>Delivered <strong>$8&ndash;10M+ validated annual revenue impact</strong> per major initiative through controlled experiments across purchase funnels, pricing, and checkout.</li>
+          <li>Coached and developed product managers, replacing intuition-driven decisions with structured, evidence-based practices across experiment design, analytics interpretation, and roadmap prioritization.</li>
+          <li>Increased checkout conversion by reducing transaction failures from near 20% to mid-single digits, protecting <strong>$10M+</strong> in annual revenue.</li>
+          <li>Owned eCommerce performance across 12 consumer websites, covering product, cart, checkout, performance, analytics, and SEO.</li>
+        </ul>
+      </div>
+
+      <div class="resume-role">
+        <div class="resume-role-header">
+          <h3>Product Manager, Digital Product Development &mdash; <a href="https://www.prudential.com" target="_blank" rel="noopener">Prudential Financial</a></h3>
+          <span class="resume-role-meta">2015 &ndash; 2021 &middot; Newark, NJ</span>
+        </div>
+        <p class="role-subtitle">Fortune 100 financial services; consumer mobile and B2B digital platforms</p>
+        <ul>
+          <li>Delivered <strong>$350M in AUM retention</strong> and contributed to <strong>$10B in new client assets</strong> by launching the company&rsquo;s first consumer mobile app &mdash; demonstrating 0-to-1 product building with sustained, data-driven improvement.</li>
+          <li>Improved app ratings from 1.8 to 4.8, reaching <strong>844K+ downloads</strong> and sustaining 100K monthly active users through continuous data-driven product improvements.</li>
+          <li>Pioneered the first authenticated Alexa skill in the retirement industry, validating adoption of an emerging platform category before broader investment.</li>
+        </ul>
+      </div>
+
+      <div class="resume-role">
+        <div class="resume-role-header">
+          <h3>Senior Product Manager &mdash; <a href="https://www.accuweather.com" target="_blank" rel="noopener">AccuWeather</a></h3>
+          <span class="resume-role-meta">2011 &ndash; 2015 &middot; State College, PA</span>
+        </div>
+        <p class="role-subtitle">Global consumer mobile platform with 35M+ users</p>
+        <ul>
+          <li>Led strategic planning and launch of <strong>25+ consumer and partner-facing products</strong> in three years, applying data-driven prioritization to drive 150% growth in mobile advertising revenue.</li>
+          <li>Scaled mobile platforms from <strong>1M to 35M users</strong> through product decisions grounded in engagement metrics, search rankings, and retention data.</li>
+        </ul>
+      </div>
+
+      <div class="resume-role">
+        <div class="resume-role-header">
+          <h3>Lead Software Engineer &mdash; Robert Bosch, Visteon, Schneider Electric</h3>
+          <span class="resume-role-meta">2003 &ndash; 2009</span>
+        </div>
+        <ul>
+          <li>Six years building embedded systems for automotive and industrial applications &mdash; the technical foundation for product leadership.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="resume-section">
+      <h2>Education</h2>
+      <div class="education-item">
+        <h3>MBA, Marketing &mdash; Penn State Smeal College of Business</h3>
+        <p>2011</p>
+      </div>
+      <div class="education-item">
+        <h3>Bachelor of Engineering, Telecommunication &mdash; PESIT, Bangalore</h3>
+        <p>2003</p>
+      </div>
+    </section>
+
+    <section class="resume-section">
+      <h2>Skills</h2>
+      <ul class="skills-list">
+        <li>Experimentation &amp; A/B Testing</li>
+        <li>Metrics Definition &amp; Governance</li>
+        <li>Data-Driven Product Management</li>
+        <li>Growth Analytics</li>
+        <li>Decision-Grade Analytics</li>
+        <li>Evidence-Based PM Culture</li>
+        <li>Product Strategy &amp; Roadmapping</li>
+        <li>Optimizely</li>
+        <li>Google Analytics</li>
+        <li>Quantum Metric</li>
+        <li>Cross-Functional Leadership</li>
+        <li>Executive Decision Support</li>
+        <li>Agile / Scrum</li>
+      </ul>
+    </section>
+
+    <section class="resume-section">
+      <h2>Recognition</h2>
+      <ul class="award-list">
+        <li><a href="https://www.optimizely.com/insights/seaworld/" target="_blank" rel="noopener">Optimizely North America Optimizer Award &mdash; &ldquo;Best Experimentation Practice&rdquo;</a> (2022)</li>
+        <li><a href="https://www.quantummetric.com/blog/announcing-the-winners-of-the-2022-cpd-signal-awards" target="_blank" rel="noopener">Quantum Metric CPD Signal Award</a> (2022)</li>
+        <li>P&amp;I Eddy Award &mdash; Communication Excellence, Prudential Alexa Skill (2019)</li>
+        <li>Globee Awards &mdash; Technology Judge, 50+ evaluations (Ongoing)</li>
+        <li>UConn Entrepreneurship Bootcamp for Veterans &mdash; Pitch Competition Judge (2025)</li>
+      </ul>
+    </section>
+
+    <section class="resume-section">
+      <h2>Publications</h2>
+      <p>
+        <strong>&ldquo;Power Analysis is Essential: High-Powered Tests Suggest Minimal to No Effect of Rounded Shapes on Click-Through Rates&rdquo;</strong><br>
+        <em>Econ Journal Watch</em>, Vol. 23, No. 1, March 2026, pp. 139&ndash;172<br>
+        Ron Kohavi, Jakub Linowski, Lukas Vermeer, Fabrice Boisseranc, Joachim Furuseth, Andrew Gelman, Guido Imbens, <strong>Ravikiran Rajagopal</strong><br>
+        Affiliation: Director of Product Management, United Parks &amp; Resorts<br>
+        <a href="https://econjwatch.org/file_download/1407/KohaviEtAlMarch2026.pdf" target="_blank" rel="noopener">Read paper &rarr;</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Ravikiran Rajagopal &middot; <a href="mailto:ravikiran.rajagopal@gmail.com">ravikiran.rajagopal@gmail.com</a></p>
+    </div>
+  </footer>
+</body>
+</html>
