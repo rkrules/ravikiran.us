@@ -1,0 +1,191 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - heading "Ravikiran Rajagopal" [level=1] [ref=e4]:
+        - link "Ravikiran Rajagopal" [ref=e5] [cursor=pointer]:
+          - /url: /
+      - paragraph [ref=e6]: Director, PM · Experimentation & Growth Analytics
+  - main [ref=e7]:
+    - paragraph [ref=e8]:
+      - link "← Home" [ref=e9] [cursor=pointer]:
+        - /url: /
+    - navigation [ref=e10]:
+      - link "Commerce & Conversion" [ref=e11] [cursor=pointer]:
+        - /url: /resume/ecom/
+      - link "Experimentation & Analytics" [ref=e12] [cursor=pointer]:
+        - /url: /resume/experimentation/
+      - link "Consumer Digital" [ref=e13] [cursor=pointer]:
+        - /url: /resume/consumer/
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - strong [ref=e16]:
+          - text: "Peer-reviewed co-author:"
+          - emphasis [ref=e17]: Econ Journal Watch
+          - text: ", March 2026"
+        - text: Kohavi, R., Rajagopal, R., Imbens, G., et al. “Power Analysis is Essential.”
+        - emphasis [ref=e18]: Econ Journal Watch
+        - text: 23(1), March 2026, pp. 139–172. AEA-registered RCT, 2.9M-sample. Co-authored with Nobel laureate
+        - strong [ref=e19]: Guido Imbens
+        - text: and experimentation pioneer
+        - strong [ref=e20]: Ron Kohavi
+        - text: .
+        - link "Read paper →" [ref=e21] [cursor=pointer]:
+          - /url: https://econjwatch.org/file_download/1407/KohaviEtAlMarch2026.pdf
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - strong [ref=e24]: Optimizely North America — 2022
+          - text: Best Experimentation Practice
+        - generic [ref=e25]:
+          - strong [ref=e26]: Quantum Metric CPD Signal Award — 2022
+          - text: Digital Product Excellence
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - generic [ref=e29]: 75+ A/B tests/yr
+          - generic [ref=e30]: × 4 consecutive years
+        - generic [ref=e31]:
+          - generic [ref=e32]: 2.9M
+          - generic [ref=e33]: sample AEA-registered RCT
+        - generic [ref=e34]:
+          - generic [ref=e35]: $8–10M+
+          - generic [ref=e36]: validated impact per initiative
+      - paragraph [ref=e37]:
+        - text: Built a rigorous experimentation program from zero — establishing the repeatable A/B testing framework that became the enterprise standard for all digital product decisions. Co-authored peer-reviewed research in
+        - emphasis [ref=e38]: Econ Journal Watch
+        - text: "(March 2026) alongside Nobel laureate Guido Imbens and experimentation pioneer Ron Kohavi, using a 2.9M-sample AEA-registered RCT on a live eCommerce platform. Recognized externally:"
+        - strong [ref=e39]: Optimizely Award 2022 “Best Experimentation Practice”
+        - text: and
+        - strong [ref=e40]: Quantum Metric CPD Signal Award 2022
+        - text: . Coaches product managers and senior executives from intuition-driven to evidence-based decision-making — experiment design, analytics interpretation, investment prioritization — using analytics capabilities that now inform capital investment decisions at the executive level.
+      - generic [ref=e41]:
+        - link "Download PDF Resume" [ref=e42] [cursor=pointer]:
+          - /url: https://github.com/rkrules/resumes/raw/main/portfolio/pdfs/Ravikiran_Rajagopal_Experimentation_Growth_Analytics.pdf
+        - link "LinkedIn" [ref=e43] [cursor=pointer]:
+          - /url: https://www.linkedin.com/in/ravikiranrajagopal/
+        - link "Email" [ref=e44] [cursor=pointer]:
+          - /url: mailto:ravikiran.rajagopal@gmail.com
+    - generic [ref=e45]:
+      - heading "Experience" [level=2] [ref=e46]
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - heading "Director, Product Management — SeaWorld Parks & Entertainment" [level=3] [ref=e49]:
+            - text: Director, Product Management —
+            - link "SeaWorld Parks & Entertainment" [ref=e50] [cursor=pointer]:
+              - /url: https://seaworld.com
+          - generic [ref=e51]: 2021 – Present · Remote
+        - paragraph [ref=e52]: Built the organization’s first experimentation practice; co-investigator on a 2.9M-sample AEA-registered RCT
+        - list [ref=e53]:
+          - listitem [ref=e54]:
+            - text: Established the organization’s first experimentation-driven product strategy, identifying and validating growth opportunities through
+            - strong [ref=e55]: 75+ A/B tests per year
+            - text: across 4 consecutive years, prioritizing high-ROI improvements before engineering investment.
+          - listitem [ref=e56]: Built analytics and experimentation capabilities used by senior executives to guide pricing, website design, and capital investment decisions.
+          - listitem [ref=e57]: Established guardrails (revenue per visitor, failure rates, refunds, downstream behavior) to prevent false-positive wins and protect downside risk across all digital experiments.
+          - listitem [ref=e58]:
+            - text: Delivered
+            - strong [ref=e59]: $8–10M+ validated annual revenue impact
+            - text: per major initiative through controlled experiments across purchase funnels, pricing, and checkout.
+          - listitem [ref=e60]: Coached and developed product managers, replacing intuition-driven decisions with structured, evidence-based practices across experiment design, analytics interpretation, and roadmap prioritization.
+          - listitem [ref=e61]:
+            - text: Increased checkout conversion by reducing transaction failures from near 20% to mid-single digits, protecting
+            - strong [ref=e62]: $10M+
+            - text: in annual revenue.
+          - listitem [ref=e63]: Owned eCommerce performance across 12 consumer websites, covering product, cart, checkout, performance, analytics, and SEO.
+      - generic [ref=e64]:
+        - generic [ref=e65]:
+          - heading "Product Manager, Digital Product Development — Prudential Financial" [level=3] [ref=e66]:
+            - text: Product Manager, Digital Product Development —
+            - link "Prudential Financial" [ref=e67] [cursor=pointer]:
+              - /url: https://www.prudential.com
+          - generic [ref=e68]: 2015 – 2021 · Newark, NJ
+        - paragraph [ref=e69]: Fortune 100 financial services; consumer mobile and B2B digital platforms
+        - list [ref=e70]:
+          - listitem [ref=e71]:
+            - text: Delivered
+            - strong [ref=e72]: $350M in AUM retention
+            - text: and contributed to
+            - strong [ref=e73]: $10B in new client assets
+            - text: by launching the company’s first consumer mobile app — demonstrating 0-to-1 product building with sustained, data-driven improvement.
+          - listitem [ref=e74]:
+            - text: Improved app ratings from 1.8 to 4.8, reaching
+            - strong [ref=e75]: 844K+ downloads
+            - text: and sustaining 100K monthly active users through continuous data-driven product improvements.
+          - listitem [ref=e76]: Pioneered the first authenticated Alexa skill in the retirement industry, validating adoption of an emerging platform category before broader investment.
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - heading "Senior Product Manager — AccuWeather" [level=3] [ref=e79]:
+            - text: Senior Product Manager —
+            - link "AccuWeather" [ref=e80] [cursor=pointer]:
+              - /url: https://www.accuweather.com
+          - generic [ref=e81]: 2011 – 2015 · State College, PA
+        - paragraph [ref=e82]: Global consumer mobile platform with 35M+ users
+        - list [ref=e83]:
+          - listitem [ref=e84]:
+            - text: Led strategic planning and launch of
+            - strong [ref=e85]: 25+ consumer and partner-facing products
+            - text: in three years, applying data-driven prioritization to drive 150% growth in mobile advertising revenue.
+          - listitem [ref=e86]:
+            - text: Scaled mobile platforms from
+            - strong [ref=e87]: 1M to 35M users
+            - text: through product decisions grounded in engagement metrics, search rankings, and retention data.
+      - generic [ref=e88]:
+        - generic [ref=e89]:
+          - heading "Lead Software Engineer — Robert Bosch, Visteon, Schneider Electric" [level=3] [ref=e90]
+          - generic [ref=e91]: 2003 – 2009
+        - list [ref=e92]:
+          - listitem [ref=e93]: Six years building embedded systems for automotive and industrial applications — the technical foundation for product leadership.
+    - generic [ref=e94]:
+      - heading "Education" [level=2] [ref=e95]
+      - generic [ref=e96]:
+        - heading "MBA, Marketing — Penn State Smeal College of Business" [level=3] [ref=e97]
+        - paragraph [ref=e98]: "2011"
+      - generic [ref=e99]:
+        - heading "Bachelor of Engineering, Telecommunication — PESIT, Bangalore" [level=3] [ref=e100]
+        - paragraph [ref=e101]: "2003"
+    - generic [ref=e102]:
+      - heading "Skills" [level=2] [ref=e103]
+      - list [ref=e104]:
+        - listitem [ref=e105]: Experimentation & A/B Testing
+        - listitem [ref=e106]: Metrics Definition & Governance
+        - listitem [ref=e107]: Data-Driven Product Management
+        - listitem [ref=e108]: Growth Analytics
+        - listitem [ref=e109]: Decision-Grade Analytics
+        - listitem [ref=e110]: Evidence-Based PM Culture
+        - listitem [ref=e111]: Product Strategy & Roadmapping
+        - listitem [ref=e112]: Optimizely
+        - listitem [ref=e113]: Google Analytics
+        - listitem [ref=e114]: Quantum Metric
+        - listitem [ref=e115]: Cross-Functional Leadership
+        - listitem [ref=e116]: Executive Decision Support
+        - listitem [ref=e117]: Agile / Scrum
+    - generic [ref=e118]:
+      - heading "Recognition" [level=2] [ref=e119]
+      - list [ref=e120]:
+        - listitem [ref=e121]:
+          - text: 🏆
+          - link "Optimizely North America Optimizer Award — “Best Experimentation Practice”" [ref=e122] [cursor=pointer]:
+            - /url: https://www.optimizely.com/insights/seaworld/
+          - text: (2022)
+        - listitem [ref=e123]:
+          - text: 🏆
+          - link "Quantum Metric CPD Signal Award" [ref=e124] [cursor=pointer]:
+            - /url: https://www.quantummetric.com/blog/announcing-the-winners-of-the-2022-cpd-signal-awards
+          - text: (2022)
+        - listitem [ref=e125]: 🏆 P&I Eddy Award — Communication Excellence, Prudential Alexa Skill (2019)
+        - listitem [ref=e126]: 🏆 Globee Awards — Technology Judge, 50+ evaluations (Ongoing)
+        - listitem [ref=e127]: 🏆 UConn Entrepreneurship Bootcamp for Veterans — Pitch Competition Judge (2025)
+    - generic [ref=e128]:
+      - heading "Publications" [level=2] [ref=e129]
+      - paragraph [ref=e130]:
+        - strong [ref=e131]: "“Power Analysis is Essential: High-Powered Tests Suggest Minimal to No Effect of Rounded Shapes on Click-Through Rates”"
+        - emphasis [ref=e132]: Econ Journal Watch
+        - text: ", Vol. 23, No. 1, March 2026, pp. 139–172"
+        - text: Ron Kohavi, Jakub Linowski, Lukas Vermeer, Fabrice Boisseranc, Joachim Furuseth, Andrew Gelman, Guido Imbens,
+        - strong [ref=e133]: Ravikiran Rajagopal
+        - text: "Affiliation: Director of Product Management, United Parks & Resorts"
+        - link "Read paper →" [ref=e134] [cursor=pointer]:
+          - /url: https://econjwatch.org/file_download/1407/KohaviEtAlMarch2026.pdf
+  - contentinfo [ref=e135]:
+    - paragraph [ref=e137]:
+      - text: © 2024 Ravikiran Rajagopal ·
+      - link "ravikiran.rajagopal@gmail.com" [ref=e138] [cursor=pointer]:
+        - /url: mailto:ravikiran.rajagopal@gmail.com

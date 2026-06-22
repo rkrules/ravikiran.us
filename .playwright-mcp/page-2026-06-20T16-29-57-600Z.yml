@@ -1,0 +1,156 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - heading "Ravikiran Rajagopal" [level=1] [ref=e4]:
+        - link "Ravikiran Rajagopal" [ref=e5] [cursor=pointer]:
+          - /url: /
+      - paragraph [ref=e6]: Director, Product Management · Consumer Digital Products & Scale
+  - main [ref=e7]:
+    - paragraph [ref=e8]:
+      - link "← Home" [ref=e9] [cursor=pointer]:
+        - /url: /
+    - navigation [ref=e10]:
+      - link "Commerce & Conversion" [ref=e11] [cursor=pointer]:
+        - /url: /resume/ecom/
+      - link "Experimentation & Analytics" [ref=e12] [cursor=pointer]:
+        - /url: /resume/experimentation/
+      - link "Consumer Digital" [ref=e13] [cursor=pointer]:
+        - /url: /resume/consumer/
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]: 1M → 35M
+          - generic [ref=e18]: mobile users scaled (AccuWeather)
+        - generic [ref=e19]:
+          - generic [ref=e20]: 844K+
+          - generic [ref=e21]: app downloads (Prudential)
+        - generic [ref=e22]:
+          - generic [ref=e23]: "12"
+          - generic [ref=e24]: park websites operated (SeaWorld)
+      - generic [ref=e25]:
+        - generic [ref=e26]: iOS
+        - generic [ref=e27]: Android
+        - generic [ref=e28]: Web
+        - generic [ref=e29]: Voice (Alexa)
+        - generic [ref=e30]: Partner Integrations
+      - paragraph [ref=e31]: "Consumer product leader with 14 years scaling digital experiences across entertainment, financial services, and consumer media — three distinct verticals, one consistent playbook: understand the user, validate through data, build at scale. Launched the first native retirement mobile app in the industry at Prudential (1.8 → 4.8 stars; 844K+ downloads). Grew AccuWeather from 1M to 35M mobile users across iOS, Android, and partner platforms. Pioneered the first authenticated Alexa skill in the retirement industry. Now operates 12 consumer park websites for SeaWorld, improving funnel performance and guest experience. Multi-platform across every major consumer channel. Director-level operator: built and developed PM teams, led 5 cross-functional disciplines, and partnered with senior executives to align digital investment with consumer outcomes."
+      - generic [ref=e32]:
+        - link "Download PDF Resume" [ref=e33] [cursor=pointer]:
+          - /url: https://github.com/rkrules/resumes/raw/main/portfolio/pdfs/Ravikiran_Rajagopal_Consumer_Digital_Products.pdf
+        - link "LinkedIn" [ref=e34] [cursor=pointer]:
+          - /url: https://www.linkedin.com/in/ravikiranrajagopal/
+        - link "Email" [ref=e35] [cursor=pointer]:
+          - /url: mailto:ravikiran.rajagopal@gmail.com
+    - generic [ref=e36]:
+      - heading "Experience" [level=2] [ref=e37]
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - heading "Director, Product Management — SeaWorld Parks & Entertainment" [level=3] [ref=e40]:
+            - text: Director, Product Management —
+            - link "SeaWorld Parks & Entertainment" [ref=e41] [cursor=pointer]:
+              - /url: https://seaworld.com
+          - generic [ref=e42]: 2021 – Present · Remote
+        - paragraph [ref=e43]: Consumer digital experience across 12 branded park websites — ticketing, checkout, SEO, and guest engagement
+        - list [ref=e44]:
+          - listitem [ref=e45]:
+            - text: Delivered
+            - strong [ref=e46]: $8–10M+ annual revenue impact
+            - text: per major initiative by improving purchase funnels, pricing clarity, and consumer decision points across 12 consumer websites.
+          - listitem [ref=e47]:
+            - text: Generated
+            - strong [ref=e48]: $3–5M in incremental annual revenue
+            - text: through organic search, improving discoverability for high-intent entertainment and hospitality traffic.
+          - listitem [ref=e49]:
+            - text: Increased checkout conversion by reducing transaction failures from near 20% to mid-single digits, protecting
+            - strong [ref=e50]: $10M+
+            - text: in annual revenue.
+          - listitem [ref=e51]:
+            - text: Established the organization’s first experimentation-driven product strategy —
+            - strong [ref=e52]: 75+ A/B tests per year
+            - text: across 4 consecutive years — identifying and validating consumer experience improvements before engineering investment.
+          - listitem [ref=e53]: Led 5 cross-functional teams (product, content, development, experimentation, SEO) in seamless collaboration across all digital guest experience initiatives.
+          - listitem [ref=e54]: Coached and developed product managers, replacing intuition-driven decisions with structured, evidence-based practices.
+      - generic [ref=e55]:
+        - generic [ref=e56]:
+          - heading "Product Manager, Digital Product Development — Prudential Financial" [level=3] [ref=e57]:
+            - text: Product Manager, Digital Product Development —
+            - link "Prudential Financial" [ref=e58] [cursor=pointer]:
+              - /url: https://www.prudential.com
+          - generic [ref=e59]: 2015 – 2021 · Newark, NJ
+        - paragraph [ref=e60]: Fortune 100 financial services; launched industry-first consumer mobile and voice products
+        - list [ref=e61]:
+          - listitem [ref=e62]:
+            - text: Launched Prudential’s first consumer-facing native mobile retirement app
+            - generic [ref=e63]: Industry First
+            - text: —
+            - strong [ref=e64]: 844K+ downloads
+            - text: ", 100K monthly active users — delivering"
+            - strong [ref=e65]: $350M in AUM retention
+            - text: and contributing to
+            - strong [ref=e66]: $10B in new client assets
+            - text: .
+          - listitem [ref=e67]:
+            - text: Improved app ratings from
+            - strong [ref=e68]: 1.8 to 4.8
+            - text: through focused product improvements and go-to-market execution.
+          - listitem [ref=e69]:
+            - text: Pioneered the first authenticated Alexa skill in the retirement industry
+            - generic [ref=e70]: Industry First
+            - text: ", enabling secure voice-based account access — earned the"
+            - strong [ref=e71]: P&I Eddy Award 2019
+            - text: for communication excellence.
+          - listitem [ref=e72]: Rebuilt retirement B2C and B2B account management and transactional features, focusing on mobile and accessibility.
+      - generic [ref=e73]:
+        - generic [ref=e74]:
+          - heading "Senior Product Manager — AccuWeather" [level=3] [ref=e75]:
+            - text: Senior Product Manager —
+            - link "AccuWeather" [ref=e76] [cursor=pointer]:
+              - /url: https://www.accuweather.com
+          - generic [ref=e77]: 2011 – 2015 · State College, PA
+        - paragraph [ref=e78]: Global consumer mobile platform — scaled from 1M to 35M users across iOS, Android, and partner channels
+        - list [ref=e79]:
+          - listitem [ref=e80]:
+            - text: Scaled mobile user base from
+            - strong [ref=e81]: 1M to 35M users
+            - text: ", improving long-term engagement and retention to 10M+ monthly active users across iOS and Android platforms."
+          - listitem [ref=e82]:
+            - text: Drove
+            - strong [ref=e83]: 150% growth in mobile advertising revenue
+            - text: (approximately $10M annually) through mobile product redesigns across iOS, Android, and partner platforms.
+          - listitem [ref=e84]:
+            - text: Led strategic planning and launch of
+            - strong [ref=e85]: 25+ consumer and partner-facing products
+            - text: in three years, improving app ratings from 3.0 to 4.4 across 500K+ reviews.
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - heading "Lead Software Engineer — Robert Bosch, Visteon, Schneider Electric" [level=3] [ref=e88]
+          - generic [ref=e89]: 2003 – 2009
+        - list [ref=e90]:
+          - listitem [ref=e91]: Six years building embedded systems for automotive and industrial applications — the technical foundation for product leadership.
+    - generic [ref=e92]:
+      - heading "Education" [level=2] [ref=e93]
+      - generic [ref=e94]:
+        - heading "MBA, Marketing — Penn State Smeal College of Business" [level=3] [ref=e95]
+        - paragraph [ref=e96]: "2011"
+      - generic [ref=e97]:
+        - heading "Bachelor of Engineering, Telecommunication — PESIT, Bangalore" [level=3] [ref=e98]
+        - paragraph [ref=e99]: "2003"
+    - generic [ref=e100]:
+      - heading "Skills" [level=2] [ref=e101]
+      - list [ref=e102]:
+        - listitem [ref=e103]: Consumer Mobile Products
+        - listitem [ref=e104]: Web & Mobile Platform Management
+        - listitem [ref=e105]: Product Strategy & Roadmapping
+        - listitem [ref=e106]: A/B Testing & Experimentation
+        - listitem [ref=e107]: User Retention & Engagement
+        - listitem [ref=e108]: Analytics & Data-Driven Decisions
+        - listitem [ref=e109]: Cross-Functional Leadership
+        - listitem [ref=e110]: Agile / Scrum
+        - listitem [ref=e111]: Voice Technology (Alexa)
+        - listitem [ref=e112]: SEO & Performance Optimization
+        - listitem [ref=e113]: Customer Journey Mapping
+  - contentinfo [ref=e114]:
+    - paragraph [ref=e116]:
+      - text: © 2024 Ravikiran Rajagopal ·
+      - link "ravikiran.rajagopal@gmail.com" [ref=e117] [cursor=pointer]:
+        - /url: mailto:ravikiran.rajagopal@gmail.com

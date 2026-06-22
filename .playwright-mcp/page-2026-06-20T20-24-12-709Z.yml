@@ -1,0 +1,143 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - heading "Ravikiran Rajagopal" [level=1] [ref=e4]:
+        - link "Ravikiran Rajagopal" [ref=e5] [cursor=pointer]:
+          - /url: /
+      - paragraph [ref=e6]: Director, Product Management · Transactional Platforms & Enterprise Delivery
+  - main [ref=e7]:
+    - paragraph [ref=e8]:
+      - link "← Home" [ref=e9] [cursor=pointer]:
+        - /url: /
+    - navigation [ref=e10]:
+      - link "Commerce & Conversion" [ref=e11] [cursor=pointer]:
+        - /url: /resume/ecom/
+      - link "Experimentation & Analytics" [ref=e12] [cursor=pointer]:
+        - /url: /resume/experimentation/
+      - link "Consumer Digital" [ref=e13] [cursor=pointer]:
+        - /url: /resume/consumer/
+      - link "Enterprise & Delivery" [ref=e14] [cursor=pointer]:
+        - /url: /resume/enterprise/
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: $10M+
+          - generic [ref=e19]: annual revenue protected via platform reliability
+        - generic [ref=e20]:
+          - generic [ref=e21]: ~20% → mid-single digits
+          - generic [ref=e22]: transaction failure rate reduced
+        - generic [ref=e23]:
+          - generic [ref=e24]: $350M AUM
+          - generic [ref=e25]: retained in regulated financial environment
+        - generic [ref=e26]:
+          - generic [ref=e27]: "12"
+          - generic [ref=e28]: transactional platforms owned simultaneously
+      - generic [ref=e29]:
+        - generic [ref=e30]: Regulated Financial Services
+        - generic [ref=e31]: B2C & B2B Platforms
+        - generic [ref=e32]: Risk-Managed Product Change
+        - generic [ref=e33]: Executive Decision Support
+      - paragraph [ref=e34]: "Product leader focused on revenue-critical transactional platforms, risk-managed delivery, and decision-grade analytics. Owned high-volume checkout and account management systems across regulated financial services (Prudential Financial) and large-scale consumer platforms (SeaWorld, AccuWeather). Brings engineering depth from 6 years as a lead software engineer — the foundation for credible technical partnerships with development teams. Rebuilds accountability into product processes: platform monitoring, pre-release risk validation, audit-ready change management, and analytics used by senior executives to make pricing and capital investment decisions. Equally at home in B2C and B2B contexts. Operates at director level across product, content, development, SEO, and experimentation disciplines."
+      - generic [ref=e35]:
+        - link "LinkedIn" [ref=e36] [cursor=pointer]:
+          - /url: https://www.linkedin.com/in/ravikiranrajagopal/
+        - link "Email" [ref=e37] [cursor=pointer]:
+          - /url: mailto:ravikiran.rajagopal@gmail.com
+    - generic [ref=e38]:
+      - heading "Experience" [level=2] [ref=e39]
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - heading "Director, Product Management — SeaWorld Parks & Entertainment" [level=3] [ref=e42]:
+            - text: Director, Product Management —
+            - link "SeaWorld Parks & Entertainment" [ref=e43] [cursor=pointer]:
+              - /url: https://seaworld.com
+          - generic [ref=e44]: 2021 – Present · Remote
+        - paragraph [ref=e45]: Owned high-volume transactional platforms across 12 consumer websites — cart, checkout, pricing, performance, analytics, and SEO
+        - list [ref=e46]:
+          - listitem [ref=e47]:
+            - text: Protected
+            - strong [ref=e48]: $10M+
+            - text: in annual revenue by reducing transaction failures from near 20% to mid-single digits, identifying root causes and managing remediation across engineering and vendor teams.
+          - listitem [ref=e49]:
+            - text: Delivered
+            - strong [ref=e50]: $8–10M+ per major initiative
+            - text: through risk-managed optimization of pricing clarity, transaction UX, and funnel reliability — changes validated before full rollout.
+          - listitem [ref=e51]: Built monitoring, analytics, and experimentation systems to detect failures, validate changes, and block high-risk releases before they reached production.
+          - listitem [ref=e52]: Improved platform performance (page load time −15%, key actions +44%), reducing abandonment and improving transaction completion under peak demand.
+          - listitem [ref=e53]: Provided decision-grade analytics relied upon by senior executives to evaluate pricing changes, demand shifts, and capital investment tradeoffs.
+          - listitem [ref=e54]: Led 5 cross-functional disciplines (product, content, development, experimentation, SEO) with consistent delivery cadence and stakeholder alignment across all digital initiatives.
+      - generic [ref=e55]:
+        - generic [ref=e56]:
+          - heading "Product Manager, Digital Product Development — Prudential Financial" [level=3] [ref=e57]:
+            - text: Product Manager, Digital Product Development —
+            - link "Prudential Financial" [ref=e58] [cursor=pointer]:
+              - /url: https://www.prudential.com
+          - generic [ref=e59]: 2015 – 2021 · Newark, NJ
+        - paragraph [ref=e60]: Fortune 100 regulated financial services — consumer mobile, B2B advisor platforms, retirement account management
+        - list [ref=e61]:
+          - listitem [ref=e62]:
+            - text: Led development of the company’s first consumer mobile app in a regulated financial environment, supporting
+            - strong [ref=e63]: $350M in AUM retention
+            - text: and contributing to
+            - strong [ref=e64]: $10B in new client assets
+            - text: .
+          - listitem [ref=e65]:
+            - text: Improved app ratings from 1.8 to 4.8, reaching
+            - strong [ref=e66]: 844K+ downloads
+            - text: and sustaining 100K monthly active users through disciplined product improvement and go-to-market execution.
+          - listitem [ref=e67]: Rebuilt B2C and B2B account management and transactional features, prioritizing correctness, accessibility, auditability, and regulatory compliance.
+          - listitem [ref=e68]:
+            - text: Pioneered the first authenticated Alexa skill in the retirement industry — validated adoption of a new channel before broader investment, earning the
+            - strong [ref=e69]: P&I Eddy Award 2019
+            - text: .
+      - generic [ref=e70]:
+        - generic [ref=e71]:
+          - heading "Senior Product Manager — AccuWeather" [level=3] [ref=e72]:
+            - text: Senior Product Manager —
+            - link "AccuWeather" [ref=e73] [cursor=pointer]:
+              - /url: https://www.accuweather.com
+          - generic [ref=e74]: 2011 – 2015 · State College, PA
+        - paragraph [ref=e75]: High-traffic consumer media platform with partner ecosystem integrations
+        - list [ref=e76]:
+          - listitem [ref=e77]:
+            - text: Led strategic planning and delivery of
+            - strong [ref=e78]: 25+ consumer and partner-facing products
+            - text: in three years, operating in distributed, partner-integrated ecosystems.
+          - listitem [ref=e79]:
+            - text: Drove 150% growth in mobile advertising revenue (approximately $10M annually) and scaled platforms from
+            - strong [ref=e80]: 1M to 35M users
+            - text: .
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - heading "Lead Software Engineer — Robert Bosch, Visteon, Schneider Electric" [level=3] [ref=e83]
+          - generic [ref=e84]: 2003 – 2009
+        - list [ref=e85]:
+          - listitem [ref=e86]: Six years building embedded systems for automotive and industrial applications — reliability-critical, regulated hardware environments. Technical foundation for credible engineering partnerships.
+    - generic [ref=e87]:
+      - heading "Education" [level=2] [ref=e88]
+      - generic [ref=e89]:
+        - heading "MBA, Marketing — Penn State Smeal College of Business" [level=3] [ref=e90]
+        - paragraph [ref=e91]: "2011"
+      - generic [ref=e92]:
+        - heading "Bachelor of Engineering, Telecommunication — PESIT, Bangalore" [level=3] [ref=e93]
+        - paragraph [ref=e94]: "2003"
+    - generic [ref=e95]:
+      - heading "Skills" [level=2] [ref=e96]
+      - list [ref=e97]:
+        - listitem [ref=e98]: Transactional Platform Ownership
+        - listitem [ref=e99]: Risk-Managed Product Change
+        - listitem [ref=e100]: Platform Reliability & Monitoring
+        - listitem [ref=e101]: Regulated Environments
+        - listitem [ref=e102]: Agile / Scrum
+        - listitem [ref=e103]: B2C & B2B Product Management
+        - listitem [ref=e104]: Executive Decision Support
+        - listitem [ref=e105]: Decision-Grade Analytics
+        - listitem [ref=e106]: Cross-Functional Delivery Leadership
+        - listitem [ref=e107]: Stakeholder & Vendor Management
+        - listitem [ref=e108]: Accessibility (WCAG)
+        - listitem [ref=e109]: Product Strategy & Roadmapping
+  - contentinfo [ref=e110]:
+    - paragraph [ref=e112]:
+      - text: © 2024 Ravikiran Rajagopal ·
+      - link "ravikiran.rajagopal@gmail.com" [ref=e113] [cursor=pointer]:
+        - /url: mailto:ravikiran.rajagopal@gmail.com
