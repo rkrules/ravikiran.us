@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colorado Road Trip · Aug 2026</title>
+<meta name="description" content="Colorado road trip itinerary and hotel stays, Jul 31 – Aug 9, 2026.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --card: #ffffff;
+    --ink: #1f2a24;
+    --muted: #6b7570;
+    --line: #e4e0d6;
+    --accent: #2f6b4f;
+    --accent-soft: #e8f2ec;
+    --tag-r: #2f6b4f;
+    --tag-r-bg: #e8f2ec;
+    --tag-s: #9a5b1f;
+    --tag-s-bg: #f8ecdd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141815;
+      --card: #1d2320;
+      --ink: #eef0ec;
+      --muted: #9aa39c;
+      --line: #313a34;
+      --accent: #6fbf95;
+      --accent-soft: #223229;
+      --tag-r: #7fd1a4;
+      --tag-r-bg: #1e332a;
+      --tag-s: #e4b477;
+      --tag-s-bg: #35291a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141815; --card: #1d2320; --ink: #eef0ec; --muted: #9aa39c;
+    --line: #313a34; --accent: #6fbf95; --accent-soft: #223229;
+    --tag-r: #7fd1a4; --tag-r-bg: #1e332a; --tag-s: #e4b477; --tag-s-bg: #35291a;
+  }
+  :root[data-theme="light"] {
+    --bg: #f6f4ef; --card: #ffffff; --ink: #1f2a24; --muted: #6b7570;
+    --line: #e4e0d6; --accent: #2f6b4f; --accent-soft: #e8f2ec;
+    --tag-r: #2f6b4f; --tag-r-bg: #e8f2ec; --tag-s: #9a5b1f; --tag-s-bg: #f8ecdd;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 700px; margin: 0 auto; padding: 20px 16px 56px; }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 6px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  #capture-itinerary, #capture-hotels, #capture-details {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 20px 18px;
+  }
+
+  .trip-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .trip-sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 4px 0 20px;
+  }
+
+  .day {
+    display: flex;
+    gap: 14px;
+    padding: 13px 0;
+    border-top: 1px solid var(--line);
+  }
+  .day:first-of-type { border-top: none; }
+  .day-date {
+    width: 78px;
+    flex-shrink: 0;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.35;
+    padding-top: 1px;
+  }
+  .day-date b {
+    display: block;
+    color: var(--ink);
+    font-size: 14px;
+  }
+  .day-loc {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .day-note {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .icon-list {
+    list-style: none;
+    margin: 7px 0 0;
+    padding: 0;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .icon-list li {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+    margin-bottom: 3px;
+  }
+  .icon-list .ic {
+    flex-shrink: 0;
+    width: 16px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .stay {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 6px 14px;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+  }
+  .stay:first-of-type { border-top: none; }
+  .stay-date-hd {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 2px;
+  }
+  .overnight-box {
+    background: var(--accent-soft);
+    border-radius: 10px;
+    padding: 9px 10px;
+  }
+  .overnight-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 3px;
+  }
+  .stay-dates {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .stay-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    display: flex;
+    gap: 5px;
+    align-items: flex-start;
+  }
+  .stay-addr {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+    padding-left: 21px;
+  }
+  .stay-tags {
+    margin-top: 7px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+  .tag-r { color: var(--tag-r); background: var(--tag-r-bg); }
+  .tag-s { color: var(--tag-s); background: var(--tag-s-bg); }
+  .tag-warn {
+    color: #9a3b1f;
+    background: #f8ddd3;
+  }
+  @media (prefers-color-scheme: dark) { .tag-warn { color: #f0a888; background: #3a2318; } }
+  :root[data-theme="dark"] .tag-warn { color: #f0a888; background: #3a2318; }
+  :root[data-theme="light"] .tag-warn { color: #9a3b1f; background: #f8ddd3; }
+  .depart-box {
+    grid-column: 1 / -1;
+    background: var(--card);
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 13.5px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  @media (max-width: 360px) {
+    .stay { grid-template-columns: 1fr; }
+  }
+
+  .detail-day {
+    padding: 13px 0;
+    border-top: 1px solid var(--line);
+  }
+  .detail-day:first-of-type { border-top: none; }
+  .detail-day-title {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .detail-list {
+    margin: 0;
+    padding-left: 19px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .detail-list > li { margin-bottom: 3px; }
+  .detail-list ul {
+    margin: 3px 0 4px;
+    padding-left: 18px;
+    font-size: 13px;
+    color: var(--muted);
+    list-style-type: circle;
+  }
+  .detail-list ul ul {
+    padding-left: 16px;
+    font-size: 12.5px;
+    list-style-type: "\2013\2002";
+  }
+
+  .footnote {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    line-height: 1.5;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .save-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border-radius: 999px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .save-btn:active { opacity: 0.85; }
+
+  .brand {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  #map {
+    width: 100%;
+    height: 68vh;
+    min-height: 420px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+  }
+  .leaflet-popup-content { font-size: 13px; line-height: 1.4; }
+  .leaflet-popup-content b { display: block; margin-bottom: 2px; }
+  .map-legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 10px 2px 0;
+  }
+  .map-legend span { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-btn-itinerary" onclick="showTab('itinerary')">Itinerary</button>
+    <button class="tab-btn" id="tab-btn-hotels" onclick="showTab('hotels')">Hotels</button>
+    <button class="tab-btn" id="tab-btn-details" onclick="showTab('details')">Details</button>
+    <button class="tab-btn" id="tab-btn-map" onclick="showTab('map')">Map</button>
+  </div>
+
+  <!-- ITINERARY PANEL -->
+  <div class="panel active" id="panel-itinerary">
+    <div id="capture-itinerary">
+      <p class="trip-title">🏔️ Colorado Road Trip</p>
+      <p class="trip-sub">Jul 31 – Aug 9, 2026</p>
+
+      <div class="day">
+        <div class="day-date">FRI<br><b>Jul 31</b></div>
+        <div>
+          <div class="day-loc">✈️ Denver</div>
+          <ul class="icon-list">
+            <li><span class="ic">🛬</span>Arrive, overnight near the airport</li>
+          </ul>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-date">SAT<br><b>Aug 1</b></div>
+        <div>
+          <div class="day-loc">🏞️ Boulder → Estes Park</div>
+          <ul class="icon-list">
+            <li><span class="ic">🍽️</span>Edgewater — lunch at Gladys</li>
+            <li><span class="ic">🚗</span>Boulder — sightseeing / Wild Basin option</li>
+            <li><span class="ic">🍽️</span>Dinner in Boulder, then drive to Estes Park</li>
+          </ul>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-date">SUN<br><b>Aug 2</b></div>
+        <div>
+          <div class="day-loc">🏔️ Estes Park</div>
+          <ul class="icon-list">
+            <li><span class="ic">🚙</span>Bear Lake Corridor, RMNP</li>
+            <li><span class="ic">🥾</span>Nymph / Dream / Emerald / Haiyaha Lakes hike</li>
+            <li><span class="ic">🥾</span>Bear Lake &amp; Sprague Lake hikes</li>
+          </ul>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-date">MON<br><b>Aug 3</b></div>
+        <div>
+          <div class="day-loc">🏔️ Estes Park</div>
+          <ul class="icon-list">
+            <li><span class="ic">🥾</span>Bear Lake Corridor — Cub Lake hike</li>
+            <li><span class="ic">🚗</span>Old Fall River Rd → Trail Ridge Rd</li>
+            <li><span class="ic">🏛️</span>Visitor center: Alpine or Beaver Meadows</li>
+          </ul>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-date">TUE<br><b>Aug 4</b></div>
+        <div>
+          <div class="day-loc">🌲 Grand Lake → Glenwood Springs</div>
+          <ul class="icon-list">
+            <li><span class="ic">🚗</span>Trail Ridge Rd — Tundra Communities hike</li>
+            <li><span class="ic">🦌</span>Kawuneeche Valley, Adams Falls hike</li>
+            <li><span class="ic">🥾</span>Drive to Glenwood Springs — Hanging Lake trail</li>
+          </ul>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-date">WED<br><b>Aug 5</b></div>
+        <div>
+          <div class="day-loc">♨️ Glenwood Springs</div>
+          <ul class="icon-list">
+            <li><span class="ic">🥾</span>Maroon Bells — Crater Lake hike</li>
+            <li><span class="ic">♨️</span>Iron Mountain or Glenwood Hot Springs</li>
+          </ul>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-date">THU<br><b>Aug 6</b></div>
+        <div>
+          <div class="day-loc">🏜️ Montrose</div>
+          <ul class="icon-list">
+            <li><span class="ic">📸</span>Black Canyon of the Gunnison — North Rim</li>
+            <li><span class="ic">🥾</span>Exclamation Point &amp; Chase View hikes</li>
+            <li><span class="ic">🚗</span>Drive to Montrose</li>
+          </ul>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-date">FRI<br><b>Aug 7</b></div>
+        <div>
+          <div class="day-loc">🏜️ Colorado Springs</div>
+          <ul class="icon-list">
+            <li><span class="ic">📸</span>Black Canyon of the Gunnison — South Rim</li>
+            <li><span class="ic">🥾</span>Warner Point &amp; Oak Flat Loop hikes</li>
+            <li><span class="ic">🚗</span>Drive to Colorado Springs</li>
+          </ul>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-date">SAT<br><b>Aug 8</b></div>
+        <div>
+          <div class="day-loc">⛰️ Colorado Springs</div>
+          <ul class="icon-list">
+            <li><span class="ic">🥾</span>Pikes Peak — Summit Loop hike</li>
+            <li><span class="ic">🌵</span>Garden of the Gods — Palmer &amp; Siamese Twins loops</li>
+          </ul>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-date">SUN<br><b>Aug 9</b></div>
+        <div>
+          <div class="day-loc">✈️ Denver — Depart</div>
+          <ul class="icon-list">
+            <li><span class="ic">🚗</span>Drive to Denver International Airport</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="actions"><button class="save-btn" onclick="saveAsImage('capture-itinerary','colorado-2026-itinerary.png')">⬇ Save as image</button></div>
+    <div class="brand">ravikiran.us/trips</div>
+  </div>
+
+  <!-- HOTELS PANEL -->
+  <div class="panel" id="panel-hotels">
+    <div id="capture-hotels">
+      <p class="trip-title">🏨 Colorado Road Trip · Full Plan</p>
+      <p class="trip-sub">Jul 31 – Aug 9, 2026 &middot; day-by-day with overnight stays</p>
+
+      <div class="stay">
+        <div class="stay-date-hd">📅 Fri, Jul 31</div>
+        <ul class="icon-list"><li><span class="ic">🛬</span>Arrive in Denver</li></ul>
+        <div class="overnight-box">
+          <div class="overnight-label">Overnight</div>
+          <div class="stay-name"><span class="ic">📍</span>Sleep Inn &amp; Suites Denver Int'l Airport</div>
+          <div class="stay-addr">5980 N Tower Rd, Bldg B, Denver, CO 80249</div>
+          <div class="stay-tags"><span class="tag tag-r">Booked by Ravikiran</span></div>
+        </div>
+      </div>
+
+      <div class="stay">
+        <div class="stay-date-hd">📅 Sat, Aug 1</div>
+        <ul class="icon-list">
+          <li><span class="ic">🍽️</span>Edgewater — lunch at Gladys</li>
+          <li><span class="ic">🚗</span>Boulder — sightseeing / Wild Basin</li>
+          <li><span class="ic">🍽️</span>Dinner in Boulder, drive to Estes Park</li>
+        </ul>
+        <div class="overnight-box">
+          <div class="overnight-label">Overnight &middot; 1 of 3 nights</div>
+          <div class="stay-name"><span class="ic">📍</span>Alpine Trail Ridge Inn</div>
+          <div class="stay-addr">927 Moraine Ave, Estes Park, CO 80517</div>
+          <div class="stay-tags"><span class="tag tag-s">Booked by Roshan</span></div>
+        </div>
+      </div>
+
+      <div class="stay">
+        <div class="stay-date-hd">📅 Sun, Aug 2</div>
+        <ul class="icon-list">
+          <li><span class="ic">🚙</span>Bear Lake Corridor, RMNP</li>
+          <li><span class="ic">🥾</span>Nymph / Dream / Emerald / Haiyaha Lakes hike</li>
+          <li><span class="ic">🥾</span>Bear Lake &amp; Sprague Lake hikes</li>
+        </ul>
+        <div class="overnight-box">
+          <div class="overnight-label">Overnight &middot; 2 of 3 nights</div>
+          <div class="stay-name"><span class="ic">📍</span>Alpine Trail Ridge Inn</div>
+          <div class="stay-addr">927 Moraine Ave, Estes Park, CO 80517</div>
+          <div class="stay-tags"><span class="tag tag-s">Booked by Roshan</span></div>
+        </div>
+      </div>
+
+      <div class="stay">
+        <div class="stay-date-hd">📅 Mon, Aug 3</div>
+        <ul class="icon-list">
+          <li><span class="ic">🥾</span>Bear Lake Corridor — Cub Lake hike</li>
+          <li><span class="ic">🚗</span>Old Fall River Rd → Trail Ridge Rd</li>
+        </ul>
+        <div class="overnight-box">
+          <div class="overnight-label">Overnight &middot; 3 of 3 nights</div>
+          <div class="stay-name"><span class="ic">📍</span>Alpine Trail Ridge Inn</div>
+          <div class="stay-addr">927 Moraine Ave, Estes Park, CO 80517</div>
+          <div class="stay-tags"><span class="tag tag-s">Booked by Roshan</span></div>
+        </div>
+      </div>
+
+      <div class="stay">
+        <div class="stay-date-hd">📅 Tue, Aug 4</div>
+        <ul class="icon-list">
+          <li><span class="ic">🚗</span>Trail Ridge Rd — Tundra Communities hike</li>
+          <li><span class="ic">🦌</span>Kawuneeche Valley, Adams Falls hike</li>
+          <li><span class="ic">🥾</span>Glenwood Springs — Hanging Lake trail</li>
+        </ul>
+        <div class="overnight-box">
+          <div class="overnight-label">Overnight &middot; 1 of 2 nights</div>
+          <div class="stay-name"><span class="ic">📍</span>Silver Spruce Inn</div>
+          <div class="stay-addr">162 W 6th St, Glenwood Springs, CO 81601</div>
+          <div class="stay-tags"><span class="tag tag-s">Booked by Roshan</span><span class="tag tag-s">2 rooms</span></div>
+        </div>
+      </div>
+
+      <div class="stay">
+        <div class="stay-date-hd">📅 Wed, Aug 5</div>
+        <ul class="icon-list">
+          <li><span class="ic">🥾</span>Maroon Bells — Crater Lake hike</li>
+          <li><span class="ic">♨️</span>Iron Mountain or Glenwood Hot Springs</li>
+        </ul>
+        <div class="overnight-box">
+          <div class="overnight-label">Overnight &middot; 2 of 2 nights</div>
+          <div class="stay-name"><span class="ic">📍</span>Silver Spruce Inn</div>
+          <div class="stay-addr">162 W 6th St, Glenwood Springs, CO 81601</div>
+          <div class="stay-tags"><span class="tag tag-s">Booked by Roshan</span><span class="tag tag-s">2 rooms</span></div>
+        </div>
+      </div>
+
+      <div class="stay">
+        <div class="stay-date-hd">📅 Thu, Aug 6</div>
+        <ul class="icon-list">
+          <li><span class="ic">📸</span>Black Canyon of the Gunnison — North Rim</li>
+          <li><span class="ic">🥾</span>Exclamation Point &amp; Chase View hikes</li>
+          <li><span class="ic">🚗</span>Drive to Montrose</li>
+        </ul>
+        <div class="overnight-box">
+          <div class="overnight-label">Overnight</div>
+          <div class="stay-name"><span class="ic">📍</span>Hampton Inn Montrose</div>
+          <div class="stay-addr">1980 N Townsend Ave, Montrose, CO 81401</div>
+          <div class="stay-tags"><span class="tag tag-s">Booked by Roshan</span></div>
+        </div>
+      </div>
+
+      <div class="stay">
+        <div class="stay-date-hd">📅 Fri, Aug 7</div>
+        <ul class="icon-list">
+          <li><span class="ic">📸</span>Black Canyon of the Gunnison — South Rim</li>
+          <li><span class="ic">🥾</span>Warner Point &amp; Oak Flat Loop hikes</li>
+          <li><span class="ic">🚗</span>Drive to Colorado Springs</li>
+        </ul>
+        <div class="overnight-box">
+          <div class="overnight-label">Overnight</div>
+          <div class="stay-name"><span class="ic">📍</span>Spark by Hilton Colorado Springs I-25 Central</div>
+          <div class="stay-addr">7245 Commerce Center Dr, Colorado Springs, CO 80919</div>
+          <div class="stay-tags"><span class="tag tag-r">Booked by Ravikiran</span></div>
+        </div>
+      </div>
+
+      <div class="stay">
+        <div class="stay-date-hd">📅 Sat, Aug 8</div>
+        <ul class="icon-list">
+          <li><span class="ic">🥾</span>Pikes Peak — Summit Loop hike</li>
+          <li><span class="ic">🌵</span>Garden of the Gods — Palmer &amp; Siamese Twins loops</li>
+        </ul>
+        <div class="overnight-box">
+          <div class="overnight-label">Overnight</div>
+          <div class="stay-name"><span class="ic">📍</span>Hyatt House Denver Airport</div>
+          <div class="stay-addr">18741 E 71st Ave, Denver, CO 80249</div>
+          <div class="stay-tags"><span class="tag tag-r">Booked by Ravikiran</span><span class="tag tag-warn">⚠ back to Denver tonight</span></div>
+        </div>
+      </div>
+
+      <div class="stay">
+        <div class="stay-date-hd">📅 Sun, Aug 9</div>
+        <ul class="icon-list"><li><span class="ic">🚗</span>Drive to Denver International Airport</li></ul>
+        <div class="depart-box">✈️ Depart from Denver</div>
+      </div>
+
+      <div class="footnote">"Booked by" shows who reserved each stay, not necessarily who stayed there — on nights Ravikiran booked, his party may have stayed separately from Roshan's.<br>⚠ Aug 8 night is booked in Denver (not Colorado Springs) — plan the evening drive back accordingly.</div>
+    </div>
+    <div class="actions"><button class="save-btn" onclick="saveAsImage('capture-hotels','colorado-2026-full-plan.png')">⬇ Save as image</button></div>
+    <div class="brand">ravikiran.us/trips</div>
+  </div>
+
+  <!-- FULL DETAIL PANEL -->
+  <div class="panel" id="panel-details">
+    <div id="capture-details">
+      <p class="trip-title">📋 Colorado Road Trip · Full Detail</p>
+      <p class="trip-sub">Jul 31 – Aug 9, 2026 &middot; complete day-by-day plan</p>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Saturday, August 1</div>
+        <ul class="detail-list">
+          <li>30 mins drive to Edgewater</li>
+          <li>Lunch in Gladys in Edgewater</li>
+          <li>45 mins drive to Boulder</li>
+          <li>Flexible:
+            <ul>
+              <li>Wild Basin in RMNP?</li>
+              <li>Sightseeing in Boulder?</li>
+            </ul>
+          </li>
+          <li>Dinner in Lotus Moon or Vegan Thai in Boulder</li>
+          <li>1 hour drive to Estes Park</li>
+          <li>Check-in to stay in Estes Park</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Sunday, August 2</div>
+        <ul class="detail-list">
+          <li>Bear Lake Corridor in RMNP
+            <ul>
+              <li>Need Timed Entry+ Bear Lake Road reservations (opens 7pm the day before)</li>
+              <li>Or need to enter before 9am or after 2pm</li>
+            </ul>
+          </li>
+          <li>Lunch pickup in Scratch or Notchtop Bakery</li>
+          <li>Nymph, Dream, Emerald, Haiyaha Lakes hike: 5 miles, moderate
+            <ul><li>Alpine lakes</li></ul>
+          </li>
+          <li>Bear Lake hike: 0.7 miles, easy</li>
+          <li>Sprague Lake hike: 0.8 miles, easy</li>
+          <li>Dinner in Estes: Nepal's Café, Himalayan Curry, or Estes Thai</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Monday, August 3</div>
+        <ul class="detail-list">
+          <li>Bear Lake Corridor in RMNP
+            <ul>
+              <li>Need Timed Entry+ Bear Lake Road reservations (opens 7pm the day before)</li>
+              <li>Or need to enter before 9am or after 2pm</li>
+            </ul>
+          </li>
+          <li>Lunch pickup in Scratch or Notchtop Bakery</li>
+          <li>Cub Lake hike: 5.2 or 6.2 miles, moderate
+            <ul>
+              <li>Moraine Park; wildlife viewing</li>
+              <li>Sunset?</li>
+            </ul>
+          </li>
+          <li>Old Fall River Road onwards
+            <ul>
+              <li>Trail Ridge Road return
+                <ul><li>Sunset?</li></ul>
+              </li>
+            </ul>
+          </li>
+          <li>Visitor Center: Alpine or Beaver Meadows</li>
+          <li>Dinner in Estes: Nepal's Café, Himalayan Curry, or Estes Thai</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Tuesday, August 4</div>
+        <ul class="detail-list">
+          <li>Non-bear lake corridor in RMNP
+            <ul>
+              <li>Need Timed Entry reservations (opens 7pm the day before)</li>
+              <li>Or need to enter before 9am or after 2pm</li>
+            </ul>
+          </li>
+          <li>Check-out from stay in Estes Park</li>
+          <li>Lunch pickup in Scratch or Notchtop Bakery</li>
+          <li>1.5 hour drive to Grand Lake
+            <ul>
+              <li>Trail Ridge Road
+                <ul><li>Tundra communities hike: 1.1 miles, easy</li></ul>
+              </li>
+              <li>Holzwarth Historic Site? Can skip</li>
+              <li>Kawuneeche Valley
+                <ul><li>Wildlife viewing</li></ul>
+              </li>
+              <li>Adams Falls hike</li>
+            </ul>
+          </li>
+          <li>2.5 hour drive to Glenwood Springs
+            <ul><li>Hanging Lake trail: 3.1 miles, hard</li></ul>
+          </li>
+          <li>Check-in to stay in Glenwood Springs</li>
+          <li>Dinner in Glenwood Springs: Masala &amp; Curry or Zheng Asian Bistro</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Wednesday, August 5</div>
+        <ul class="detail-list">
+          <li>Lunch pickup in Bluebird Café?</li>
+          <li>1 hour drive to Maroon Bells Scenic Area
+            <ul><li>Needs reservation for parking a vehicle or need to take a shuttle</li></ul>
+          </li>
+          <li>Crater Lake hike: 3.7 miles, moderate</li>
+          <li>1 hour drive back to Glenwood Springs</li>
+          <li>Iron Mountain Hot Springs or Glenwood Hot Springs Pool</li>
+          <li>Dinner in Glenwood Springs: Masala &amp; Curry or Zheng Asian Bistro</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Thursday, August 6</div>
+        <ul class="detail-list">
+          <li>Check-out from stay in Glenwood Springs</li>
+          <li>Lunch pickup in Bluebird Café?</li>
+          <li>2.5 hour drive to North Rim of BCGNP
+            <ul>
+              <li>Exclamation Point hike: 3 miles, easy</li>
+              <li>Chase View hike: 0.6 miles, moderate</li>
+              <li>Black Canyon Narrows View</li>
+              <li>Balanced Rock View</li>
+            </ul>
+          </li>
+          <li>1.5 hour drive to Montrose</li>
+          <li>Ready-to-eat meals for dinner</li>
+          <li>Check-in to stay in Montrose</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Friday, August 7</div>
+        <ul class="detail-list">
+          <li>Check-out from stay in Montrose</li>
+          <li>45 mins drive to South Rim of BCGNP</li>
+          <li>Pack sandwiches for lunch</li>
+          <li>Black Canyon Scenic Drive
+            <ul>
+              <li>Warner Point hike: 1.6 miles, moderate</li>
+              <li>Oak Flat Loop hike: 1.5 miles, moderate
+                <ul><li>Or Oak Flat, Uplands, and Rim Rock Loop hike: 3 miles, moderate</li></ul>
+              </li>
+              <li>Gunnison Point Overlook</li>
+              <li>Painted Wall View</li>
+              <li>Pulpit Rock Overlook</li>
+            </ul>
+          </li>
+          <li>4.5 hour drive to Colorado Springs</li>
+          <li>Dinner in The Burrowing Owl or Santana's Vegan Grill in Colorado Springs</li>
+          <li>Check-in to stay in Colorado Springs</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Saturday, August 8</div>
+        <ul class="detail-list">
+          <li>1 hour drive to Pikes Peak (seniors can skip)
+            <ul><li>Summit Loop hike: 0.7 miles, easy</li></ul>
+          </li>
+          <li>1 hour drive back to Colorado Springs</li>
+          <li>Lunch in The Burrowing Owl or Santana's Vegan Grill in Colorado Springs</li>
+          <li>Garden of the Gods
+            <ul>
+              <li>Palmer, Cabin Canyon, Strausenbach, and Central Gardens Loop hike: 4.3 miles, moderate</li>
+              <li>Siamese Twins Loop hike: 0.6 miles, easy</li>
+            </ul>
+          </li>
+          <li>Dinner in The Burrowing Owl or Santana's Vegan Grill in Colorado Springs</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Sunday, August 9</div>
+        <ul class="detail-list">
+          <li>Check-out from stay in Colorado Springs</li>
+          <li>1.25 hour drive to Edgewater</li>
+          <li>Lunch in Gladys in Edgewater</li>
+          <li>30 mins drive to Denver airport</li>
+        </ul>
+      </div>
+
+      <div class="footnote">⚠ Note: this plan assumes overnight in Colorado Springs through Aug 9 — the actual Aug 8 hotel booking (Hyatt House) is in Denver. See the Full Plan tab.</div>
+    </div>
+    <div class="actions"><button class="save-btn" onclick="saveAsImage('capture-details','colorado-2026-full-detail.png')">⬇ Save as image</button></div>
+    <div class="brand">ravikiran.us/trips</div>
+  </div>
+
+  <!-- MAP PANEL -->
+  <div class="panel" id="panel-map">
+    <p class="trip-title">🗺️ Colorado Road Trip · Map</p>
+    <p class="trip-sub">Route &amp; overnight stops, Jul 31 – Aug 9, 2026</p>
+    <div id="map"></div>
+    <div class="map-legend">
+      <span><span class="dot" style="background:#2f6b4f"></span>Overnight stop</span>
+      <span><span class="dot" style="background:#c0562f"></span>Day stop / landmark</span>
+    </div>
+    <div class="brand">ravikiran.us/trips</div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  var mapInitialized = false;
+
+  // day: trip day number(s) — Day 1 = Jul 31 ... Day 10 = Aug 9
+  var stops = [
+    { day: "1", date: "Jul 31", name: "Sleep Inn & Suites Denver Int'l Airport", lat: 39.8748, lng: -104.6607, overnight: true },
+    { day: "2", date: "Aug 1", name: "Boulder (sightseeing / lunch stop)", lat: 40.0150, lng: -105.2705, overnight: false },
+    { day: "2–4", date: "Aug 1 – 3", name: "Alpine Trail Ridge Inn, Estes Park", lat: 40.3775, lng: -105.5236, overnight: true },
+    { day: "5", date: "Aug 4", name: "Grand Lake / Trail Ridge Road", lat: 40.2500, lng: -105.8236, overnight: false },
+    { day: "5–6", date: "Aug 4 – 5", name: "Silver Spruce Inn, Glenwood Springs", lat: 39.5505, lng: -107.3248, overnight: true },
+    { day: "7", date: "Aug 6", name: "Black Canyon of the Gunnison (North Rim)", lat: 38.5891, lng: -107.6394, overnight: false },
+    { day: "7", date: "Aug 6 – 7", name: "Hampton Inn Montrose", lat: 38.4783, lng: -107.8762, overnight: true },
+    { day: "8", date: "Aug 7", name: "Black Canyon of the Gunnison (South Rim)", lat: 38.5754, lng: -107.7416, overnight: false },
+    { day: "8", date: "Aug 7 – 8", name: "Spark by Hilton Colorado Springs I-25 Central", lat: 38.9364, lng: -104.7480, overnight: true },
+    { day: "9", date: "Aug 8", name: "Pikes Peak / Garden of the Gods", lat: 38.8719, lng: -104.8734, overnight: false },
+    { day: "9–10", date: "Aug 8 – 9", name: "Hyatt House Denver Airport", lat: 39.8384, lng: -104.6958, overnight: true }
+  ];
+
+  function initMap() {
+    if (mapInitialized) return;
+    mapInitialized = true;
+
+    var map = L.map('map').setView([39.4, -105.9], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var latlngs = [];
+    stops.forEach(function (s) {
+      latlngs.push([s.lat, s.lng]);
+      var color = s.overnight ? '#2f6b4f' : '#c0562f';
+      var size = s.overnight ? 30 : 24;
+      var icon = L.divIcon({
+        className: '',
+        html: '<div style="background:' + color + ';color:#fff;width:' + size + 'px;height:' + size + 'px;' +
+          'border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;' +
+          'font-size:' + (s.overnight ? '11px' : '10px') + ';font-weight:700;font-family:sans-serif;' +
+          'box-shadow:0 1px 4px rgba(0,0,0,0.35);">' + s.day + '</div>',
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2]
+      });
+      var marker = L.marker([s.lat, s.lng], { icon: icon }).addTo(map);
+      marker.bindPopup('<b>Day ' + s.day + ' — ' + s.name + '</b>' + s.date);
+    });
+
+    L.polyline(latlngs, { color: '#2f6b4f', weight: 3, opacity: 0.55, dashArray: '1 8' }).addTo(map);
+    map.fitBounds(L.latLngBounds(latlngs), { padding: [24, 24] });
+
+    setTimeout(function () { map.invalidateSize(); }, 100);
+  }
+</script>
+<script>
+  function showTab(name) {
+    ['itinerary', 'hotels', 'details', 'map'].forEach(function (n) {
+      document.getElementById('panel-' + n).classList.toggle('active', n === name);
+      document.getElementById('tab-btn-' + n).classList.toggle('active', n === name);
+    });
+    if (name === 'map') { setTimeout(initMap, 50); }
+  }
+
+  function saveAsImage(elementId, filename) {
+    var el = document.getElementById(elementId);
+    var bg = getComputedStyle(document.body).getPropertyValue('--bg').trim() || '#ffffff';
+    html2canvas(el, { backgroundColor: getComputedStyle(el).backgroundColor || '#ffffff', scale: 3 }).then(function (canvas) {
+      var link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  }
+</script>
+</body>
+</html>
