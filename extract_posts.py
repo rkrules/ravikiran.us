@@ -24,7 +24,16 @@ def unescape_sql(val):
     return val
 
 
+def replace_linkpreview(m):
+    raw_url = m.group(1)
+    # the url attribute sometimes itself contains a nested <a href="...">...</a>
+    inner = re.search(r'href="([^"]+)"', raw_url)
+    url = inner.group(1) if inner else raw_url
+    return f'<p><a href="{url}">{url}</a></p>'
+
+
 def clean_wp_content(content):
+    content = re.sub(r'\[wplinkpreview url="(.*)"\]', replace_linkpreview, content)
     content = re.sub(r'<!--\s*/?(?:wp|/)?.+?-->\s*', '', content)
     content = re.sub(r'https?://[^\s"\']*?/wp-content/uploads/', '/uploads/', content)
     content = re.sub(r'/wp-content/uploads/', '/uploads/', content)
@@ -421,6 +430,180 @@ def generate_index(posts, title, description, show_back=False, note=None, body_c
 </html>'''
 
 
+# Journal posts tagged with a WordPress review category (Movie Reviews, Book
+# Review, Play Review, Movie talk) that read as genuine, public-safe critique
+# of the work itself rather than personal/diary content. Curated in
+# post-audit.csv (audience=P, action=Keep) after reading all 113 review-tagged
+# posts; see fill_ratings.py's REVIEW_RATINGS for the full audit with notes.
+REVIEW_SLUGS = {
+    # Movies
+    'yuva': 'Movies',
+    'hum-tum': 'Movies',
+    'veer-zaara': 'Movies',
+    '7g': 'Movies',
+    'aptha-mitra': 'Movies',
+    '85': 'Movies',
+    'sarkar': 'Movies',
+    'sahara': 'Movies',
+    'war-of-the-worlds': 'Movies',
+    'funtastic-four': 'Movies',
+    'holiweek': 'Movies',
+    'jogi-a-feel-that-never-ends': 'Movies',
+    'iqbal': 'Movies',
+    'weekend-movies-2': 'Movies',
+    'the-myth': 'Movies',
+    'apaharan': 'Movies',
+    'india-questions-aamir-khan': 'Movies',
+    'rang-de-basanti': 'Movies',
+    '9211': 'Movies',
+    '%e0%b2%ac%e0%b2%82%e0%b2%97%e0%b2%be%e0%b2%b0%e0%b2%a6-%e0%b2%ae%e0%b2%a8%e0%b3%81%e0%b2%b7%e0%b3%8d%e0%b2%af-%e0%b2%87%e0%b2%a8%e0%b3%8d%e0%b2%a8%e0%b2%bf%e0%b2%b2%e0%b3%8d%e0%b2%b2': 'Movies',
+    'being-cyrus-zathura': 'Movies',
+    'crash': 'Movies',
+    'my-autograph': 'Movies',
+    'gangster-a-love-story': 'Movies',
+    'fanaa': 'Movies',
+    'chup-chup-ke': 'Movies',
+    'first-impressions-of-kank': 'Movies',
+    'krrish-cyanideomkarasomething-somethingvettaiyaadu': 'Movies',
+    'nenapirali': 'Movies',
+    'lage-raho-munnabhai': 'Movies',
+    'pksedorkkg': 'Movies',
+    'dor': 'Movies',
+    'woh-lamhe': 'Movies',
+    'jote-joteyalikkgdonumrao-jaan': 'Movies',
+    'dhoom-2': 'Movies',
+    'thank-you-note': 'Movies',
+    'movie-mela': 'Movies',
+    'guru': 'Movies',
+    'united-93': 'Movies',
+    'happy-feet': 'Movies',
+    'mungaru-male': 'Movies',
+    'duniya': 'Movies',
+    'vertigo': 'Movies',
+    'bheja-fry': 'Movies',
+    'just-what-i-wanted-to-say-2': 'Movies',
+    'salaam-e-ishq-black-friday-in-pursuit': 'Movies',
+    'life-in-a-metro': 'Movies',
+    'himesh-shows-signs-of-becoming-rajinikanth': 'Movies',
+    'aap-ka-suroor-or-rather-himesh-reshammiyas-topi-2': 'Movies',
+    'satyavan-savitri': 'Movies',
+    'cheeni-kum': 'Movies',
+    'jhoom-barabar-jhoom': 'Movies',
+    'honeymoon-travels-pvt-ltd': 'Movies',
+    'chak-de': 'Movies',
+    'heyy-babyy': 'Movies',
+    'manorama-six-feet-under': 'Movies',
+    'cinema-halls': 'Movies',
+    'jodha-akbar': 'Movies',
+    'u-me-aur-hum-2-2': 'Movies',
+    'little_miss_sunshine': 'Movies',
+    'the_shawshank_redemption': 'Movies',
+    'rock-on': 'Movies',
+    'sorry-bhai': 'Movies',
+    'milkshake_before_sunrise': 'Movies',
+    'all-things-inception': 'Movies',
+    'movies-in-usa': 'Movies',
+    'o-saathi-re': 'Movies',
+    'happiness-is-beautiful-birds-singing': 'Movies',
+    # Books
+    'oxymoronica': 'Books',
+    'da-vinci-code': 'Books',
+    'who-moved-my-cheese': 'Books',
+    'a-life-lived': 'Books',
+    'shantaram': 'Books',
+    'man-who-knew-infinity-abachurina-post-office-toofan-mail': 'Books',
+    'kafkas-metamorphosis': 'Books',
+    'atlas-shrugged': 'Books',
+    'mini-book-reviews': 'Books',
+    'to-kill-a-mocking-bird': 'Books',
+    'kane-and-abel-jeffry-archer': 'Books',
+    # Plays
+    'rangashankara-rehearsal': 'Plays',
+    'rangashankara-the-final-rehearsal': 'Plays',
+    'iti-ninna-amritha': 'Plays',
+    'a-heap-of-broken-images': 'Plays',
+    'rangashankara-sleuth': 'Plays',
+    'sankranti': 'Plays',
+    'all-the-best': 'Plays',
+    'hayavadana': 'Plays',
+    'rangashankara-sankramana': 'Plays',
+    'heegadre-hege': 'Plays',
+    'rangashankara-mallinatha-dhyana': 'Plays',
+    'rangashankara-maduve-maduve': 'Plays',
+    'rangashankara-neenaanaadrenaaneenena': 'Plays',
+    'checkmate-rangashankara': 'Plays',
+    'common-man': 'Plays',
+    'dance_festiva': 'Plays',
+    'all-you-need-is-love': 'Plays',
+    'sadarame-rangashankara': 'Plays',
+}
+
+
+def generate_reviews_index(journal_posts):
+    """Curated index of public-safe movie/book/play reviews, linking to their
+    existing /journal/<slug>.html pages (no separate HTML is generated)."""
+    by_group = {'Movies': [], 'Books': [], 'Plays': []}
+    for p in journal_posts:
+        group = REVIEW_SLUGS.get(p['slug'])
+        if group:
+            by_group[group].append(p)
+
+    sections = []
+    for group in ['Movies', 'Books', 'Plays']:
+        posts = sorted(by_group[group], key=lambda p: p.get('date', ''), reverse=True)
+        items = []
+        for p in posts:
+            pt = html.escape(p['title'] if p['title'] else 'Untitled')
+            ds = p['date_obj'].strftime('%b %d, %Y') if p.get('date_obj') else p.get('date', '')
+            items.append(f'        <li><a href="{p["href"]}"><time>{ds}</time> {pt}</a></li>')
+        items_html = "\n".join(items)
+        sections.append(f'''      <h3>{group}</h3>
+      <ul class="post-list">
+{items_html}
+      </ul>''')
+
+    sections_html = "\n".join(sections)
+
+    return f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews - Ravikiran Rajagopal</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="plain-post-page">
+  <main class="container">
+    <section>
+      <h2>Reviews</h2>
+      <p><a href="/" class="nav-home">&larr; Home</a></p>
+      <p class="section-note">Movie, book, and play reviews written between 2004 and 2010, pulled out of the journal archive.</p>
+{sections_html}
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Ravikiran Rajagopal</p>
+    </div>
+  </footer>
+</body>
+</html>'''
+
+
+# Posts excluded from the build entirely (not generated, not indexed) per the
+# post-audit.csv "Delete" action. Kept out of the generated site without
+# touching the SQL source or post-audit.csv history -- scoped by section since
+# slugs like "165" or "movies" are reused across sections.
+HIDDEN_SLUGS = {
+    ('notes', 'twitter'),  # image-only post; screenshot not committed to uploads/, no text content
+}
+
+
+def hide_deleted(posts, section):
+    return [p for p in posts if (section, p['slug']) not in HIDDEN_SLUGS]
+
+
 def main():
     print("Reading SQL file...")
     with open(SQL_FILE, 'r', encoding='utf-8') as f:
@@ -452,6 +635,14 @@ def main():
     print("\nReading ABK .md files...")
     abk_posts = read_md_posts('abk')
     print(f"  {len(abk_posts)} ABK posts")
+
+    main_posts       = hide_deleted(main_posts,       'blog')
+    notes_posts      = hide_deleted(notes_posts,      'notes')
+    status_posts     = hide_deleted(status_posts,     'status')
+    wedding_posts    = hide_deleted(wedding_posts,    'wedding')
+    journal_posts    = hide_deleted(journal_posts,    'journal')
+    newsletter_posts = hide_deleted(newsletter_posts, 'newsletter')
+    abk_posts        = hide_deleted(abk_posts,        'abk')
 
     for lst in [main_posts, notes_posts, status_posts, wedding_posts, journal_posts, newsletter_posts, abk_posts]:
         lst.sort(key=lambda p: p.get('date', ''), reverse=True)
@@ -497,8 +688,13 @@ def main():
     with open('journal/index.html', 'w', encoding='utf-8') as f:
         f.write(generate_index(
             journal_posts, 'Journal', 'Personal writing, 2004–2021', show_back=True,
-            note='Personal writing from 2004 to 2021. Unpolished, unfiltered.'
+            note='Personal writing from 2004 to 2021. Unpolished, unfiltered. '
+                 'Movie, book, and play reviews have been pulled out into a dedicated Reviews page.'
         ))
+
+    os.makedirs('reviews', exist_ok=True)
+    with open('reviews/index.html', 'w', encoding='utf-8') as f:
+        f.write(generate_reviews_index(journal_posts))
 
     with open('newsletter/index.html', 'w', encoding='utf-8') as f:
         f.write(generate_index(
