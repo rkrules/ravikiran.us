@@ -390,6 +390,7 @@
   <button class="chip active" id="t-sel" onclick="toggleTableFilter(this)">My List Only</button>
   <button class="chip" id="t-waterfall" onclick="toggleTableFilter(this, 'waterfall')">💧 Waterfalls</button>
   <button class="chip" id="t-kids" onclick="toggleTableFilter(this, 'kids')">🧒 Kids</button>
+  <button class="chip" id="t-views" onclick="toggleTableFilter(this, 'views')">🏔 Views</button>
 </div>
 
 <!-- LIST VIEW -->
@@ -482,6 +483,7 @@ let sortKey = 'distance';
 let tableSelectedOnly = true;
 let tableWaterfall = false;
 let tableKids = false;
+let tableViews = false;
 
 // List-view interaction state (persists across re-renders)
 let completedExpanded = false;
@@ -615,6 +617,7 @@ function renderTable() {
                data-selected="${h.selected}"
                data-waterfall="${h.waterfall}"
                data-kids="${h.kids}"
+               data-views="${h.views}"
                data-num="${h.num}"
                data-name="${h.name.toLowerCase()}"
                data-town="${h.town.toLowerCase()}">
@@ -639,7 +642,8 @@ function filterTable() {
     const selMatch = !tableSelectedOnly || r.dataset.selected === 'true';
     const watMatch = !tableWaterfall || r.dataset.waterfall === 'true';
     const kidMatch = !tableKids || r.dataset.kids === 'true';
-    r.classList.toggle('filtered-out', !(nameMatch && selMatch && watMatch && kidMatch));
+    const viewsMatch = !tableViews || r.dataset.views === 'true';
+    r.classList.toggle('filtered-out', !(nameMatch && selMatch && watMatch && kidMatch && viewsMatch));
   });
 }
 
@@ -653,6 +657,9 @@ function toggleTableFilter(btn, key) {
   } else if (key === 'kids') {
     tableKids = !tableKids;
     btn.classList.toggle('active', tableKids);
+  } else if (key === 'views') {
+    tableViews = !tableViews;
+    btn.classList.toggle('active', tableViews);
   }
   filterTable();
 }
