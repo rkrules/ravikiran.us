@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CT Hikes — Ravi's List</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --forest: #2D4A3E;
+    --moss: #5C7A5E;
+    --sage: #A8C4A2;
+    --stone: #E8E4DC;
+    --bark: #8B6F4E;
+    --sky: #6B9BAF;
+    --done: #4A7C59;
+    --pending: #B87A3B;
+    --white: #FAFAF8;
+    --ink: #1C2B26;
+    --muted: #6B7C71;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--stone);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--forest);
+    color: var(--white);
+    padding: 28px 20px 20px;
+    text-align: center;
+  }
+  .header h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .header p {
+    font-size: 0.78rem;
+    color: var(--sage);
+    margin-top: 4px;
+    font-weight: 300;
+  }
+  .progress-bar-wrap {
+    margin: 14px auto 0;
+    max-width: 320px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 100px;
+    height: 6px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--sage);
+    border-radius: 100px;
+    width: calc(2 / 19 * 100%);
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    font-size: 0.72rem;
+    color: var(--sage);
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── TAB SWITCHER ── */
+  .tabs {
+    display: flex;
+    background: var(--forest);
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 0;
+    background: none;
+    border: none;
+    color: var(--sage);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    color: var(--white);
+    border-bottom-color: var(--sage);
+  }
+
+  /* ── SORT / FILTER BAR ── */
+  .controls {
+    padding: 14px 16px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    background: var(--white);
+    border-bottom: 1px solid #DDD8CE;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .ctrl-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .chip-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1.5px solid #C8C3B8;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .chip.active {
+    background: var(--forest);
+    border-color: var(--forest);
+    color: var(--white);
+  }
+
+  /* ── CARD GRID ── */
+  #card-view {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .hike-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 12px;
+    align-items: start;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border-left: 3px solid transparent;
+    position: relative;
+  }
+  .hike-card.status-done { border-left-color: var(--done); }
+  .hike-card.status-pending { border-left-color: var(--pending); }
+  .hike-card.status-todo { border-left-color: #C8C3B8; }
+
+  .card-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    grid-row: 1;
+    grid-column: 1;
+  }
+  .card-name {
+    font-size: 0.97rem;
+    font-weight: 600;
+    color: var(--ink);
+    grid-row: 2;
+    grid-column: 1;
+    line-height: 1.25;
+  }
+  .card-meta {
+    font-size: 0.78rem;
+    color: var(--muted);
+    grid-row: 3;
+    grid-column: 1;
+    margin-top: 2px;
+  }
+  .card-icons {
+    font-size: 0.82rem;
+    grid-row: 4;
+    grid-column: 1;
+    margin-top: 5px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .icon-tag {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.73rem;
+    color: var(--moss);
+    font-weight: 500;
+  }
+  .card-right {
+    grid-row: 1 / 5;
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    padding-top: 2px;
+  }
+  .dist-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--forest);
+    white-space: nowrap;
+  }
+  .drive-badge {
+    font-size: 0.7rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .rating-badge {
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    border-radius: 100px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .rating-D { background: #E8F4E8; color: #2D6B2D; }
+  .rating-C { background: #FFF4E0; color: #8B5E00; }
+  .rating-B { background: #FFE8E0; color: #8B2D00; }
+  .rating-CD { background: #FFF0D4; color: #7A4800; }
+  .rating-BC { background: #FFE0D4; color: #7A2800; }
+
+  .status-pill {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .pill-done { background: var(--done); color: white; }
+  .pill-pending { background: var(--pending); color: white; }
+
+  /* ── TABLE VIEW ── */
+  #table-view { display: none; overflow-x: auto; }
+
+  .filter-row {
+    padding: 10px 16px;
+    background: #F2EFE8;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-row input {
+    flex: 1;
+    min-width: 160px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: 1.5px solid #C8C3B8;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    background: var(--white);
+    color: var(--ink);
+  }
+
+  .hike-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    background: var(--white);
+  }
+  .hike-table th {
+    background: var(--forest);
+    color: var(--sage);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .hike-table th:hover { color: var(--white); }
+  .hike-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #EAE7DF;
+    vertical-align: top;
+  }
+  .hike-table tr:hover td { background: #F5F2EB; }
+  .hike-table tr.filtered-out { display: none; }
+  .hike-table tr.status-done td:first-child { border-left: 3px solid var(--done); }
+  .hike-table tr.status-pending td:first-child { border-left: 3px solid var(--pending); }
+  .small-tag {
+    font-size: 0.68rem;
+    padding: 1px 6px;
+    border-radius: 100px;
+    display: inline-block;
+  }
+
+  .legend {
+    padding: 16px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--white);
+    border-top: 1px solid #DDD8CE;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  @media (max-width: 420px) {
+    .header h1 { font-size: 1.2rem; }
+    .card-name { font-size: 0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌲 Connecticut Hikes</h1>
+  <p>From 86 Cumberland Rd, West Hartford</p>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-fill"></div></div>
+  <div class="progress-label" id="prog-label">2 of 19 completed</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('cards', this)">Card View</button>
+  <button class="tab-btn" onclick="switchTab('table', this)">Full Table</button>
+</div>
+
+<!-- CARD SORT CONTROLS -->
+<div class="controls" id="card-controls">
+  <span class="ctrl-label">Sort:</span>
+  <div class="chip-group">
+    <button class="chip active" onclick="sortCards('distance',this)">Distance ↑</button>
+    <button class="chip" onclick="sortCards('difficulty',this)">Difficulty</button>
+    <button class="chip" onclick="sortCards('drive',this)">Drive</button>
+    <button class="chip" onclick="sortCards('number',this)">Hike #</button>
+  </div>
+  <span class="ctrl-label" style="margin-left:4px">Filter:</span>
+  <div class="chip-group">
+    <button class="chip" id="f-waterfall" onclick="toggleFilter('waterfall',this)">💧 Waterfalls</button>
+    <button class="chip" id="f-kids" onclick="toggleFilter('kids',this)">🧒 Kids</button>
+    <button class="chip" id="f-views" onclick="toggleFilter('views',this)">🏔 Views</button>
+    <button class="chip" id="f-selected" onclick="toggleFilter('selected',this)">My List</button>
+  </div>
+</div>
+
+<!-- TABLE CONTROLS -->
+<div class="filter-row" id="table-controls" style="display:none">
+  <input type="text" id="table-search" placeholder="Search hike name, town…" oninput="filterTable()">
+  <button class="chip active" id="t-sel" onclick="toggleTableFilter(this)">My List Only</button>
+  <button class="chip" id="t-waterfall" onclick="toggleTableFilter(this, 'waterfall')">💧 Waterfalls</button>
+  <button class="chip" id="t-kids" onclick="toggleTableFilter(this, 'kids')">🧒 Kids</button>
+</div>
+
+<!-- CARD VIEW -->
+<div id="card-view"></div>
+
+<!-- TABLE VIEW -->
+<div id="table-view">
+  <table class="hike-table" id="main-table">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">#</th>
+        <th onclick="sortTable(1)">Hike</th>
+        <th onclick="sortTable(2)">Town</th>
+        <th onclick="sortTable(3)">Trail mi</th>
+        <th onclick="sortTable(4)">Level</th>
+        <th onclick="sortTable(5)">Drive</th>
+        <th>Tags</th>
+        <th onclick="sortTable(7)">Status</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--done)"></div> Completed</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--pending)"></div> Planned</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#C8C3B8"></div> To-do</div>
+  <div class="legend-item">Rating: D=Easy · C=Moderate · B=Hard</div>
+</div>
+
+<script>
+const ALL_HIKES = [
+  { num:1,  name:"Falls Village",                       town:"Canaan",        mi:1.5,  rating:"D",  drive:55, views:true,  waterfall:true,  kids:true,  selected:false, status:"todo",    date:null,    notes:"Impressive white pines; river walk" },
+  { num:2,  name:"Great Pond",                          town:"Simsbury",      mi:1.0,  rating:"D",  drive:12, views:false, waterfall:false, kids:true,  selected:true,  status:"done",    date:"9/12",  notes:"Loop around pine shoreline" },
+  { num:3,  name:"Dinosaur State Park",                 town:"Rocky Hill",    mi:1.5,  rating:"D",  drive:10, views:false, waterfall:false, kids:true,  selected:true,  status:"todo",    date:null,    notes:"Nature walk; dinosaur trackways" },
+  { num:4,  name:"Mount Tom Tower",                     town:"Morris",        mi:1.25, rating:"C",  drive:35, views:true,  waterfall:false, kids:false, selected:true,  status:"todo",    date:null,    notes:"Short uphill to stone tower" },
+  { num:5,  name:"Rocky Neck",                          town:"East Lyme",     mi:1.5,  rating:"C",  drive:50, views:true,  waterfall:false, kids:false, selected:true,  status:"todo",    date:null,    notes:"Ocean bayside walk to sandy beach" },
+  { num:6,  name:"Larsen Sanctuary",                    town:"Fairfield",     mi:1.5,  rating:"D",  drive:45, views:false, waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Nature walk" },
+  { num:7,  name:"Highland Springs & Lookout Mtn",      town:"Manchester",    mi:3.0,  rating:"D",  drive:12, views:false, waterfall:false, kids:true,  selected:true,  status:"todo",    date:null,    notes:"Hillside walk; springtime vernal pool" },
+  { num:8,  name:"Wadsworth Falls",                     town:"Middlefield",   mi:2.5,  rating:"C",  drive:25, views:false, waterfall:true,  kids:true,  selected:true,  status:"done",    date:"9/5",   notes:"Old woods road leading to two waterfalls" },
+  { num:9,  name:"Audubon Center in Greenwich",         town:"Greenwich",     mi:3.0,  rating:"C",  drive:65, views:false, waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Nature center; woods ramble" },
+  { num:10, name:"Hurd State Park",                     town:"East Hampton",  mi:3.0,  rating:"CD", drive:30, views:true,  waterfall:false, kids:false, selected:true,  status:"todo",    date:null,    notes:"Connecticut riverside walk" },
+  { num:11, name:"Sunny Valley",                        town:"Bridgewater",   mi:3.5,  rating:"C",  drive:55, views:true,  waterfall:false, kids:true,  selected:true,  status:"todo",    date:null,    notes:"Rocky scrambles; riverside vista" },
+  { num:12, name:"Bluff Point",                         town:"Groton",        mi:4.5,  rating:"D",  drive:65, views:true,  waterfall:false, kids:true,  selected:true,  status:"todo",    date:null,    notes:"Oceanside walk; old foundations" },
+  { num:13, name:"Day Pond Loop",                       town:"Colchester",    mi:4.0,  rating:"C",  drive:30, views:false, waterfall:true,  kids:true,  selected:false, status:"todo",    date:null,    notes:"Summer swimming; glacial erratic boulders" },
+  { num:14, name:"Hartman Park",                        town:"Lyme",          mi:4.0,  rating:"C",  drive:45, views:true,  waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Woods walk across narrow ridges; historic fortress" },
+  { num:15, name:"Soapstone Mountain",                  town:"Somers",        mi:4.0,  rating:"C",  drive:28, views:true,  waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Ridgewalk to observation tower" },
+  { num:16, name:"Penwood",                             town:"Bloomfield",    mi:4.75, rating:"C",  drive:10, views:true,  waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Ridgewalk to rocky outcrop" },
+  { num:17, name:"Northern Metacomet",                  town:"Granby",        mi:4.0,  rating:"C",  drive:18, views:true,  waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Traprock ridge with clifftop views" },
+  { num:18, name:"Gay City",                            town:"Hebron",        mi:5.0,  rating:"CD", drive:28, views:false, waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Woods walk through ghost town" },
+  { num:19, name:"Mount Misery",                        town:"Voluntown",     mi:5.0,  rating:"CD", drive:62, views:false, waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Rhododendron swamp boardwalk" },
+  { num:20, name:"Wolf Den",                            town:"Pomfret",       mi:5.0,  rating:"CD", drive:50, views:false, waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Rock formations; tabled wolf den cave" },
+  { num:21, name:"Collis P. Huntington State Park",     town:"Redding",       mi:5.5,  rating:"CD", drive:68, views:false, waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Wood roads walk along pond shores" },
+  { num:22, name:"Green Fall Pond",                     town:"Voluntown",     mi:5.7,  rating:"CD", drive:65, views:false, waterfall:true,  kids:true,  selected:true,  status:"todo",    date:null,    notes:"Pond walk with approach through gorge" },
+  { num:23, name:"Northern Nipmuck",                    town:"Ashford",       mi:5.25, rating:"C",  drive:38, views:false, waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Rocky ridges and deep hemlock woods" },
+  { num:24, name:"Chatfield Hollow",                    town:"Killingworth",  mi:5.5,  rating:"C",  drive:38, views:false, waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Ledges and CCC-developed park" },
+  { num:25, name:"Great Hill",                          town:"East Hampton",  mi:5.5,  rating:"C",  drive:30, views:true,  waterfall:true,  kids:true,  selected:true,  status:"todo",    date:null,    notes:"Rocky summit and ridgewalk to waterfall" },
+  { num:26, name:"McLean Game Refuge",                  town:"Granby",        mi:5.0,  rating:"B",  drive:18, views:false, waterfall:false, kids:true,  selected:true,  status:"todo",    date:null,    notes:"Barnoor Hill; great white pine woods" },
+  { num:27, name:"Northwest Park",                      town:"Windsor",       mi:5.0,  rating:"CD", drive:14, views:false, waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Woods walk through old tobacco fields" },
+  { num:28, name:"Mount Higby",                         town:"Middlefield",   mi:5.0,  rating:"CD", drive:25, views:true,  waterfall:false, kids:true,  selected:true,  status:"todo",    date:null,    notes:"Woods walk through old tobacco fields; nature center" },
+  { num:29, name:"Devils Den",                          town:"Weston",        mi:6.0,  rating:"B",  drive:70, views:false, waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Cliffwalk along traprock ridge" },
+  { num:30, name:"White Memorial Foundation",           town:"Litchfield",    mi:6.5,  rating:"C",  drive:40, views:false, waterfall:false, kids:true,  selected:true,  status:"todo",    date:null,    notes:"Extensive boardwalk across shallow pond" },
+  { num:31, name:"Bullet and High Ledges",              town:"North Stonington",mi:6.7, rating:"D", drive:75, views:true,  waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Eastern Connecticut ledges" },
+  { num:32, name:"Chauncey Peak & Mount Lamentation",   town:"Meriden",       mi:6.0,  rating:"C",  drive:20, views:false, waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Traprock ridge walk" },
+  { num:33, name:"Westwoods",                           town:"Guilford",      mi:6.0,  rating:"B",  drive:42, views:true,  waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Scramble along rocky ledges" },
+  { num:34, name:"Cathedral Pines & Mohawk Mountain",   town:"Cornwall",      mi:6.0,  rating:"BC", drive:50, views:true,  waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Giant pines and observation tower" },
+  { num:35, name:"Peoples State Forest",                town:"Barkhamsted",   mi:6.6,  rating:"BC", drive:28, views:true,  waterfall:false, kids:false, selected:true,  status:"todo",    date:null,    notes:"Woods ramble with rock outcrop views" },
+  { num:36, name:"Natchaug",                            town:"Eastford",      mi:6.0,  rating:"CD", drive:42, views:false, waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Woods walk among remnants of 19th-century chestnut forest" },
+  { num:37, name:"West Peak and Castle Crag",           town:"Meriden",       mi:7.0,  rating:"B",  drive:20, views:true,  waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Cliffwalk on traprock ridges" },
+  { num:38, name:"Bear Mountain",                       town:"Salisbury",     mi:6.5,  rating:"AB", drive:72, views:true,  waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Steady ascent to Connecticut's highest summit" },
+  { num:39, name:"Macedonia Brook",                     town:"Kent",          mi:6.7,  rating:"B",  drive:60, views:true,  waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Rugged hike around highland valley" },
+  { num:40, name:"Windsor Locks Canal",                 town:"Suffield",      mi:9.0,  rating:"A",  drive:22, views:false, waterfall:false, kids:true,  selected:false, status:"todo",    date:null,    notes:"Easy riverside walk along old canal" },
+  { num:41, name:"Mansfield Hollow",                    town:"Mansfield",     mi:8.0,  rating:"B",  drive:35, views:false, waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Valley walk to local ledge" },
+  { num:42, name:"Bigelow Hollow",                      town:"Union",         mi:8.25, rating:"B",  drive:45, views:false, waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Woods walk over rocky ledges & along undeveloped shoreline" },
+  { num:43, name:"Devils Hopyard",                      town:"East Haddam",   mi:7.5,  rating:"C",  drive:35, views:false, waterfall:true,  kids:true,  selected:true,  status:"todo",    date:null,    notes:"Hillside hike around a highland valley" },
+  { num:44, name:"Seven Falls",                         town:"Haddam",        mi:8.0,  rating:"CD", drive:28, views:false, waterfall:true,  kids:true,  selected:true,  status:"todo",    date:null,    notes:"Woods walk among cascades and rocky hillsides" },
+  { num:45, name:"Talcott Mountain",                    town:"Simsbury",      mi:8.5,  rating:"C",  drive:12, views:true,  waterfall:false, kids:true,  selected:true,  status:"done",    date:"8/26",  notes:"Reservoir walk to traprock ridge with famous tower" },
+  { num:46, name:"Ragged Mountain",                     town:"Southington",   mi:"6.0/9.1", rating:"A", drive:20, views:true, waterfall:false, kids:false, selected:false, status:"todo", date:null,  notes:"Rocky trail along traprock clifftop and ridges" },
+  { num:47, name:"Cockaponset",                         town:"Chester",       mi:10.1, rating:"CD", drive:35, views:false, waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Hike along the Mile of Ledges" },
+  { num:48, name:"Tunxis Ramble",                       town:"Burlington",    mi:9.5,  rating:"BC", drive:18, views:true,  waterfall:false, kids:false, selected:false, status:"todo",    date:null,    notes:"Quarry views; rocky ledges" },
+  { num:49, name:"Sleeping Giant",                      town:"Hamden",        mi:"4.8/9.0", rating:"A", drive:38, views:true, waterfall:false, kids:false, selected:false, status:"todo", date:null, notes:"Woods ramble" },
+  { num:50, name:"Rattlesnake Mountain & Indian Council Cave", town:"Barkhamsted", mi:13.0, rating:"B", drive:28, views:true, waterfall:true, kids:false, selected:false, status:"todo", date:null, notes:"Visit reputed Native American gathering place" },
+];
+
+// Active filters
+let activeFilters = { waterfall: false, kids: false, views: false, selected: true };
+let sortKey = 'distance';
+let tableSelectedOnly = true;
+let tableWaterfall = false;
+let tableKids = false;
+
+function getMiVal(mi) {
+  if (typeof mi === 'string') return parseFloat(mi.split('/')[0]);
+  return mi;
+}
+
+function getRatingVal(r) {
+  const map = { A:1, AB:2, B:3, BC:4, C:5, CD:6, D:7 };
+  return map[r] || 99;
+}
+
+function renderCards() {
+  const container = document.getElementById('card-view');
+  let data = [...ALL_HIKES];
+
+  // Apply filters
+  if (activeFilters.selected) data = data.filter(h => h.selected);
+  if (activeFilters.waterfall) data = data.filter(h => h.waterfall);
+  if (activeFilters.kids) data = data.filter(h => h.kids);
+  if (activeFilters.views) data = data.filter(h => h.views);
+
+  // Sort
+  if (sortKey === 'distance') data.sort((a,b) => getMiVal(a.mi) - getMiVal(b.mi));
+  if (sortKey === 'difficulty') data.sort((a,b) => getRatingVal(a.rating) - getRatingVal(b.rating));
+  if (sortKey === 'drive') data.sort((a,b) => a.drive - b.drive);
+  if (sortKey === 'number') data.sort((a,b) => a.num - b.num);
+
+  // Done always on top within their group
+  const done = data.filter(h => h.status === 'done');
+  const pending = data.filter(h => h.status === 'pending');
+  const todo = data.filter(h => h.status === 'todo');
+  data = [...done, ...pending, ...todo];
+
+  container.innerHTML = data.map(h => {
+    const miStr = typeof h.mi === 'string' ? h.mi : h.mi.toFixed(1);
+    const ratingLabel = { A:'A · Strenuous', AB:'AB · Hard+', B:'B · Hard', BC:'BC · Mod-Hard', C:'C · Moderate', CD:'CD · Mod+', D:'D · Easy' }[h.rating] || h.rating;
+    const statusClass = `status-${h.status}`;
+    const statusPill = h.status === 'done'
+      ? `<span class="status-pill pill-done">✓ ${h.date}</span>`
+      : h.status === 'pending'
+      ? `<span class="status-pill pill-pending">⏳ ${h.date}</span>`
+      : '';
+    const icons = [];
+    if (h.waterfall) icons.push('<span class="icon-tag">💧 Waterfall</span>');
+    if (h.kids) icons.push('<span class="icon-tag">🧒 Kid-friendly</span>');
+    if (h.views) icons.push('<span class="icon-tag">🏔 Views</span>');
+
+    return `<div class="hike-card ${statusClass}">
+      <div class="card-num">#${h.num}</div>
+      <div class="card-name">${h.name}</div>
+      <div class="card-meta">${h.town} · <span class="rating-badge rating-${h.rating.replace('/','')}">${ratingLabel}</span></div>
+      <div class="card-icons">${icons.join('')}</div>
+      <div class="card-right">
+        <div class="dist-badge">${miStr} mi</div>
+        <div class="drive-badge">~${h.drive} mi drive</div>
+        ${statusPill}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Update progress
+  const sel = ALL_HIKES.filter(h => h.selected);
+  const doneCount = sel.filter(h => h.status === 'done').length;
+  document.getElementById('prog-label').textContent = `${doneCount} of ${sel.length} selected completed`;
+  document.getElementById('prog-fill').style.width = `${doneCount/sel.length*100}%`;
+}
+
+function sortCards(key, btn) {
+  sortKey = key;
+  document.querySelectorAll('#card-controls .chip').forEach(c => {
+    if (['distance','difficulty','drive','number'].some(k => c.textContent.toLowerCase().includes(k.split('/')[0]))) c.classList.remove('active');
+  });
+  btn.classList.add('active');
+  renderCards();
+}
+
+function toggleFilter(key, btn) {
+  activeFilters[key] = !activeFilters[key];
+  btn.classList.toggle('active', activeFilters[key]);
+  renderCards();
+}
+
+// TABLE
+function renderTable() {
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = ALL_HIKES.map(h => {
+    const miStr = typeof h.mi === 'string' ? h.mi : h.mi.toFixed(1);
+    const tags = [];
+    if (h.waterfall) tags.push('<span class="small-tag" style="background:#E0F0FF;color:#1A5A8A">💧</span>');
+    if (h.kids) tags.push('<span class="small-tag" style="background:#E8FFE8;color:#1A5A1A">🧒</span>');
+    if (h.views) tags.push('<span class="small-tag" style="background:#FFF8E0;color:#7A5A00">🏔</span>');
+    const statusCell = h.status === 'done'
+      ? `<span class="status-pill pill-done" style="font-size:.68rem">✓ ${h.date}</span>`
+      : h.status === 'pending'
+      ? `<span class="status-pill pill-pending" style="font-size:.68rem">⏳ ${h.date}</span>`
+      : '—';
+    const selMark = h.selected ? '●' : '';
+    return `<tr class="status-${h.status}${h.selected?' sel-row':''}" 
+               data-selected="${h.selected}" 
+               data-waterfall="${h.waterfall}" 
+               data-kids="${h.kids}"
+               data-num="${h.num}"
+               data-name="${h.name.toLowerCase()}"
+               data-town="${h.town.toLowerCase()}">
+      <td style="font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted)">${h.num}</td>
+      <td style="font-weight:500">${h.name} <span style="color:var(--forest);font-size:.7rem">${selMark}</span></td>
+      <td>${h.town}</td>
+      <td style="font-family:'DM Mono',monospace">${miStr}</td>
+      <td><span class="rating-badge rating-${h.rating.replace('/','')}">${h.rating}</span></td>
+      <td style="font-family:'DM Mono',monospace;color:var(--muted)">~${h.drive}mi</td>
+      <td>${tags.join(' ')}</td>
+      <td>${statusCell}</td>
+    </tr>`;
+  }).join('');
+  filterTable();
+}
+
+function filterTable() {
+  const q = document.getElementById('table-search').value.toLowerCase();
+  const rows = document.querySelectorAll('#table-body tr');
+  rows.forEach(r => {
+    const nameMatch = r.dataset.name.includes(q) || r.dataset.town.includes(q) || r.dataset.num === q;
+    const selMatch = !tableSelectedOnly || r.dataset.selected === 'true';
+    const watMatch = !tableWaterfall || r.dataset.waterfall === 'true';
+    const kidMatch = !tableKids || r.dataset.kids === 'true';
+    r.classList.toggle('filtered-out', !(nameMatch && selMatch && watMatch && kidMatch));
+  });
+}
+
+function toggleTableFilter(btn, key) {
+  if (!key) {
+    tableSelectedOnly = !tableSelectedOnly;
+    btn.classList.toggle('active', tableSelectedOnly);
+  } else if (key === 'waterfall') {
+    tableWaterfall = !tableWaterfall;
+    btn.classList.toggle('active', tableWaterfall);
+  } else if (key === 'kids') {
+    tableKids = !tableKids;
+    btn.classList.toggle('active', tableKids);
+  }
+  filterTable();
+}
+
+function sortTable(colIdx) {
+  const tbody = document.getElementById('table-body');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  rows.sort((a, b) => {
+    const av = a.cells[colIdx].textContent.trim();
+    const bv = b.cells[colIdx].textContent.trim();
+    return isNaN(av) ? av.localeCompare(bv) : parseFloat(av) - parseFloat(bv);
+  });
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const cv = document.getElementById('card-view');
+  const tv = document.getElementById('table-view');
+  const cc = document.getElementById('card-controls');
+  const tc = document.getElementById('table-controls');
+  if (tab === 'cards') {
+    cv.style.display = 'flex'; tv.style.display = 'none';
+    cc.style.display = 'flex'; tc.style.display = 'none';
+  } else {
+    cv.style.display = 'none'; tv.style.display = 'block';
+    cc.style.display = 'none'; tc.style.display = 'flex';
+    renderTable();
+  }
+}
+
+// Init
+renderCards();
+// Set "My List" filter chip active by default
+document.getElementById('f-selected').classList.add('active');
+document.getElementById('t-sel').classList.add('active');
+</script>
+</body>
+</html>
