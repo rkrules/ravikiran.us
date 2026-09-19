@@ -136,59 +136,133 @@
     color: var(--white);
   }
 
-  /* ── CARD GRID ── */
-  #card-view {
-    padding: 12px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 480px;
+  /* ── LIST VIEW (accordion-style rows) ── */
+  #list-view {
+    padding: 10px 14px 14px;
+    max-width: 560px;
     margin: 0 auto;
   }
 
-  .hike-card {
+  .group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
     background: var(--white);
-    border-radius: 14px;
-    padding: 14px 16px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 4px 12px;
-    align-items: start;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    border-left: 3px solid transparent;
-    position: relative;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--forest);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   }
-  .hike-card.status-done { border-left-color: var(--done); }
-  .hike-card.status-pending { border-left-color: var(--pending); }
-  .hike-card.status-todo { border-left-color: #C8C3B8; }
+  .group-caret { font-size: 0.7rem; color: var(--muted); transition: transform 0.15s; }
+  .group-body { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
 
-  .card-num {
+  .hike-item {
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border-left: 3px solid transparent;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .hike-item.status-done { border-left-color: var(--done); }
+  .hike-item.status-pending { border-left-color: var(--pending); }
+  .hike-item.status-todo { border-left-color: #C8C3B8; }
+
+  .item-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .item-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .item-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink);
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .item-dist {
     font-family: 'DM Mono', monospace;
     font-size: 0.7rem;
     color: var(--muted);
-    grid-row: 1;
-    grid-column: 1;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
-  .card-name {
-    font-size: 0.97rem;
-    font-weight: 600;
-    color: var(--ink);
-    grid-row: 2;
-    grid-column: 1;
-    line-height: 1.25;
+  .item-caret {
+    font-size: 0.65rem;
+    color: var(--muted);
+    flex-shrink: 0;
+    width: 10px;
+    text-align: center;
   }
-  .card-meta {
+  .item-detail {
+    padding: 0 12px 12px 12px;
+    border-top: 1px solid #EFECE4;
+    margin-top: -1px;
+    padding-top: 8px;
+  }
+  .item-town {
     font-size: 0.78rem;
     color: var(--muted);
-    grid-row: 3;
-    grid-column: 1;
-    margin-top: 2px;
+    margin-bottom: 4px;
   }
-  .card-icons {
+  .item-notes {
     font-size: 0.82rem;
-    grid-row: 4;
-    grid-column: 1;
-    margin-top: 5px;
+    color: var(--ink);
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+  .item-dist-full {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .rating-badge {
+    font-size: 0.68rem;
+    padding: 2px 7px;
+    border-radius: 100px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+  .rating-D { background: #E8F4E8; color: #2D6B2D; }
+  .rating-C { background: #FFF4E0; color: #8B5E00; }
+  .rating-B { background: #FFE8E0; color: #8B2D00; }
+  .rating-CD { background: #FFF0D4; color: #7A4800; }
+  .rating-BC { background: #FFE0D4; color: #7A2800; }
+  .rating-A { background: #F0E8FF; color: #5A2D8B; }
+  .rating-AB { background: #F0E0FF; color: #5A2D8B; }
+
+  .status-pill {
+    font-size: 0.64rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .pill-done { background: var(--done); color: white; }
+  .pill-pending { background: var(--pending); color: white; }
+
+  .card-icons {
+    font-size: 0.78rem;
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
@@ -197,56 +271,13 @@
     display: flex;
     align-items: center;
     gap: 3px;
-    font-size: 0.73rem;
+    font-size: 0.72rem;
     color: var(--moss);
     font-weight: 500;
   }
-  .card-right {
-    grid-row: 1 / 5;
-    grid-column: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-    padding-top: 2px;
-  }
-  .dist-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--forest);
-    white-space: nowrap;
-  }
-  .drive-badge {
-    font-size: 0.7rem;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-  .rating-badge {
-    font-size: 0.7rem;
-    padding: 2px 7px;
-    border-radius: 100px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
-  .rating-D { background: #E8F4E8; color: #2D6B2D; }
-  .rating-C { background: #FFF4E0; color: #8B5E00; }
-  .rating-B { background: #FFE8E0; color: #8B2D00; }
-  .rating-CD { background: #FFF0D4; color: #7A4800; }
-  .rating-BC { background: #FFE0D4; color: #7A2800; }
-
-  .status-pill {
-    font-size: 0.68rem;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 100px;
-    white-space: nowrap;
-  }
-  .pill-done { background: var(--done); color: white; }
-  .pill-pending { background: var(--pending); color: white; }
 
   /* ── TABLE VIEW ── */
-  #table-view { display: none; overflow-x: auto; }
+  #table-view { overflow-x: auto; }
 
   .filter-row {
     padding: 10px 16px;
@@ -317,7 +348,7 @@
 
   @media (max-width: 420px) {
     .header h1 { font-size: 1.2rem; }
-    .card-name { font-size: 0.9rem; }
+    .item-name { font-size: 0.82rem; }
   }
 </style>
 </head>
@@ -331,18 +362,18 @@
 </div>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('cards', this)">Card View</button>
-  <button class="tab-btn" onclick="switchTab('table', this)">Full Table</button>
+  <button class="tab-btn" id="tab-btn-table" onclick="switchTab('table', this)">Full Table</button>
+  <button class="tab-btn" id="tab-btn-list" onclick="switchTab('list', this)">List View</button>
 </div>
 
-<!-- CARD SORT CONTROLS -->
-<div class="controls" id="card-controls">
+<!-- LIST SORT CONTROLS -->
+<div class="controls" id="list-controls" style="display:none">
   <span class="ctrl-label">Sort:</span>
   <div class="chip-group">
-    <button class="chip active" onclick="sortCards('distance',this)">Distance ↑</button>
-    <button class="chip" onclick="sortCards('difficulty',this)">Difficulty</button>
-    <button class="chip" onclick="sortCards('drive',this)">Drive</button>
-    <button class="chip" onclick="sortCards('number',this)">Hike #</button>
+    <button class="chip active" data-sort="distance" onclick="sortList('distance',this)">🥾 Trail mi</button>
+    <button class="chip" data-sort="drive" onclick="sortList('drive',this)">🚗 Drive mi</button>
+    <button class="chip" data-sort="difficulty" onclick="sortList('difficulty',this)">Difficulty</button>
+    <button class="chip" data-sort="number" onclick="sortList('number',this)">Hike #</button>
   </div>
   <span class="ctrl-label" style="margin-left:4px">Filter:</span>
   <div class="chip-group">
@@ -354,15 +385,15 @@
 </div>
 
 <!-- TABLE CONTROLS -->
-<div class="filter-row" id="table-controls" style="display:none">
+<div class="filter-row" id="table-controls">
   <input type="text" id="table-search" placeholder="Search hike name, town…" oninput="filterTable()">
   <button class="chip active" id="t-sel" onclick="toggleTableFilter(this)">My List Only</button>
   <button class="chip" id="t-waterfall" onclick="toggleTableFilter(this, 'waterfall')">💧 Waterfalls</button>
   <button class="chip" id="t-kids" onclick="toggleTableFilter(this, 'kids')">🧒 Kids</button>
 </div>
 
-<!-- CARD VIEW -->
-<div id="card-view"></div>
+<!-- LIST VIEW -->
+<div id="list-view" style="display:none"></div>
 
 <!-- TABLE VIEW -->
 <div id="table-view">
@@ -372,9 +403,9 @@
         <th onclick="sortTable(0)">#</th>
         <th onclick="sortTable(1)">Hike</th>
         <th onclick="sortTable(2)">Town</th>
-        <th onclick="sortTable(3)">Trail mi</th>
+        <th onclick="sortTable(3)">🥾 Trail mi</th>
         <th onclick="sortTable(4)">Level</th>
-        <th onclick="sortTable(5)">Drive</th>
+        <th onclick="sortTable(5)">🚗 Drive mi</th>
         <th>Tags</th>
         <th onclick="sortTable(7)">Status</th>
       </tr>
@@ -388,6 +419,7 @@
   <div class="legend-item"><div class="legend-dot" style="background:var(--pending)"></div> Planned</div>
   <div class="legend-item"><div class="legend-dot" style="background:#C8C3B8"></div> To-do</div>
   <div class="legend-item">Rating: D=Easy · C=Moderate · B=Hard</div>
+  <div class="legend-item">🥾 Trail mi = hike distance · 🚗 Drive mi = one-way drive from home</div>
 </div>
 
 <script>
@@ -451,6 +483,10 @@ let tableSelectedOnly = true;
 let tableWaterfall = false;
 let tableKids = false;
 
+// List-view interaction state (persists across re-renders)
+let completedExpanded = false;
+const expandedItems = new Set();
+
 function getMiVal(mi) {
   if (typeof mi === 'string') return parseFloat(mi.split('/')[0]);
   return mi;
@@ -461,8 +497,49 @@ function getRatingVal(r) {
   return map[r] || 99;
 }
 
-function renderCards() {
-  const container = document.getElementById('card-view');
+function sortData(data) {
+  const sorted = [...data];
+  if (sortKey === 'distance') sorted.sort((a,b) => getMiVal(a.mi) - getMiVal(b.mi));
+  if (sortKey === 'difficulty') sorted.sort((a,b) => getRatingVal(a.rating) - getRatingVal(b.rating));
+  if (sortKey === 'drive') sorted.sort((a,b) => a.drive - b.drive);
+  if (sortKey === 'number') sorted.sort((a,b) => a.num - b.num);
+  return sorted;
+}
+
+function renderItem(h) {
+  const trailStr = typeof h.mi === 'string' ? h.mi : h.mi.toFixed(1);
+  const ratingLabel = { A:'A · Strenuous', AB:'AB · Hard+', B:'B · Hard', BC:'BC · Mod-Hard', C:'C · Moderate', CD:'CD · Mod+', D:'D · Easy' }[h.rating] || h.rating;
+  const expanded = expandedItems.has(h.num);
+  const statusPill = h.status === 'done'
+    ? `<span class="status-pill pill-done">✓ ${h.date}</span>`
+    : h.status === 'pending'
+    ? `<span class="status-pill pill-pending">⏳ ${h.date}</span>`
+    : '';
+  const icons = [];
+  if (h.waterfall) icons.push('<span class="icon-tag">💧 Waterfall</span>');
+  if (h.kids) icons.push('<span class="icon-tag">🧒 Kid-friendly</span>');
+  if (h.views) icons.push('<span class="icon-tag">🏔 Views</span>');
+
+  return `<div class="hike-item status-${h.status}">
+    <div class="item-row" onclick="toggleItem(${h.num})">
+      <span class="item-num">#${h.num}</span>
+      <span class="item-name">${h.name}</span>
+      <span class="rating-badge rating-${h.rating.replace('/','')}">${h.rating}</span>
+      ${statusPill}
+      <span class="item-dist">🥾 ${trailStr} · 🚗 ${h.drive}</span>
+      <span class="item-caret">${expanded ? '▾' : '▸'}</span>
+    </div>
+    <div class="item-detail" ${expanded ? '' : 'hidden'}>
+      <p class="item-town">${h.town} · <span class="rating-badge rating-${h.rating.replace('/','')}">${ratingLabel}</span></p>
+      <p class="item-dist-full">🥾 Trail: ${trailStr} mi round trip &nbsp;·&nbsp; 🚗 Drive: ~${h.drive} mi one-way from home</p>
+      <p class="item-notes">${h.notes}</p>
+      <div class="card-icons">${icons.join('')}</div>
+    </div>
+  </div>`;
+}
+
+function renderList() {
+  const container = document.getElementById('list-view');
   let data = [...ALL_HIKES];
 
   // Apply filters
@@ -471,44 +548,23 @@ function renderCards() {
   if (activeFilters.kids) data = data.filter(h => h.kids);
   if (activeFilters.views) data = data.filter(h => h.views);
 
-  // Sort
-  if (sortKey === 'distance') data.sort((a,b) => getMiVal(a.mi) - getMiVal(b.mi));
-  if (sortKey === 'difficulty') data.sort((a,b) => getRatingVal(a.rating) - getRatingVal(b.rating));
-  if (sortKey === 'drive') data.sort((a,b) => a.drive - b.drive);
-  if (sortKey === 'number') data.sort((a,b) => a.num - b.num);
+  data = sortData(data);
 
-  // Done always on top within their group
-  const done = data.filter(h => h.status === 'done');
-  const pending = data.filter(h => h.status === 'pending');
-  const todo = data.filter(h => h.status === 'todo');
-  data = [...done, ...pending, ...todo];
+  const completed = data.filter(h => h.status === 'done');
+  const active = data.filter(h => h.status !== 'done');
 
-  container.innerHTML = data.map(h => {
-    const miStr = typeof h.mi === 'string' ? h.mi : h.mi.toFixed(1);
-    const ratingLabel = { A:'A · Strenuous', AB:'AB · Hard+', B:'B · Hard', BC:'BC · Mod-Hard', C:'C · Moderate', CD:'CD · Mod+', D:'D · Easy' }[h.rating] || h.rating;
-    const statusClass = `status-${h.status}`;
-    const statusPill = h.status === 'done'
-      ? `<span class="status-pill pill-done">✓ ${h.date}</span>`
-      : h.status === 'pending'
-      ? `<span class="status-pill pill-pending">⏳ ${h.date}</span>`
-      : '';
-    const icons = [];
-    if (h.waterfall) icons.push('<span class="icon-tag">💧 Waterfall</span>');
-    if (h.kids) icons.push('<span class="icon-tag">🧒 Kid-friendly</span>');
-    if (h.views) icons.push('<span class="icon-tag">🏔 Views</span>');
-
-    return `<div class="hike-card ${statusClass}">
-      <div class="card-num">#${h.num}</div>
-      <div class="card-name">${h.name}</div>
-      <div class="card-meta">${h.town} · <span class="rating-badge rating-${h.rating.replace('/','')}">${ratingLabel}</span></div>
-      <div class="card-icons">${icons.join('')}</div>
-      <div class="card-right">
-        <div class="dist-badge">${miStr} mi</div>
-        <div class="drive-badge">~${h.drive} mi drive</div>
-        ${statusPill}
-      </div>
+  let html = '';
+  if (completed.length) {
+    html += `<div class="group-header" onclick="toggleCompletedGroup()">
+      <span class="group-caret">${completedExpanded ? '▾' : '▸'}</span>
+      <span>✓ Completed (${completed.length})</span>
     </div>`;
-  }).join('');
+    if (completedExpanded) {
+      html += `<div class="group-body">${completed.map(renderItem).join('')}</div>`;
+    }
+  }
+  html += active.map(renderItem).join('');
+  container.innerHTML = html;
 
   // Update progress
   const sel = ALL_HIKES.filter(h => h.selected);
@@ -517,19 +573,27 @@ function renderCards() {
   document.getElementById('prog-fill').style.width = `${doneCount/sel.length*100}%`;
 }
 
-function sortCards(key, btn) {
+function toggleItem(num) {
+  if (expandedItems.has(num)) expandedItems.delete(num);
+  else expandedItems.add(num);
+  renderList();
+}
+
+function toggleCompletedGroup() {
+  completedExpanded = !completedExpanded;
+  renderList();
+}
+
+function sortList(key, btn) {
   sortKey = key;
-  document.querySelectorAll('#card-controls .chip').forEach(c => {
-    if (['distance','difficulty','drive','number'].some(k => c.textContent.toLowerCase().includes(k.split('/')[0]))) c.classList.remove('active');
-  });
-  btn.classList.add('active');
-  renderCards();
+  document.querySelectorAll('#list-controls .chip[data-sort]').forEach(c => c.classList.toggle('active', c === btn));
+  renderList();
 }
 
 function toggleFilter(key, btn) {
   activeFilters[key] = !activeFilters[key];
   btn.classList.toggle('active', activeFilters[key]);
-  renderCards();
+  renderList();
 }
 
 // TABLE
@@ -547,9 +611,9 @@ function renderTable() {
       ? `<span class="status-pill pill-pending" style="font-size:.68rem">⏳ ${h.date}</span>`
       : '—';
     const selMark = h.selected ? '●' : '';
-    return `<tr class="status-${h.status}${h.selected?' sel-row':''}" 
-               data-selected="${h.selected}" 
-               data-waterfall="${h.waterfall}" 
+    return `<tr class="status-${h.status}${h.selected?' sel-row':''}"
+               data-selected="${h.selected}"
+               data-waterfall="${h.waterfall}"
                data-kids="${h.kids}"
                data-num="${h.num}"
                data-name="${h.name.toLowerCase()}"
@@ -607,25 +671,26 @@ function sortTable(colIdx) {
 function switchTab(tab, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  const cv = document.getElementById('card-view');
+  const lv = document.getElementById('list-view');
   const tv = document.getElementById('table-view');
-  const cc = document.getElementById('card-controls');
+  const lc = document.getElementById('list-controls');
   const tc = document.getElementById('table-controls');
-  if (tab === 'cards') {
-    cv.style.display = 'flex'; tv.style.display = 'none';
-    cc.style.display = 'flex'; tc.style.display = 'none';
+  if (tab === 'list') {
+    lv.style.display = 'block'; tv.style.display = 'none';
+    lc.style.display = 'flex'; tc.style.display = 'none';
+    renderList();
   } else {
-    cv.style.display = 'none'; tv.style.display = 'block';
-    cc.style.display = 'none'; tc.style.display = 'flex';
+    lv.style.display = 'none'; tv.style.display = 'block';
+    lc.style.display = 'none'; tc.style.display = 'flex';
     renderTable();
   }
 }
 
-// Init
-renderCards();
-// Set "My List" filter chip active by default
+// Init — Full Table is the default view
 document.getElementById('f-selected').classList.add('active');
 document.getElementById('t-sel').classList.add('active');
+document.getElementById('tab-btn-table').classList.add('active');
+renderTable();
 </script>
 </body>
 </html>
