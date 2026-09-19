@@ -187,11 +187,20 @@ Two tabs: **Work** and **Personal**. Both are hand-edited HTML — do NOT regene
 - `resume-system` *(hidden)* — Résumé System
 - `eb1a` *(hidden)* — EB-1A Green Card toolkit
 - `visa-jobs` *(hidden)* — H1B job finder
+- `tax-filing-system` *(hidden)* — Multi-country tax filing system
+- `equity-comp-history` *(hidden)* — Equity compensation history rebuild
+- `meridian` — Meridian personal finance dashboard (local file, no link)
+- `nadamaya` — Nadamaya, privacy-oriented Granola alternative (nadamaya.lovable.app)
 
 Each card has a **front** (`.card-front`) with `.card-desc` and a **back** (`.card-back`) with `.card-story-text`.
 Story texts are now filled with real content from `personal_projects_stories.txt`.
 To add a new card, copy an existing card block and update the `id`, title, tags, desc, link, and story text.
-The "Show hidden projects (3)" toggle is controlled by `toggleHidden('personal-grid', 'personal-toggle', 3)`.
+The "Show hidden projects (5)" toggle is controlled by `toggleHidden('personal-grid', 'personal-toggle', 5)`.
+
+**Work tab cards** additionally include `internal-link-analyzer`, `competitive-traffic-dashboard`,
+and `dashboard-design-system` — generic, no-link cards genericized from internal work tooling
+(no employer name, park names, or business specifics). A short "Also built" text summary follows
+the Work card grid for broader work not represented as individual cards.
 
 ## index.html structure (hand-edited, do not regenerate)
 

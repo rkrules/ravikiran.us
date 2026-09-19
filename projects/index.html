@@ -165,6 +165,19 @@
         max-width: 580px;
       }
 
+      .also-built {
+        margin: 20px 0 0;
+        padding: 0 0 0 20px;
+        max-width: 680px;
+      }
+
+      .also-built li {
+        font-size: 14px;
+        color: var(--aw-ink-muted);
+        line-height: 1.5;
+        margin-bottom: 8px;
+      }
+
       /* ── Card grid ── */
       .card-grid {
         display: grid;
@@ -579,7 +592,74 @@
             <a class="card-link" href="tools/plu-reference.html">Open reference →</a>
           </div>
 
+          <div class="card" id="internal-link-analyzer">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Internal Linking Analyzer</h3>
+                <div class="card-tags">
+                  <span class="tag amber">AI-assisted</span>
+                  <span class="tag">SEO</span>
+                  <span class="tag">Analytics</span>
+                </div>
+              </div>
+              <button class="card-share-btn" title="Copy link" aria-label="Copy link to Internal Linking Analyzer">⎘</button>
+            </div>
+            <p class="card-desc">Upload a site crawl or Search Console export to visualize internal linking
+              structure — orphaned pages, link depth, and anchor-text patterns across a site.</p>
+          </div>
+
+          <div class="card" id="competitive-traffic-dashboard">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Competitive Traffic Dashboard</h3>
+                <div class="card-tags">
+                  <span class="tag amber">AI-assisted</span>
+                  <span class="tag">Analytics</span>
+                </div>
+              </div>
+              <button class="card-share-btn" title="Copy link" aria-label="Copy link to Competitive Traffic Dashboard">⎘</button>
+            </div>
+            <p class="card-desc">Upload monthly competitive-traffic exports (e.g. Similarweb) to get a by-brand,
+              by-channel year-over-year comparison — traffic share, channel mix trends, and PDF export.</p>
+          </div>
+
+          <div class="card" id="dashboard-design-system">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Dashboard Design System</h3>
+                <div class="card-tags">
+                  <span class="tag amber">AI-assisted</span>
+                  <span class="tag">Design System</span>
+                </div>
+              </div>
+              <button class="card-share-btn" title="Copy link" aria-label="Copy link to Dashboard Design System">⎘</button>
+            </div>
+            <p class="card-desc">A token-based light/dark design system for data dashboards — component library,
+              Excel/PDF export utilities, and file-upload utilities — documented across multiple theme variants and
+              reused across every dashboard I've shipped.</p>
+          </div>
+
         </div>
+
+        <p class="section-intro" style="margin-top: 1.5rem; margin-bottom: 0;">Also built:</p>
+        <ul class="also-built">
+          <li>Automated Python data pipelines against analytics APIs (GA4, Search Console, BigQuery, Ads) that
+            replaced manual weekly spreadsheet builds across a multi-brand analytics practice.</li>
+          <li>BigQuery SQL pipelines for event-level conversion-funnel validation, with automated cross-checks
+            against source dashboards to catch data-quality drift.</li>
+          <li>Interactive Streamlit apps for query-on-demand reporting — snapshot, time-series, and detailed
+            views — in place of static one-off reports.</li>
+          <li>An AI-driven A/B test read-out workflow (significance, lift, ship/no-ship recommendation) pulling
+            live experiment data via API.</li>
+          <li>A voice-of-customer synthesis pipeline that turns survey verbatims into weekly thematic dashboards
+            and alerts.</li>
+          <li>Automated monthly SEO/AEO reporting and slide-deck generation from a single source-of-truth
+            dataset.</li>
+          <li>A library of 20+ custom Claude Code skills that turn raw data drops into finished deliverables —
+            reports, PRDs, decks, and performance-review self-assessments.</li>
+          <li>Roughly 25-30 discrete AI-assisted engineering sessions a week — script automation, data-quality
+            audits, and dashboard builds — logged for volume tracking.</li>
+        </ul>
       </section>
 
       <!-- ── Personal Tab ── -->
@@ -1027,11 +1107,161 @@
             </div>
           </div>
 
+          <div class="card" id="tax-filing-system" data-hidden>
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Multi-country tax filing system</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">Tax</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Multi-country tax filing system">⎘</button>
+              </div>
+              <p class="card-desc">Built a from-scratch system to file US taxes across a genuinely messy year: crypto
+                lending platform bankruptcies (Celsius, BlockFi) needing loss reconstruction from partial
+                distributions, five Indian mutual funds triggering PFIC excess-distribution tax (Form 8621), and FBAR
+                across 14 foreign accounts. Reconciled everything back to primary source documents rather than
+                trusting old spreadsheets.</p>
+              <div class="card-actions">
+                <span></span>
+                <button class="card-story-btn">Story ↩</button>
+              </div>
+            </div>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Multi-country tax filing system</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">This started as "just file the taxes" and turned into an audit. The crypto
+                side was the hardest — Celsius and BlockFi both went bankrupt mid-hold, so I had to trace each
+                distribution across three tax years and figure out what was capital loss versus taxable income, with
+                no clean 1099 to lean on. The Indian mutual fund PFIC rules are brutal on paper (excess-distribution
+                tax reaching back years), so I built out five separate 8621 calculations by hand. Along the way I
+                found that an old legacy spreadsheet had partially fabricated numbers — nobody had ever gone back to
+                the actual brokerage confirms. Rebuilding from primary documents took longer but I trust every number
+                in the filed return now.</p>
+            </div>
+          </div>
+
+          <div class="card" id="equity-comp-history" data-hidden>
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Equity compensation history rebuild</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">Finance</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Equity compensation history rebuild">⎘</button>
+              </div>
+              <p class="card-desc">Reconstructed 15+ years of equity compensation — ESPP purchases, RSU/PSU vesting,
+                and underwater options across two employers — from primary brokerage exports rather than an old
+                summary sheet. Modeled a hypothetical "sell immediately vs. hold" flip strategy against the real
+                trade history to see what each choice actually cost or earned.</p>
+              <div class="card-actions">
+                <span></span>
+                <button class="card-story-btn">Story ↩</button>
+              </div>
+            </div>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Equity compensation history rebuild</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">I'd always assumed I roughly knew my ESPP numbers, until I went looking for
+                the actual purchase confirms and realized the legacy tracking sheet was partly wrong — purchases
+                before a certain date that never happened, discounts miscalculated. So I rebuilt the whole ledger
+                from E*Trade and Merrill exports: 18 ESPP purchases, every RSU and PSU vest, the grants that got
+                cancelled for missed targets, the options that are still underwater. Then I built a parallel "what if
+                I'd flipped every purchase immediately instead of holding" model, just to settle an argument I'd been
+                having with myself for a decade. Turns out holding was the better call, but only barely, and only
+                because of one specific stretch.</p>
+            </div>
+          </div>
+
+          <div class="card" id="meridian">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Meridian — personal finance dashboard</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">Finance</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Meridian">⎘</button>
+              </div>
+              <p class="card-desc">A single-file, offline-first net worth dashboard covering brokerage, retirement,
+                crypto, real estate, and India-side accounts — plus a separate AES-GCM-256 encrypted credential vault.
+                Live prices via a Cloudflare Worker (equities, FX, gold), with a shareable encrypted export for
+                sending a redacted snapshot without exposing cleartext. No backend, no hosting — runs as a local
+                file.</p>
+              <div class="card-actions">
+                <span></span>
+                <button class="card-story-btn">Story ↩</button>
+              </div>
+            </div>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Meridian</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">I wanted one place that actually reflected reality — dollars and rupees,
+                brokerage and crypto and real estate, all reconciled against the real account statements instead of a
+                mental model that was six months stale. It's a single HTML file that opens straight from disk, pulls
+                live prices through a Cloudflare Worker I wrote so it doesn't depend on any paid API, and never
+                touches a server with my actual numbers. The vault next to it is the part I'm most careful about —
+                AES-GCM with a strong KDF, and I made sure the "shareable" export mode strips all the cleartext
+                fields before it ever leaves my machine. It's become the thing I open first when I want to know where
+                things actually stand.</p>
+            </div>
+          </div>
+
+          <div class="card" id="nadamaya">
+            <div class="card-front">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Nadamaya</h3>
+                  <div class="card-tags">
+                    <span class="tag amber">AI-assisted</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">Productivity</span>
+                  </div>
+                </div>
+                <button class="card-share-btn" title="Copy link" aria-label="Copy link to Nadamaya">⎘</button>
+              </div>
+              <p class="card-desc">A privacy-oriented, personal alternative to Granola — meeting notes with saved
+                recordings, multilingual support, translation, and a chat interface to ask questions about past
+                conversations.</p>
+              <div class="card-actions">
+                <a class="card-link" href="https://nadamaya.lovable.app" target="_blank" rel="noopener">Open app →</a>
+                <button class="card-story-btn">Story ↩</button>
+              </div>
+            </div>
+            <div class="card-back">
+              <div class="card-back-header">
+                <h3 class="card-title">Nadamaya</h3>
+                <button class="card-back-close">← Back</button>
+              </div>
+              <p class="card-story-text">I wanted something like the commercial Granola note-taker, but privacy-first
+                and personal — with the recording actually saved (not just thrown away after the transcript), and
+                working across languages instead of just English. What I learned building it: this really wants to
+                be a mobile app, not a web app — recording and being present in a conversation is a phone-in-hand
+                moment, not a browser-tab moment.</p>
+            </div>
+          </div>
+
         </div>
 
         <button class="show-hidden-btn" id="personal-toggle"
-          onclick="toggleHidden('personal-grid', 'personal-toggle', 3)">
-          <span class="icon">○</span> Show hidden projects (3)
+          onclick="toggleHidden('personal-grid', 'personal-toggle', 5)">
+          <span class="icon">○</span> Show hidden projects (5)
         </button>
 
         <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--aw-line);">
