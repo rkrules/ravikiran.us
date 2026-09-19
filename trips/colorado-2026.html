@@ -58,11 +58,12 @@
 
   .tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 18px;
   }
   .tab-btn {
-    flex: 1;
+    flex: 1 1 90px;
     padding: 10px 6px;
     border-radius: 10px;
     border: 1px solid var(--line);
@@ -81,11 +82,62 @@
   .panel { display: none; }
   .panel.active { display: block; }
 
-  #capture-itinerary, #capture-hotels, #capture-details {
+  #capture-recap, #capture-story, #capture-itinerary, #capture-hotels, #capture-details, #capture-compare {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 16px;
     padding: 22px 20px 18px;
+  }
+
+  .cmp-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0 0 16px;
+    line-height: 1.5;
+  }
+  .cmp-key { display: block; margin: 10px 0 3px; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .cmp-list { margin: 0; padding-left: 0; list-style: none; font-size: 13.5px; line-height: 1.5; }
+  .cmp-list li { position: relative; padding-left: 26px; margin-bottom: 5px; }
+  .cmp-list .st { position: absolute; left: 0; top: 0; width: 20px; text-align: center; }
+  .cmp-list li.extra { color: var(--accent); }
+  .cmp-list li.miss { color: var(--tag-s); }
+
+  #capture-story h2 {
+    font-size: 16px;
+    font-weight: 800;
+    margin: 22px 0 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  #capture-story p {
+    font-size: 14px;
+    line-height: 1.62;
+    margin: 0 0 11px;
+  }
+  #story-kn p { line-height: 1.75; }
+
+  .lang-toggle {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .lang-btn {
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .lang-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
   }
 
   .trip-title {
@@ -329,17 +381,315 @@
 <div class="wrap">
 
   <div class="tabs">
-    <button class="tab-btn active" id="tab-btn-itinerary" onclick="showTab('itinerary')">Itinerary</button>
+    <button class="tab-btn active" id="tab-btn-recap" onclick="showTab('recap')">Recap</button>
+    <button class="tab-btn" id="tab-btn-story" onclick="showTab('story')">Story</button>
+    <button class="tab-btn" id="tab-btn-magazine" onclick="showTab('magazine')">Magazine</button>
+    <button class="tab-btn" id="tab-btn-itinerary" onclick="showTab('itinerary')">Plan</button>
     <button class="tab-btn" id="tab-btn-hotels" onclick="showTab('hotels')">Hotels</button>
-    <button class="tab-btn" id="tab-btn-details" onclick="showTab('details')">Details</button>
+    <button class="tab-btn" id="tab-btn-details" onclick="showTab('details')">Detail</button>
+    <button class="tab-btn" id="tab-btn-compare" onclick="showTab('compare')">Plan vs Did</button>
     <button class="tab-btn" id="tab-btn-map" onclick="showTab('map')">Map</button>
   </div>
 
+  <!-- RECAP PANEL (what actually happened — planner's brief) -->
+  <div class="panel active" id="panel-recap">
+    <div id="capture-recap">
+      <p class="trip-title">🏔️ Colorado Road Trip — Recap</p>
+      <p class="trip-sub">Jul 31 – Aug 9, 2026 &middot; what actually worked, and what we'd tell you before you go</p>
+
+      <div class="detail-day">
+        <div class="detail-day-title">The loop</div>
+        <ul class="detail-list">
+          <li>Denver → Boulder → <b>Estes Park / RMNP</b> (3 nights) → <b>Glenwood Springs</b> (2 nights, day trip to Maroon Bells) → <b>Black Canyon of the Gunnison</b> North Rim → Montrose (1 night) → Black Canyon South Rim → <b>Colorado Springs</b> (Pikes Peak, Garden of the Gods) → Denver.</li>
+          <li>~924 miles total (odometer). Longest leg: Black Canyon South Rim → Colorado Springs, ~4.5 hrs.</li>
+          <li>Party: two families traveling loosely together — one grade-schooler, one toddler, two grandparents. Vegetarian/vegan throughout.</li>
+          <li>Peak summer: valleys in the mid-90s&deg;F, cold and windy above treeline.</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">The itinerary that worked</div>
+        <ul class="detail-list">
+          <li><b>Jul 31 (Fri)</b> — Fly into Denver, overnight by the airport. Budget 1.5 hrs for the rental if anything goes sideways.</li>
+          <li><b>Aug 1 (Sat)</b> — Boulder: Chautauqua Park stroll, lunch in town. Then <b>Wild Basin → Calypso Cascades → Ouzel Falls</b>, ~6 mi round trip, ~4 hrs. Too much for an arrival day.</li>
+          <li><b>Aug 2 (Sun)</b> — RMNP: enter before 9am. <b>Sheep Lakes</b> wildlife; drive <b>Old Fall River Road</b> (one-way gravel) with Alluvial Fan &amp; Chasm Falls; <b>Alpine Visitor Center</b> + Alpine Ridge Trail steps. Afternoon: easy ~4 mi toward <b>Cub Lake</b>.</li>
+          <li><b>Aug 3 (Mon)</b> — <b>Bear Lake Corridor: Nymph → Dream → Emerald Lakes</b>, ~3.5 mi round trip, half a day. Marmots &amp; Clark's nutcrackers at Emerald.</li>
+          <li><b>Aug 4 (Tue)</b> — <b>Trail Ridge Road</b> west: Hidden Valley Junior Ranger HQ, <b>Tundra Communities Trail</b> (~1 mi, windy), Milner Pass / Poudre Lake, Kawuneeche Valley. Then ~4 hrs to Glenwood Springs.</li>
+          <li><b>Aug 5 (Wed)</b> — <b>Maroon Bells</b>: shuttle from Aspen, <b>Crater Lake</b> ~3.7 mi round trip, ~4 hrs in the heat. Evening: <b>Iron Mountain Hot Springs</b> in Glenwood — sunset from the pools.</li>
+          <li><b>Aug 6 (Thu)</b> — <b>Black Canyon North Rim</b> (quiet): Balanced Rock / Big Island / Kneeling Camel overlooks; <b>Exclamation Point</b> hike, ~3 mi, flat. On to Montrose.</li>
+          <li><b>Aug 7 (Fri)</b> — <b>Black Canyon South Rim</b>: <b>Warner Point Nature Trail</b> (~1.6 mi) first, then Painted Wall &amp; the scenic-drive overlooks. Long drive to Colorado Springs.</li>
+          <li><b>Aug 8 (Sat)</b> — <b>Garden of the Gods</b> early (before it bakes); <b>Pikes Peak</b> by car in the afternoon on a timed-entry window. Drive back to Denver for the night.</li>
+          <li><b>Aug 9 (Sun)</b> — Drive to Denver, lunch near the airport, fly out (~4:30pm).</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Where we stayed</div>
+        <ul class="detail-list">
+          <li><b>Sleep Inn &amp; Suites Denver Int'l Airport</b> (Jul 31) — fine for a late landing.</li>
+          <li><b>Alpine Trail Ridge Inn</b>, Estes Park (Aug 1–3) — good location near the Beaver Meadows entrance, but cramped rooms and <b>no breakfast</b>; front desk closes at 8pm.</li>
+          <li><b>Silver Spruce Inn</b>, Glenwood Springs (Aug 4–5) — roomier, well kept, good hot breakfast; laundry has limited hours.</li>
+          <li><b>Hampton Inn Montrose</b> (Aug 6) — solid, big breakfast, a pool the kids will use.</li>
+          <li><b>Spark by Hilton Colorado Springs I-25 Central</b> (Aug 7) — newly renovated, comfortable.</li>
+          <li><b>Hyatt House Denver Airport</b> (Aug 8) — kitchenette + swivel TV, the kid-favorite. Puts you back in Denver the night before the flight — plan the ~1 hr evening drive from Colorado Springs.</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Where we ate (veg/vegan-friendly)</div>
+        <ul class="detail-list">
+          <li><b>Boulder</b> — Gurkhas for momos and curries (ask them to go easy on the cream).</li>
+          <li><b>Estes Park</b> — Nepal's Café and India Bites for veg/vegan Nepali &amp; Indian (their naan is often made with egg — ask); La Cocina de Mama for Mexican.</li>
+          <li><b>Paonia</b> (en route to the North Rim) — <b>Clean Kitchen</b> bakery, fresh hand pies; the potato-and-curry "Farmer" is the standout.</li>
+          <li><b>Montrose</b> — <b>Camp Robber</b>, limited but real vegan options.</li>
+          <li><b>Colorado Springs</b> — <b>The Burrowing Owl</b>, fully vegan, good, but loud and crowded at dinner.</li>
+          <li>Order tomorrow's trail lunch (aloo paratha, fried rice, wraps) the night before — in-park food is scarce and slow. Taco Bell is the reliable late-night fallback.</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">What we'd tell you before you go</div>
+        <ul class="detail-list">
+          <li><b>RMNP timed entry.</b> Reservations open <b>7pm the night before</b> on recreation.gov. No reservation? Enter <b>before 9am or after 2pm</b>. A screenshot is all they check. Staying near <b>Beaver Meadows</b> makes the early-entry trick easy. Bring an <b>America the Beautiful</b> pass — it covers every park on this loop.</li>
+          <li><b>Altitude costs you a day or two.</b> Expect nausea, headaches, ear-popping for 2–3 days, especially kids. What helped: a <b>soda with fresh lime and a pinch of salt</b>, eating before pushing on, slowing down. Don't schedule a 6-mile hike at 9,000 ft on arrival day.</li>
+          <li><b>Pack/buy lunches the night before</b>, and grab every hotel breakfast you can.</li>
+          <li><b>Dress for hiking even on "town" days</b> — trail shoes, sun sleeves, hat in the car always.</li>
+          <li><b>Maroon Bells</b> needs a timed parking reservation or the <b>shuttle from Aspen Highlands</b> (easier). Go early — mid-90s by midday — and know Crater Lake can be drought-shrunk in a dry year.</li>
+          <li><b>Black Canyon: one rim per day.</b> The rims are minutes apart across the gorge but <b>2–2.5 hrs</b> by road. North Rim is quiet; South Rim has the famous overlooks.</li>
+          <li><b>Wildfire smoke</b> is a real August risk on the Western Slope — check InciWeb and air quality.</li>
+          <li><b>Pikes Peak by car</b> needs a timed-entry reservation and has a <b>mandatory brake-temp check</b> on the descent — downshift, don't ride the brakes. Acclimatize at the overlooks on the way up.</li>
+          <li><b>Junior Ranger program</b> — the best kid-management tool in the parks; Hidden Valley HQ in RMNP alone is worth an hour or two.</li>
+          <li><b>Hot springs</b> (Iron Mountain or Glenwood) are the right reward after Maroon Bells.</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Packing notes worth stealing</div>
+        <ul class="detail-list">
+          <li>Wide-brim / full-coverage sun hats, full-sleeve sun shirts, a trekking pole, binoculars (lots of wildlife), reusable bottles + ice packs, wet wipes, <b>energy bars (not protein bars)</b>, fruit strips for the kid, a car phone mount, a small daypack, psyllium husk (Isabgol) for road-food stomachs, a collapsible tote for the constant repacking.</li>
+          <li>We left our peanut butter, jams, and sauces at home and missed them all trip — bring the condiments.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="actions"><button class="save-btn" onclick="saveAsImage('capture-recap','colorado-2026-recap.png')">⬇ Save as image</button></div>
+    <div class="brand">ravikiran.us/trips</div>
+  </div>
+
+  <!-- STORY PANEL (narrative) -->
+  <div class="panel" id="panel-story">
+    <div class="lang-toggle">
+      <button id="lang-en" class="lang-btn active" onclick="setStoryLang('en')">English</button>
+      <button id="lang-kn" class="lang-btn" onclick="setStoryLang('kn')">ಕನ್ನಡ</button>
+    </div>
+    <div id="capture-story">
+      <div id="story-en">
+      <p class="trip-title">📖 Ten Days in Colorado</p>
+      <p class="trip-sub">Jul 31 – Aug 9, 2026 &middot; told day by day</p>
+
+      <p>We went to Colorado in the first week of August — Ravi, our daughter Arya, and me — looping out from Denver through Rocky Mountain National Park, down to Glenwood Springs and the Maroon Bells, across to the Black Canyon of the Gunnison, and back up through Pikes Peak and the Garden of the Gods. For much of it we were traveling alongside Ravi's cousin Roshan, his wife Priya, and their fifteen-month-old, Mudita. Ten days, four mountain towns, one rental car that took three tries to get, and more altitude than any of us had reckoned with.</p>
+      <p>The days settled into a rhythm almost at once: drive somewhere high, hike until our legs gave out, find hot food, sleep hard, repeat.</p>
+
+      <h2>Day 1 — Getting there</h2>
+      <p>We left the house on Friday evening and flew out of Hartford, with a change in Chicago, where I lost twenty minutes of my life to the fact that Chicago had quietly become Central time while I wasn't paying attention. The last leg into Denver was so turbulent the crew never got up to serve water. We landed close to midnight.</p>
+      <p>Then the rental. We had booked a mid-size SUV months in advance, and the counter had nothing like it. The agent sent us out to lot 43 for a pickup truck with an open bed; we wanted an enclosed cargo space, so we sent it back. He offered a second truck, also open. On the third try — well past midnight now — he found the mid-size SUV we'd actually reserved, a Jeep Compass, its rear a little small but its back closed. An hour and a half after we'd walked up to the counter, we drove to a hotel by the airport and slept.</p>
+
+      <h2>Day 2 — Boulder and Ouzel Falls</h2>
+      <p>Jet lag woke us at six. The hotel breakfast was genuinely good — bagels, waffles, fruit — and we ate a lot of it, because the plan for the day was gentle: wander Boulder, see Chautauqua Park, maybe an easy hike if there was time.</p>
+      <p>At Chautauqua a pair of cheerful volunteers had set up an old school van with a photo booth, and they waved us up the trail toward the Flatirons, warning us only to keep to the shaded side. We had badly misjudged the grade. Arya was tired within a quarter mile, Ravi was out of breath, I was thirsty; we turned back. On the way down we went looking for a spring someone had mentioned, found nothing, and then discovered it running cold and sweet right at the trailhead, where we drank until we'd had enough. The Flatirons stood out sharp and clear, and the meadow was full of wild pea flowers.</p>
+      <p>Lunch was momos and curries at Gurkhas, a Nepali place in town. Roshan had just landed and told us to keep to our own plan, so in the afternoon we drove into Rocky Mountain National Park to walk the Wild Basin trail — a short one, we thought, out to Calypso Cascades and back.</p>
+      <p>We were dressed for a city afternoon: Arya in shorts, Ravi in a silk shirt, me in a printed dress. Only our shoes were right for what came next. A teenager coming down told us Ouzel Falls, beyond the cascades, was worth the extra distance. Every hiker we passed said we were "almost there." Arya's stomach turned queasy and my head swam whenever I moved quickly — the altitude, somewhere around nine or ten thousand feet. We kept going anyway: past Calypso Cascades and its bridge over the fallen logs, up the last rocky climb, until we reached Ouzel Falls in a fine mist a little after six. Arya, who had complained about every flat step, came alive the moment there were boulders to climb, and posed her father on the biggest one while I took the picture.</p>
+      <p>We ran most of the way down and still needed an hour and a half. Six miles round trip, four hours, on the first real day of the trip. By the time we reached La Cocina de Mama in Estes Park for dinner, Arya was too sick to eat even a chip. The hostess suggested a soda with fresh lime and a pinch of salt for the altitude; Arya took three sips, burped, and was herself again. It became our standard remedy for the rest of the trip.</p>
+
+      <h2>Day 3 — Old Fall River Road and the Alpine tundra</h2>
+      <p>To skip the reservation system you have to reach a park entrance before nine, so we did. Breakfast was pastries and a burrito from a bakery in Estes — Arya found a flaky cinnamon-sugar bun she talked about for days.</p>
+      <p>Near Sheep Lakes we watched a moose and her calf feeding in the shallows, and a volunteer let us pick up a shed elk antler — thirty pounds in one hand — and explained the difference between antlers, which grow and drop every year and carry blood while they do, and the horns of bighorn sheep, which are keratin, like our nails, and stay for life. Arya recited it all back later, word for word.</p>
+      <p>We drove Old Fall River Road, the one-way gravel route, stopping at Alluvial Fan and climbing down and back up the steps at Chasm Falls — a small effort that left us strangely winded at that height. The road tops out at the Alpine Visitor Center, the highest in the country, where we ate vegetarian chili and sweet-potato fries and then climbed the Alpine Ridge Trail steps to have our picture taken at twelve thousand feet, resting every twenty steps. The sky was cloudless and the wind had died.</p>
+      <p>At the visitor center that day Arya sat through a ranger talk on how far to stand from a moose, answered every question, and — with the antler lesson from Sheep Lakes still fresh — finished her Junior Ranger booklet and was sworn in on the spot.</p>
+      <p>Back at the hotel we met Mudita in a good mood and Arya's small cousin, fifteen months old and already an expert at smiling for the camera. In the afternoon everyone piled into one car and we walked a quiet, dry trail toward Cub Lake, turning back after a couple of hours. Priya, who birds whenever she gets the chance, kept finding things in the trees. Dinner was at Nepal's Café, which went out of its way to sort our vegetarian and vegan orders.</p>
+
+      <h2>Day 4 — Nymph, Dream, and Emerald Lakes</h2>
+      <p>This was the classic Bear Lake Corridor hike, and the parking lot lived up to its reputation — full, turning cars away — so we looped back to the Glacier Gorge lot and, with a little patience, found a spot.</p>
+      <p>The trail climbs past Nymph Lake, its surface covered in lily pads, to Dream Lake in about a mile, where we sat for the better part of an hour under the peaks. Emerald Lake is another push up rocky ground to the foot of the mountains, the water a deep still green. We had earned it by the time we got there. A marmot came right up to us, unbothered, and there were Clark's nutcrackers close enough to touch — gray birds with long black bills — working the rocks around where we sat. We stayed an hour, just talking.</p>
+      <p>Going down is always quick. Bear Lake itself is only a few minutes from the car, so we walked out, looked at it, and left. At dinner, at India Bites, we ordered aloo paratha and fried rice packed for the next day's trail lunch, which turned out to be the smartest thing we did all week.</p>
+
+      <h2>Day 5 — Trail Ridge Road to Glenwood Springs</h2>
+      <p>Our last morning in Estes Park we spent on Trail Ridge Road, heading west and down the other side of the divide.</p>
+      <p>At the Hidden Valley Junior Ranger headquarters they handed Arya a pair of binoculars and a set of tasks, and she disappeared happily into the difference between spruce and pine and the proper word for animal droppings, which a junior ranger is required to call "scat." She had been sworn in two days earlier and turned up here as a badge-carrying professional.</p>
+      <p>We walked the Tundra Communities Trail into a fifteen-mile-an-hour wind, among lichens and ground flowers and the rule that nothing up there grows more than a couple of inches tall. We stopped again at the Alpine Visitor Center, then at Poudre Lake on the Continental Divide, where the water held the sky so completely it was hard to leave. Lower down, through the Kawuneeche Valley, we drove through the black skeleton of an old burn, and watched a pika ferrying mouthfuls of grass across the rocks.</p>
+      <p>Then the long drive to Glenwood Springs — four hours, a picnic of leftovers in the car, one good overlook where we watched a freight train wind around the base of a mountain like a slow snake. Arya couldn't spot it until I told her to fix her eyes on one point and wait for the motion. The hotel in Glenwood was a step up: bigger, brighter, a proper breakfast in the morning.</p>
+
+      <h2>Day 6 — Maroon Bells and the hot springs</h2>
+      <p>You reach the Maroon Bells by shuttle from Aspen, and the bus drops you at the trailhead below the peaks. It was ninety-five degrees. We took the obligatory photo at the lake and set off for Crater Lake, and the path, easy at first, turned to rock you had to watch with every step — no looking up at the view while moving. Two hours to cover not much distance.</p>
+      <p>Three fourteen-thousand-foot peaks stand over Crater Lake — Maroon Peak, North Maroon Peak, and Pyramid Peak — and they were worth the walk even though the lake, in a dry summer, had pulled back to a third of its size. We ate our packed lunch while chipmunks made determined runs at it, and Arya, inevitably, put a foot in the water and had to be carried out. Coming down we moved fast — an hour and twenty minutes — and reached the bus stop with our faces burnt, dabbing on aloe.</p>
+      <p>That evening we went to Iron Mountain Hot Springs in Glenwood: a hillside of small pools, each held at a different temperature, from a hundred and eight degrees down to lukewarm, each named for a gemstone. We soaked for two hours and watched the sun go down over the river from the water. It was the best evening of the trip.</p>
+
+      <h2>Day 7 — The Black Canyon, North Rim</h2>
+      <p>The drive to the North Rim of the Black Canyon of the Gunnison goes through Paonia, where we'd meant to catch a Thai food truck that turned out to be closed on Thursdays. Instead we found a bakery called Clean Kitchen, where the cook — from India, and once a resident of Hartford, a few miles from where I'd lived — was rolling out pastry by hand. We bought three of his hand pies: one of local potato with Indian curry spice that tasted like home, one of foraged mushroom, and a bean-and-cheese one that Arya finished before we were back in the car.</p>
+      <p>A wildfire near Lake City had filled the canyon with smoke overnight; we could smell it on the air. The North Rim is the quiet side — a small ranger station staffed by a retired couple volunteering for the summer, who signed Arya's Junior Ranger book and told us about the ages of the rock. We took in the overlooks — Balanced Rock, Big Island, Kneeling Camel — and walked out to Exclamation Point, three flat miles through sagebrush and scrub oak, with Canada jays following along. Then on to Montrose, dinner at a place called Camp Robber, and, at last, an hour in the hotel pool, which was all Arya had wanted for a week.</p>
+
+      <h2>Day 8 — The South Rim, and the drive to Colorado Springs</h2>
+      <p>The South Rim is only a few miles from the North across the gorge, but two and a half hours by road. We did the Warner Point Nature Trail first to leave time for everything else, then worked along the scenic drive — Painted Wall, Rock Point, one overlook after another, each a different angle on the same impossible drop. The nutcrackers were here too.</p>
+      <p>The drive to Colorado Springs is a long one, and the best part of it was a pullout on Highway 50 where a great slab of rock juts out over the valley and you can see, on a clear evening, all the way to the Rockies. Farther on, at golden hour, we watched another train thread the mountains below us. Dinner was at The Burrowing Owl, a vegan restaurant in Colorado Springs decorated with hundreds of little owls — loud, packed, and good. Mudita, who had spent the whole trip wanting only Arya, climbed into my lap there without a fuss, distracted by the owls, and stayed.</p>
+
+      <h2>Day 9 — Garden of the Gods and Pikes Peak</h2>
+      <p>We did the Garden of the Gods early, before the red rock started throwing back heat — the Central Garden loop and out to the Siamese Twins, after a false start or two looking for the right trail, until a passing cyclist pointed us the right way.</p>
+      <p>Pikes Peak you drive, on a timed-entry ticket. The trick is to stop at the overlooks on the way up and let your body catch up with the elevation. We paused at Crystal Creek Reservoir, played an audio tour in the car, and pressed on. Near the top Arya's ears popped and her stomach turned and we very nearly turned around — until we reached the summit, where a slice of cheese pizza and one of the famous high-altitude donuts fixed everything, and she declared it among the best pizzas she had ever eaten. Inside, the exhibits explained that Pike himself never reached this summit, that the people who lived here first called it the mountain of the sun, and that "America the Beautiful" was written from this view. We took a photo at the marker. On a clear day you can see the Garden of the Gods far below.</p>
+      <p>Coming down there is a mandatory stop where a ranger checks your brake temperature — they run hot on that descent — and then we said our goodbyes. Roshan's family stayed in Colorado Springs; we drove back to Denver, stopped for gas and a few last groceries, and spent our final night in a hotel by the airport with a kitchenette and a television that swiveled to face the bed, which Arya considered the height of luxury.</p>
+
+      <h2>Day 10 — Home</h2>
+      <p>Breakfast, the drive to the airport, lunch near the terminal, and an afternoon flight home. Six national-park hikes, one hot spring, one summit, a Junior Ranger badge, and a child who now insists that droppings be called scat.</p>
+
+      <p style="border-top:1px dashed var(--line);padding-top:14px;margin-top:18px;color:var(--muted);font-size:13px;">
+        A moment from the trip, while I was skimming a book —<br>
+        <b>Arya:</b> Do you know you have to read the left page first and then the right page?<br>
+        <b>Me:</b> Do you know I have a Master's?<br>
+        <b>Arya:</b> What does that mean?<br>
+        <b>Me:</b> That I have been reading for more than twenty years.<br>
+        <b>Arya:</b> You still don't know how to read?
+      </p>
+      </div><!-- /story-en -->
+
+      <div id="story-kn" hidden>
+      <p class="trip-title">📖 ಕೊಲೊರಾಡೊದಲ್ಲಿ ಹತ್ತು ದಿನಗಳು</p>
+      <p class="trip-sub">ಜುಲೈ 31 – ಆಗಸ್ಟ್ 9, 2026 &middot; ದಿನದಿನದ ಕಥೆ</p>
+
+      <p>ಆಗಸ್ಟ್‌ನ ಮೊದಲ ವಾರದಲ್ಲಿ ನಾವು ಕೊಲೊರಾಡೊಗೆ ಹೋಗಿದ್ದೆವು — ರವಿ, ನಮ್ಮ ಮಗಳು ಆರ್ಯ, ಮತ್ತು ನಾನು. Denver ನಿಂದ ಹೊರಟು Rocky Mountain National Park ಮೂಲಕ ಸುತ್ತು ಹಾಕಿ, Glenwood Springs ಮತ್ತು Maroon Bells ಕಡೆಗೆ ಇಳಿದು, Black Canyon of the Gunnison ದಾಟಿ, Pikes Peak ಮತ್ತು Garden of the Gods ಮೂಲಕ ಮತ್ತೆ ಮೇಲಕ್ಕೆ ಬಂದೆವು. ಪ್ರಯಾಣದ ಬಹುಪಾಲು ಸಮಯ ರವಿಯ ದಾಯಾದಿ ರೋಶನ್, ಅವನ ಹೆಂಡತಿ ಪ್ರಿಯಾ, ಮತ್ತು ಅವರ ಹದಿನೈದು ತಿಂಗಳ ಮಗಳು ಮುದಿತಾ ಜೊತೆಗಿದ್ದರು. ಹತ್ತು ದಿನ, ನಾಲ್ಕು ಬೆಟ್ಟದ ಊರುಗಳು, ಮೂರು ಬಾರಿ ಪ್ರಯತ್ನಿಸಿ ಕೊನೆಗೂ ಸಿಕ್ಕ ಒಂದು ಬಾಡಿಗೆ ಕಾರು, ಮತ್ತು ನಮ್ಮಲ್ಲಿ ಯಾರೂ ಲೆಕ್ಕ ಹಾಕಿರದಷ್ಟು ಎತ್ತರ.</p>
+      <p>ದಿನಗಳು ಬಹುಬೇಗ ಒಂದು ಲಯಕ್ಕೆ ಹೊಂದಿಕೊಂಡವು: ಎಲ್ಲಾದರೂ ಎತ್ತರದ ಜಾಗಕ್ಕೆ ಕಾರು ಓಡಿಸು, ಕಾಲು ಸೋಲುವವರೆಗೆ ನಡಿಗೆ, ಬಿಸಿ ಊಟ ಹುಡುಕು, ಗಾಢ ನಿದ್ರೆ, ಮತ್ತೆ ಪುನರಾವರ್ತನೆ.</p>
+
+      <h2>ದಿನ 1 — ಅಲ್ಲಿಗೆ ತಲುಪುವುದು</h2>
+      <p>ಶುಕ್ರವಾರ ಸಂಜೆ ಮನೆಯಿಂದ ಹೊರಟು Hartford ನಿಂದ ವಿಮಾನ ಹತ್ತಿದೆವು; Chicago ದಲ್ಲಿ ವಿಮಾನ ಬದಲಾವಣೆ. Chicago ಸದ್ದಿಲ್ಲದೆ Central time ಗೆ ಬದಲಾಗಿಬಿಟ್ಟಿತ್ತು ಎಂಬುದನ್ನು ನಾನು ಗಮನಿಸದೇ ಇಪ್ಪತ್ತು ನಿಮಿಷ ಕಳೆದುಕೊಂಡೆ. Denver ಗೆ ಬಂದ ಕೊನೆಯ ಹಂತ ಎಷ್ಟು ಅಲುಗಾಟದಿಂದ ಕೂಡಿತ್ತೆಂದರೆ ಸಿಬ್ಬಂದಿ ಎದ್ದು ನೀರೂ ಕೊಡಲಾಗಲಿಲ್ಲ. ಬಹುತೇಕ ಮಧ್ಯರಾತ್ರಿಗೆ ನಾವು ಇಳಿದೆವು.</p>
+      <p>ಆಮೇಲೆ ಬಾಡಿಗೆ ಕಾರಿನ ಸರದಿ. ತಿಂಗಳುಗಳ ಮೊದಲೇ ಒಂದು ಮಧ್ಯಮ ಗಾತ್ರದ SUV ಕಾಯ್ದಿರಿಸಿದ್ದೆವು, ಆದರೆ ಕೌಂಟರ್‌ನಲ್ಲಿ ಅಂಥದ್ದೇನೂ ಇರಲಿಲ್ಲ. ಆ ವ್ಯಕ್ತಿ ನಮ್ಮನ್ನು lot 43 ಗೆ ಕಳಿಸಿ ತೆರೆದ ಹಿಂಭಾಗದ ಒಂದು ಪಿಕಪ್ ಟ್ರಕ್ ತೋರಿಸಿದ; ನಮಗೆ ಮುಚ್ಚಿದ ಸಾಮಾನು ಜಾಗ ಬೇಕಿತ್ತು, ಹಾಗಾಗಿ ಅದನ್ನು ವಾಪಸ್ ಕಳಿಸಿದೆವು. ಅವನು ಎರಡನೇ ಟ್ರಕ್ ತೋರಿಸಿದ, ಅದೂ ತೆರೆದದ್ದೇ. ಮೂರನೇ ಪ್ರಯತ್ನದಲ್ಲಿ — ಆಗಾಗಲೇ ಮಧ್ಯರಾತ್ರಿ ದಾಟಿತ್ತು — ನಾವು ನಿಜವಾಗಿ ಕಾಯ್ದಿರಿಸಿದ್ದ ಮಧ್ಯಮ ಗಾತ್ರದ SUV, ಒಂದು Jeep Compass, ಅವನಿಗೆ ಸಿಕ್ಕಿತು; ಹಿಂಭಾಗ ಸ್ವಲ್ಪ ಚಿಕ್ಕದಾದರೂ ಮುಚ್ಚಿತ್ತು. ಕೌಂಟರ್‌ಗೆ ಬಂದ ಒಂದೂವರೆ ಗಂಟೆಯ ನಂತರ ವಿಮಾನ ನಿಲ್ದಾಣದ ಬಳಿಯ ಒಂದು ಹೋಟೆಲಿಗೆ ಹೋಗಿ ಮಲಗಿದೆವು.</p>
+
+      <h2>ದಿನ 2 — Boulder ಮತ್ತು Ouzel Falls</h2>
+      <p>ಜೆಟ್ ಲ್ಯಾಗ್‌ನಿಂದ ಆರು ಗಂಟೆಗೆ ಎಚ್ಚರವಾಯಿತು. ಹೋಟೆಲಿನ ಬೆಳಗಿನ ತಿಂಡಿ ನಿಜಕ್ಕೂ ಚೆನ್ನಾಗಿತ್ತು — bagel, waffle, ಹಣ್ಣು — ಮತ್ತು ನಾವು ಸಾಕಷ್ಟು ತಿಂದೆವು, ಏಕೆಂದರೆ ಆ ದಿನದ ಯೋಜನೆ ಸೌಮ್ಯವಾಗಿತ್ತು: Boulder ಸುತ್ತಾಟ, Chautauqua Park ನೋಡುವುದು, ಸಮಯವಿದ್ದರೆ ಒಂದು ಸುಲಭದ ನಡಿಗೆ.</p>
+      <p>Chautauqua ದಲ್ಲಿ ಇಬ್ಬರು ಉತ್ಸಾಹೀ ಸ್ವಯಂಸೇವಕರು ಒಂದು ಹಳೆಯ ಶಾಲಾ ವ್ಯಾನ್‌ನಲ್ಲಿ ಫೋಟೊ ಬೂತ್ ಇಟ್ಟಿದ್ದರು; ಅವರು ನಮ್ಮನ್ನು Flatirons ಕಡೆಗಿನ ಹಾದಿಯಲ್ಲಿ ಮೇಲಕ್ಕೆ ಕಳಿಸಿ, ನೆರಳಿನ ಬದಿಯಲ್ಲೇ ಇರಿ ಎಂದಷ್ಟೇ ಎಚ್ಚರಿಸಿದರು. ಇಳಿಜಾರಿನ ಕಡಿದುತನವನ್ನು ನಾವು ತೀರಾ ತಪ್ಪಾಗಿ ಅಂದಾಜಿಸಿದ್ದೆವು. ಕಾಲು ಮೈಲಿ ಆಗುವಷ್ಟರಲ್ಲಿ ಆರ್ಯ ಸುಸ್ತಾದಳು, ರವಿಗೆ ಏದುಸಿರು ಬಂತು, ನನಗೆ ಬಾಯಾರಿಕೆ; ನಾವು ಹಿಂತಿರುಗಿದೆವು. ಇಳಿಯುತ್ತಿರುವಾಗ, ಯಾರೋ ಹೇಳಿದ್ದ ಒಂದು ಒರತೆಯನ್ನು ಹುಡುಕಿದೆವು, ಸಿಗಲಿಲ್ಲ; ಕೊನೆಗೆ ಅದು ಹಾದಿಯ ಮೊದಲಿಗೇ ತಣ್ಣಗೆ, ಸಿಹಿಯಾಗಿ ಹರಿಯುತ್ತಿರುವುದನ್ನು ಕಂಡು ತೃಪ್ತಿಯಾಗುವಷ್ಟು ಕುಡಿದೆವು. Flatirons ಸ್ಪಷ್ಟವಾಗಿ, ಚೂಪಾಗಿ ಎದ್ದು ಕಾಣುತ್ತಿತ್ತು, ಮತ್ತು ಹುಲ್ಲುಗಾವಲು ಕಾಡುಬಟಾಣಿ ಹೂವುಗಳಿಂದ ತುಂಬಿತ್ತು.</p>
+      <p>ಊಟ Gurkhas ಎಂಬ ಊರಿನ ನೇಪಾಳಿ ಹೋಟೆಲಿನಲ್ಲಿ — momo ಮತ್ತು ಕರಿಗಳು. ರೋಶನ್ ಆಗಷ್ಟೇ ವಿಮಾನದಿಂದ ಇಳಿದಿದ್ದ, ನಮ್ಮ ಯೋಜನೆಯಂತೆ ನಾವು ಮುಂದುವರಿಯಿರಿ ಎಂದ. ಹಾಗಾಗಿ ಮಧ್ಯಾಹ್ನ ನಾವು Rocky Mountain National Park ಒಳಗೆ ಕಾರು ಓಡಿಸಿ Wild Basin ಹಾದಿಗೆ ಹೋದೆವು — Calypso Cascades ವರೆಗೆ ಹೋಗಿ ಹಿಂತಿರುಗುವ ಚಿಕ್ಕ ನಡಿಗೆ ಎಂದುಕೊಂಡಿದ್ದೆವು.</p>
+      <p>ನಾವು ಊರಿನ ಮಧ್ಯಾಹ್ನಕ್ಕೆ ತಕ್ಕಂತೆ ಉಡುಪು ಧರಿಸಿದ್ದೆವು: ಆರ್ಯ ಚಡ್ಡಿಯಲ್ಲಿ, ರವಿ ರೇಷ್ಮೆ ಅಂಗಿಯಲ್ಲಿ, ನಾನು ಚಿತ್ರಮುದ್ರಿತ ಉಡುಗೆಯಲ್ಲಿ. ಮುಂದೆ ಬಂದದ್ದಕ್ಕೆ ನಮ್ಮ ಶೂಗಳಷ್ಟೇ ಸರಿ ಇದ್ದವು. ಇಳಿದು ಬರುತ್ತಿದ್ದ ಒಬ್ಬ ಹದಿಹರೆಯದವ, cascades ಆಚೆಗಿನ Ouzel Falls ಹೆಚ್ಚಿನ ದೂರಕ್ಕೆ ಯೋಗ್ಯ ಎಂದ. ದಾಟಿ ಹೋದ ಪ್ರತಿಯೊಬ್ಬ ನಡಿಗೆದಾರರೂ "ಹತ್ತಿರವೇ ಇದೆ" ಎಂದರು. ಬೇಗ ಬೇಗ ಚಲಿಸಿದಾಗಲೆಲ್ಲ ಆರ್ಯಳ ಹೊಟ್ಟೆ ತೊಳಸಿತು, ನನ್ನ ತಲೆ ಗಿರಗಿರ ಸುತ್ತಿತು — ಎತ್ತರ, ಸುಮಾರು ಒಂಬತ್ತು-ಹತ್ತು ಸಾವಿರ ಅಡಿ. ಆದರೂ ನಾವು ಮುಂದುವರಿದೆವು: Calypso Cascades ಮತ್ತು ಅದರ ಬಿದ್ದ ಮರಗಳ ಮೇಲಿನ ಸೇತುವೆ ದಾಟಿ, ಕೊನೆಯ ಕಲ್ಲಿನ ಏರಿಕೆ ಹತ್ತಿ, ಆರು ಗಂಟೆ ಸ್ವಲ್ಪ ಕಳೆದ ಮೇಲೆ ತೆಳು ತುಂತುರಿನ ನಡುವೆ Ouzel Falls ತಲುಪಿದೆವು. ಪ್ರತಿ ಸಮತಟ್ಟು ಹೆಜ್ಜೆಗೂ ದೂರಿದ್ದ ಆರ್ಯ, ಹತ್ತಲು ಬಂಡೆಗಳಿದ್ದ ಕ್ಷಣ ಚೈತನ್ಯದಿಂದ ತುಂಬಿಕೊಂಡಳು; ದೊಡ್ಡ ಬಂಡೆಯ ಮೇಲೆ ತನ್ನ ಅಪ್ಪನನ್ನು ನಿಲ್ಲಿಸಿ ಭಂಗಿ ಕೊಡಿಸಿದಳು, ನಾನು ಫೋಟೊ ತೆಗೆದೆ.</p>
+      <p>ಇಳಿಯುವಾಗ ಬಹುಪಾಲು ಓಡಿದೆವು, ಆದರೂ ಒಂದೂವರೆ ಗಂಟೆ ಬೇಕಾಯಿತು. ಆರು ಮೈಲಿ ಸುತ್ತು, ನಾಲ್ಕು ಗಂಟೆ — ಪ್ರವಾಸದ ಮೊದಲ ನಿಜವಾದ ದಿನ. Estes Park ನಲ್ಲಿ La Cocina de Mama ಗೆ ಊಟಕ್ಕೆ ತಲುಪುವಷ್ಟರಲ್ಲಿ ಆರ್ಯ ಒಂದು chip ತಿನ್ನಲಾಗದಷ್ಟು ಅಸ್ವಸ್ಥಳಾಗಿದ್ದಳು. ಎತ್ತರದ ಸಮಸ್ಯೆಗೆ ತಾಜಾ ನಿಂಬೆ ಮತ್ತು ಚಿಟಿಕೆ ಉಪ್ಪು ಹಾಕಿದ soda ಕುಡಿಯಲು ಹೋಟೆಲಿನ ಆತಿಥೇಯಳು ಸೂಚಿಸಿದಳು; ಆರ್ಯ ಮೂರು ಗುಟುಕು ಕುಡಿದು, ತೇಗು ಬಂದು, ಮತ್ತೆ ಮೊದಲಿನಂತಾದಳು. ಉಳಿದ ಪ್ರವಾಸದುದ್ದಕ್ಕೂ ಇದೇ ನಮ್ಮ ಮದ್ದಾಯಿತು.</p>
+
+      <h2>ದಿನ 3 — Old Fall River Road ಮತ್ತು ಆಲ್ಪೈನ್ ಟಂಡ್ರಾ</h2>
+      <p>ಕಾಯ್ದಿರಿಸುವ ವ್ಯವಸ್ಥೆಯನ್ನು ತಪ್ಪಿಸಬೇಕಾದರೆ ಒಂಬತ್ತು ಗಂಟೆಗೆ ಮೊದಲೇ ಉದ್ಯಾನದ ಪ್ರವೇಶ ದ್ವಾರ ತಲುಪಬೇಕು; ಹಾಗೇ ಮಾಡಿದೆವು. ಬೆಳಗಿನ ತಿಂಡಿ Estes ನ ಒಂದು ಬೇಕರಿಯ pastry ಮತ್ತು burrito — ಆರ್ಯಗೆ ಒಂದು ಪದರಪದರದ ದಾಲ್ಚಿನ್ನಿ-ಸಕ್ಕರೆ bun ಸಿಕ್ಕಿತು, ಅದರ ಬಗ್ಗೆ ದಿನಗಟ್ಟಲೆ ಮಾತಾಡಿದಳು.</p>
+      <p>Sheep Lakes ಬಳಿ ಒಂದು moose ಮತ್ತು ಅದರ ಕರು ನೀರಿನ ಅಂಚಿನಲ್ಲಿ ಮೇಯುತ್ತಿರುವುದನ್ನು ನೋಡಿದೆವು; ಒಬ್ಬ ಸ್ವಯಂಸೇವಕ ನಮಗೆ ಉದುರಿದ ಒಂದು elk ಕೊಂಬು ಎತ್ತಿ ಹಿಡಿಯಲು ಕೊಟ್ಟ — ಒಂದೇ ಕೈಯಲ್ಲಿ ಮೂವತ್ತು ಪೌಂಡ್ — ಮತ್ತು antler ಗೂ (ಪ್ರತಿ ವರ್ಷ ಬೆಳೆದು ಉದುರುತ್ತವೆ, ಬೆಳೆಯುವಾಗ ಅವುಗಳಲ್ಲಿ ರಕ್ತ ಹರಿಯುತ್ತದೆ) bighorn ಕುರಿಯ ಕೊಂಬಿಗೂ (ನಮ್ಮ ಉಗುರಿನಂತೆ keratin, ಜೀವಪೂರ್ತಿ ಇರುತ್ತವೆ) ಇರುವ ವ್ಯತ್ಯಾಸವನ್ನು ವಿವರಿಸಿದ. ಆರ್ಯ ಆಮೇಲೆ ಅದನ್ನೆಲ್ಲ ಅಕ್ಷರಶಃ ಒಪ್ಪಿಸಿದಳು.</p>
+      <p>Old Fall River Road — ಏಕಮುಖ ಜಲ್ಲಿ ರಸ್ತೆ — ದಲ್ಲಿ ಕಾರು ಓಡಿಸಿ, Alluvial Fan ನಲ್ಲಿ ನಿಂತು, Chasm Falls ನ ಮೆಟ್ಟಿಲುಗಳನ್ನು ಇಳಿದು ಮತ್ತೆ ಹತ್ತಿದೆವು — ಆ ಎತ್ತರದಲ್ಲಿ ಇಷ್ಟು ಚಿಕ್ಕ ಶ್ರಮವೂ ಉಸಿರುಗಟ್ಟಿಸಿತು. ರಸ್ತೆ ದೇಶದ ಅತಿ ಎತ್ತರದ Alpine Visitor Center ನಲ್ಲಿ ಕೊನೆಗೊಳ್ಳುತ್ತದೆ; ಅಲ್ಲಿ ನಾವು ಸಸ್ಯಾಹಾರಿ chili ಮತ್ತು ಸಿಹಿಗೆಣಸಿನ fries ತಿಂದೆವು, ನಂತರ ಪ್ರತಿ ಇಪ್ಪತ್ತು ಹೆಜ್ಜೆಗೂ ವಿಶ್ರಮಿಸುತ್ತ Alpine Ridge Trail ನ ಮೆಟ್ಟಿಲು ಹತ್ತಿ ಹನ್ನೆರಡು ಸಾವಿರ ಅಡಿ ಎತ್ತರದಲ್ಲಿ ಫೋಟೊ ತೆಗೆಸಿಕೊಂಡೆವು. ಆಕಾಶ ಮೋಡವಿಲ್ಲದೆ ತಿಳಿಯಾಗಿತ್ತು, ಗಾಳಿ ನಿಂತಿತ್ತು.</p>
+      <p>ಅದೇ ದಿನ visitor center ನಲ್ಲಿ ಆರ್ಯ, moose ನಿಂದ ಎಷ್ಟು ದೂರ ನಿಲ್ಲಬೇಕು ಎಂಬ ranger ಮಾತುಕತೆ ಕೇಳಿ, ಪ್ರತಿ ಪ್ರಶ್ನೆಗೂ ಉತ್ತರಿಸಿ — Sheep Lakes ನ antler ಪಾಠ ಇನ್ನೂ ತಾಜಾ ಇದ್ದದ್ದರಿಂದ — ತನ್ನ Junior Ranger ಪುಸ್ತಿಕೆ ಮುಗಿಸಿ ಅಲ್ಲೇ ಪ್ರಮಾಣವಚನ ಸ್ವೀಕರಿಸಿದಳು.</p>
+      <p>ಹೋಟೆಲಿಗೆ ಹಿಂತಿರುಗಿದಾಗ ಮುದಿತಾ ಒಳ್ಳೆಯ ಮನಸ್ಥಿತಿಯಲ್ಲಿದ್ದಳು; ಆರ್ಯಳ ಚಿಕ್ಕ ಸೋದರಸಂಬಂಧಿ, ಹದಿನೈದು ತಿಂಗಳಿನವಳು, ಆಗಲೇ ಕ್ಯಾಮೆರಾಗೆ ನಗುವುದರಲ್ಲಿ ಪರಿಣತೆ. ಮಧ್ಯಾಹ್ನ ಎಲ್ಲರೂ ಒಂದೇ ಕಾರಿನಲ್ಲಿ ಹೊರಟು Cub Lake ಕಡೆಗಿನ ಶಾಂತ, ಒಣ ಹಾದಿಯಲ್ಲಿ ನಡೆದೆವು, ಒಂದೆರಡು ಗಂಟೆಯ ನಂತರ ಹಿಂತಿರುಗಿದೆವು. ಸಮಯ ಸಿಕ್ಕಾಗಲೆಲ್ಲ ಹಕ್ಕಿ ವೀಕ್ಷಣೆ ಮಾಡುವ ಪ್ರಿಯಾ, ಮರಗಳಲ್ಲಿ ಏನಾದರೊಂದನ್ನು ಕಂಡುಹಿಡಿಯುತ್ತಲೇ ಇದ್ದಳು. ಊಟ Nepal's Café ನಲ್ಲಿ — ಅವರು ನಮ್ಮ ಸಸ್ಯಾಹಾರಿ ಮತ್ತು vegan ಆರ್ಡರ್‌ಗಳನ್ನು ಬಹಳ ಕಾಳಜಿಯಿಂದ ನಿಭಾಯಿಸಿದರು.</p>
+
+      <h2>ದಿನ 4 — Nymph, Dream, ಮತ್ತು Emerald Lakes</h2>
+      <p>ಇದು ಪ್ರಸಿದ್ಧ Bear Lake Corridor ನಡಿಗೆ, ಮತ್ತು parking lot ತನ್ನ ಕುಖ್ಯಾತಿಗೆ ತಕ್ಕಂತೆ ಇತ್ತು — ತುಂಬಿ, ಕಾರುಗಳನ್ನು ವಾಪಸ್ ಕಳಿಸುತ್ತಿತ್ತು — ಹಾಗಾಗಿ ನಾವು Glacier Gorge lot ಗೆ ಸುತ್ತು ಹಾಕಿ, ಸ್ವಲ್ಪ ತಾಳ್ಮೆಯಿಂದ ಒಂದು ಜಾಗ ಪಡೆದೆವು.</p>
+      <p>ಹಾದಿ Nymph Lake ದಾಟಿ — ಅದರ ಮೇಲ್ಮೈ ತಾವರೆ ಎಲೆಗಳಿಂದ ಮುಚ್ಚಿತ್ತು — ಸುಮಾರು ಒಂದು ಮೈಲಿಯಲ್ಲಿ Dream Lake ಗೆ ಏರುತ್ತದೆ; ಅಲ್ಲಿ ಶಿಖರಗಳ ಕೆಳಗೆ ನಾವು ಬಹುತೇಕ ಒಂದು ಗಂಟೆ ಕುಳಿತೆವು. Emerald Lake ಗೆ ಮತ್ತೊಂದು ಕಲ್ಲಿನ ಏರಿಕೆ, ಬೆಟ್ಟಗಳ ಬುಡದವರೆಗೆ; ನೀರು ಆಳವಾದ, ನಿಶ್ಚಲ ಹಸಿರು. ತಲುಪುವಷ್ಟರಲ್ಲಿ ಅದನ್ನು ನಾವು ಸಂಪಾದಿಸಿಕೊಂಡಿದ್ದೆವು. ಒಂದು marmot ಹೆದರದೆ ನೇರವಾಗಿ ನಮ್ಮ ಬಳಿ ಬಂತು; ಮುಟ್ಟುವಷ್ಟು ಹತ್ತಿರ Clark's nutcracker ಹಕ್ಕಿಗಳು — ಉದ್ದ ಕಪ್ಪು ಕೊಕ್ಕಿನ ಬೂದು ಹಕ್ಕಿಗಳು — ನಾವು ಕುಳಿತಲ್ಲಿನ ಕಲ್ಲುಗಳ ಸುತ್ತ ಓಡಾಡುತ್ತಿದ್ದವು. ಒಂದು ಗಂಟೆ ಬರೀ ಮಾತಾಡುತ್ತ ಕುಳಿತೆವು.</p>
+      <p>ಇಳಿಯುವುದು ಯಾವಾಗಲೂ ಬೇಗ. Bear Lake ಕಾರಿನಿಂದ ಕೆಲವೇ ನಿಮಿಷಗಳ ದೂರ, ಹಾಗಾಗಿ ನಡೆದು ಹೋಗಿ, ನೋಡಿ, ಹೊರಟೆವು. ಊಟಕ್ಕೆ, India Bites ನಲ್ಲಿ, ಮರುದಿನದ ಹಾದಿ-ಊಟಕ್ಕೆ aloo paratha ಮತ್ತು fried rice ಕಟ್ಟಿಸಿಕೊಂಡೆವು — ಇಡೀ ವಾರದ ನಮ್ಮ ಜಾಣ ನಿರ್ಧಾರ ಅದೇ ಆಯಿತು.</p>
+
+      <h2>ದಿನ 5 — Trail Ridge Road ಮೂಲಕ Glenwood Springs ಗೆ</h2>
+      <p>Estes Park ನ ನಮ್ಮ ಕೊನೆಯ ಬೆಳಗನ್ನು Trail Ridge Road ನಲ್ಲಿ ಕಳೆದೆವು, ಪಶ್ಚಿಮಕ್ಕೆ ಸಾಗಿ ಜಲವಿಭಜಕದ ಆಚೆ ಬದಿಗೆ ಇಳಿದೆವು.</p>
+      <p>Hidden Valley Junior Ranger ಕೇಂದ್ರದಲ್ಲಿ ಆರ್ಯಗೆ ಒಂದು ಜೊತೆ binoculars ಮತ್ತು ಕೆಲಸಗಳ ಪಟ್ಟಿ ಕೊಟ್ಟರು; ಅವಳು spruce ಮತ್ತು pine ನಡುವಿನ ವ್ಯತ್ಯಾಸದಲ್ಲೂ, ಪ್ರಾಣಿಗಳ ಹಿಕ್ಕೆಗೆ junior ranger ಬಳಸಬೇಕಾದ ಸರಿಯಾದ ಪದ "scat" ಎಂಬುದರಲ್ಲೂ ಸಂತೋಷದಿಂದ ಮುಳುಗಿಹೋದಳು. ಎರಡು ದಿನಗಳ ಮೊದಲೇ ಪ್ರಮಾಣವಚನ ಸ್ವೀಕರಿಸಿದ್ದ ಅವಳು ಇಲ್ಲಿ ಬ್ಯಾಡ್ಜ್ ಹೊತ್ತ ವೃತ್ತಿಪರಳಾಗಿ ಬಂದಿದ್ದಳು.</p>
+      <p>ಗಂಟೆಗೆ ಹದಿನೈದು ಮೈಲಿ ವೇಗದ ಗಾಳಿಯೊಳಗೆ Tundra Communities Trail ನಲ್ಲಿ ನಡೆದೆವು — lichen ಗಳ, ನೆಲದ ಹೂವುಗಳ ನಡುವೆ, ಮತ್ತು ಅಲ್ಲಿ ಯಾವುದೂ ಒಂದೆರಡು ಇಂಚಿಗಿಂತ ಎತ್ತರ ಬೆಳೆಯುವುದಿಲ್ಲ ಎಂಬ ನಿಯಮದ ನಡುವೆ. ಮತ್ತೆ Alpine Visitor Center ನಲ್ಲಿ, ನಂತರ Continental Divide ಮೇಲಿನ Poudre Lake ನಲ್ಲಿ ನಿಂತೆವು — ನೀರು ಆಕಾಶವನ್ನು ಅಷ್ಟು ಪೂರ್ಣವಾಗಿ ಹಿಡಿದಿಟ್ಟುಕೊಂಡಿತ್ತು, ಬಿಟ್ಟು ಹೋಗುವುದೇ ಕಷ್ಟವಾಯಿತು. ಕೆಳಗೆ, Kawuneeche Valley ಮೂಲಕ, ಹಳೆಯ ಬೆಂಕಿಯ ಕಪ್ಪು ಅಸ್ಥಿಪಂಜರದ ನಡುವೆ ಕಾರು ಓಡಿಸಿದೆವು; ಒಂದು pika ಕಲ್ಲುಗಳ ಮೇಲೆ ಬಾಯಿತುಂಬ ಹುಲ್ಲು ಸಾಗಿಸುತ್ತಿರುವುದನ್ನು ನೋಡಿದೆವು.</p>
+      <p>ಆಮೇಲೆ Glenwood Springs ಗೆ ಉದ್ದದ ಪ್ರಯಾಣ — ನಾಲ್ಕು ಗಂಟೆ, ಕಾರಿನಲ್ಲೇ ಉಳಿದ ಆಹಾರದ picnic, ಒಂದು ಒಳ್ಳೆಯ overlook ನಲ್ಲಿ ಒಂದು ಸರಕು ರೈಲು ನಿಧಾನ ಹಾವಿನಂತೆ ಬೆಟ್ಟದ ಬುಡವನ್ನು ಸುತ್ತುವುದನ್ನು ನೋಡಿದೆವು. "ಒಂದೇ ಬಿಂದುವಿನ ಮೇಲೆ ಕಣ್ಣಿಟ್ಟು ಚಲನೆಗಾಗಿ ಕಾಯಿ" ಎಂದು ಹೇಳುವವರೆಗೆ ಆರ್ಯಗೆ ಅದು ಕಾಣಲಿಲ್ಲ. Glenwood ನ ಹೋಟೆಲ್ ಒಂದು ಹೆಜ್ಜೆ ಮೇಲಿತ್ತು: ದೊಡ್ಡದು, ಪ್ರಕಾಶಮಾನ, ಬೆಳಿಗ್ಗೆ ಸರಿಯಾದ ತಿಂಡಿ.</p>
+
+      <h2>ದಿನ 6 — Maroon Bells ಮತ್ತು ಬಿಸಿನೀರ ಬುಗ್ಗೆಗಳು</h2>
+      <p>Maroon Bells ಗೆ Aspen ನಿಂದ shuttle ಮೂಲಕ ಹೋಗಬೇಕು; ಬಸ್ ನಿಮ್ಮನ್ನು ಶಿಖರಗಳ ಕೆಳಗಿನ trailhead ನಲ್ಲಿ ಇಳಿಸುತ್ತದೆ. ತೊಂಬತ್ತೈದು ಡಿಗ್ರಿ ಸೆಕೆ. ಸರೋವರದ ಬಳಿ ಕಡ್ಡಾಯದ ಫೋಟೊ ತೆಗೆದು Crater Lake ಕಡೆಗೆ ಹೊರಟೆವು; ಮೊದಲಿಗೆ ಸುಲಭವಾಗಿದ್ದ ಹಾದಿ, ಪ್ರತಿ ಹೆಜ್ಜೆಯನ್ನೂ ಗಮನಿಸಬೇಕಾದ ಕಲ್ಲಾಗಿ ಬದಲಾಯಿತು — ನಡೆಯುತ್ತ ದೃಶ್ಯ ನೋಡುವಂತಿಲ್ಲ. ಹೆಚ್ಚು ದೂರ ಸಾಗದೇ ಎರಡು ಗಂಟೆ.</p>
+      <p>Crater Lake ಮೇಲೆ ಹದಿನಾಲ್ಕು ಸಾವಿರ ಅಡಿಯ ಮೂರು ಶಿಖರಗಳು ನಿಂತಿವೆ — Maroon Peak, North Maroon Peak, ಮತ್ತು Pyramid Peak — ಮತ್ತು ಒಣ ಬೇಸಿಗೆಯಲ್ಲಿ ಸರೋವರ ತನ್ನ ಗಾತ್ರದ ಮೂರನೇ ಒಂದು ಭಾಗಕ್ಕೆ ಕುಗ್ಗಿದ್ದರೂ ಆ ನಡಿಗೆ ಯೋಗ್ಯವಾಗಿತ್ತು. ಕಟ್ಟಿಕೊಂಡ ಊಟ ತಿನ್ನುತ್ತಿದ್ದಾಗ chipmunk ಗಳು ಅದರ ಮೇಲೆ ದಾಳಿ ಇಡುತ್ತಿದ್ದವು; ಆರ್ಯ, ಎಂದಿನಂತೆ, ಒಂದು ಕಾಲನ್ನು ನೀರಿನಲ್ಲಿ ಇಟ್ಟು, ನಾವು ಅವಳನ್ನು ಎತ್ತಿಕೊಂಡು ಹೊರತರಬೇಕಾಯಿತು. ಇಳಿಯುವಾಗ ವೇಗವಾಗಿ ಸಾಗಿದೆವು — ಒಂದು ಗಂಟೆ ಇಪ್ಪತ್ತು ನಿಮಿಷ — ಮತ್ತು ಮುಖ ಸುಟ್ಟುಕೊಂಡು, aloe ಹಚ್ಚಿಕೊಳ್ಳುತ್ತ ಬಸ್ ನಿಲ್ದಾಣ ತಲುಪಿದೆವು.</p>
+      <p>ಆ ಸಂಜೆ Glenwood ನ Iron Mountain Hot Springs ಗೆ ಹೋದೆವು: ಚಿಕ್ಕ ಕೊಳಗಳ ಒಂದು ಗುಡ್ಡ, ಪ್ರತಿಯೊಂದೂ ಬೇರೆ ಉಷ್ಣತೆಯಲ್ಲಿ, ನೂರೆಂಟು ಡಿಗ್ರಿಯಿಂದ ಉಗುರುಬೆಚ್ಚಗಿನವರೆಗೆ, ಪ್ರತಿಯೊಂದಕ್ಕೂ ಒಂದು ರತ್ನದ ಹೆಸರು. ಎರಡು ಗಂಟೆ ನೀರಲ್ಲಿ ಮುಳುಗಿ, ನೀರಿನಿಂದಲೇ ನದಿಯ ಮೇಲೆ ಸೂರ್ಯ ಮುಳುಗುವುದನ್ನು ನೋಡಿದೆವು. ಪ್ರವಾಸದ ಅತ್ಯುತ್ತಮ ಸಂಜೆ ಅದು.</p>
+
+      <h2>ದಿನ 7 — Black Canyon, ಉತ್ತರ ಅಂಚು</h2>
+      <p>Black Canyon of the Gunnison ನ ಉತ್ತರ ಅಂಚಿಗೆ ಹೋಗುವ ದಾರಿ Paonia ಮೂಲಕ ಹಾದುಹೋಗುತ್ತದೆ; ಅಲ್ಲಿ ಒಂದು Thai food truck ಹಿಡಿಯಬೇಕೆಂದಿದ್ದೆವು, ಆದರೆ ಗುರುವಾರ ಅದು ಮುಚ್ಚಿತ್ತು. ಬದಲಿಗೆ Clean Kitchen ಎಂಬ ಬೇಕರಿ ಸಿಕ್ಕಿತು; ಅಲ್ಲಿನ ಅಡುಗೆಯವ — ಭಾರತದವನು, ಒಮ್ಮೆ ನಾನು ವಾಸಿಸಿದ್ದ ಜಾಗದಿಂದ ಕೆಲವೇ ಮೈಲಿ ದೂರದ Hartford ನಲ್ಲಿ ಇದ್ದವನು — ಕೈಯಿಂದಲೇ pastry ಹೊರಳಿಸುತ್ತಿದ್ದ. ಅವನ ಮೂರು hand pie ಗಳನ್ನು ಕೊಂಡೆವು: ಮನೆಯ ರುಚಿ ಇದ್ದ ಸ್ಥಳೀಯ ಆಲೂಗಡ್ಡೆ ಮತ್ತು ಭಾರತೀಯ ಮಸಾಲೆಯದ್ದು ಒಂದು, ಕಾಡಿನ ಅಣಬೆಯದ್ದು ಒಂದು, ಮತ್ತು ಕಾರಿಗೆ ಮರಳುವ ಮೊದಲೇ ಆರ್ಯ ಮುಗಿಸಿದ ಬೀನ್ಸ್-ಚೀಸ್‌ನದ್ದು ಒಂದು.</p>
+      <p>Lake City ಬಳಿಯ ಒಂದು ಕಾಡ್ಗಿಚ್ಚು ರಾತ್ರಿ ಕಣಿವೆಯನ್ನು ಹೊಗೆಯಿಂದ ತುಂಬಿಸಿತ್ತು; ಗಾಳಿಯಲ್ಲಿ ಅದರ ವಾಸನೆ ಬರುತ್ತಿತ್ತು. ಉತ್ತರ ಅಂಚು ಶಾಂತ ಬದಿ — ಬೇಸಿಗೆಗೆ ಸ್ವಯಂಸೇವೆ ಮಾಡುತ್ತಿದ್ದ ನಿವೃತ್ತ ದಂಪತಿಗಳು ನಡೆಸುತ್ತಿದ್ದ ಒಂದು ಚಿಕ್ಕ ranger station; ಅವರು ಆರ್ಯಳ Junior Ranger ಪುಸ್ತಕಕ್ಕೆ ಸಹಿ ಹಾಕಿ, ಕಲ್ಲಿನ ವಯಸ್ಸಿನ ಬಗ್ಗೆ ಹೇಳಿದರು. Balanced Rock, Big Island, Kneeling Camel — overlook ಗಳನ್ನು ನೋಡಿ, Exclamation Point ವರೆಗೆ ನಡೆದೆವು — sagebrush ಮತ್ತು ಪೊದೆ ಓಕ್ ನಡುವೆ ಮೂರು ಸಮತಟ್ಟು ಮೈಲಿ, Canada jay ಗಳು ಜೊತೆಗೇ ಬರುತ್ತಿದ್ದವು. ಆಮೇಲೆ Montrose ಗೆ, Camp Robber ಎಂಬಲ್ಲಿ ಊಟ, ಮತ್ತು ಕೊನೆಗೂ ಒಂದು ಗಂಟೆ ಹೋಟೆಲಿನ ಈಜುಕೊಳದಲ್ಲಿ — ಒಂದು ವಾರದಿಂದ ಆರ್ಯ ಬಯಸಿದ್ದು ಅಷ್ಟೇ.</p>
+
+      <h2>ದಿನ 8 — ದಕ್ಷಿಣ ಅಂಚು, ಮತ್ತು Colorado Springs ಗೆ ಪ್ರಯಾಣ</h2>
+      <p>ದಕ್ಷಿಣ ಅಂಚು ಕಣಿವೆಯ ಆಚೆ ಬದಿಯಿಂದ ಕೆಲವೇ ಮೈಲಿ ದೂರ, ಆದರೆ ರಸ್ತೆಯಲ್ಲಿ ಎರಡೂವರೆ ಗಂಟೆ. ಉಳಿದ ಎಲ್ಲದಕ್ಕೂ ಸಮಯ ಉಳಿಯಲೆಂದು ಮೊದಲು Warner Point Nature Trail ಮಾಡಿದೆವು, ನಂತರ scenic drive ನಲ್ಲಿ ಸಾಗಿದೆವು — Painted Wall, Rock Point, ಒಂದರ ಮೇಲೊಂದು overlook, ಪ್ರತಿಯೊಂದೂ ಅದೇ ಅಸಾಧ್ಯ ಪ್ರಪಾತದ ಬೇರೆ ಕೋನ. nutcracker ಗಳು ಇಲ್ಲೂ ಇದ್ದವು.</p>
+      <p>Colorado Springs ಗೆ ಪ್ರಯಾಣ ಉದ್ದದ್ದು, ಮತ್ತು ಅದರ ಅತ್ಯುತ್ತಮ ಭಾಗ Highway 50 ರ ಒಂದು pullout — ಅಲ್ಲಿ ಒಂದು ದೊಡ್ಡ ಕಲ್ಲಿನ ಚಪ್ಪಡಿ ಕಣಿವೆಯ ಮೇಲೆ ಚಾಚಿಕೊಂಡಿದೆ, ತಿಳಿ ಸಂಜೆಯಲ್ಲಿ Rockies ವರೆಗೂ ಕಾಣಿಸುತ್ತದೆ. ಮುಂದೆ, golden hour ನಲ್ಲಿ, ಕೆಳಗೆ ಬೆಟ್ಟಗಳ ನಡುವೆ ಇನ್ನೊಂದು ರೈಲು ಹಾದುಹೋಗುವುದನ್ನು ನೋಡಿದೆವು. ಊಟ The Burrowing Owl ನಲ್ಲಿ — Colorado Springs ನ ಒಂದು vegan ಹೋಟೆಲ್, ನೂರಾರು ಚಿಕ್ಕ ಗೂಬೆಗಳಿಂದ ಅಲಂಕೃತ — ಗದ್ದಲ, ಜನಜಂಗುಳಿ, ಆದರೆ ಒಳ್ಳೆಯದು. ಇಡೀ ಪ್ರವಾಸ ಆರ್ಯ ಬೇಕೆಂದಷ್ಟೇ ಹಠ ಹಿಡಿದಿದ್ದ ಮುದಿತಾ, ಇಲ್ಲಿ ಗೂಬೆಗಳ ಗಮನದಲ್ಲಿ ಗಲಾಟೆಯಿಲ್ಲದೆ ನನ್ನ ತೊಡೆಯ ಮೇಲೆ ಬಂದು ಕುಳಿತಳು, ಅಲ್ಲೇ ಉಳಿದಳು.</p>
+
+      <h2>ದಿನ 9 — Garden of the Gods ಮತ್ತು Pikes Peak</h2>
+      <p>ಕೆಂಪು ಕಲ್ಲು ಸೆಕೆ ಪ್ರತಿಫಲಿಸಲು ಆರಂಭಿಸುವ ಮೊದಲೇ Garden of the Gods ಮಾಡಿದೆವು — Central Garden ಸುತ್ತು ಮತ್ತು Siamese Twins ವರೆಗೆ, ಸರಿಯಾದ ಹಾದಿಗಾಗಿ ಒಂದೆರಡು ತಪ್ಪು ಆರಂಭಗಳ ನಂತರ, ದಾಟಿ ಹೋಗುತ್ತಿದ್ದ ಒಬ್ಬ ಸೈಕಲ್ ಸವಾರ ಸರಿ ದಾರಿ ತೋರಿಸಿದ.</p>
+      <p>Pikes Peak ಗೆ timed-entry ಟಿಕೆಟ್ ಮೇಲೆ ಕಾರಿನಲ್ಲಿ ಏರಬೇಕು. ಮೇಲೇರುವಾಗ overlook ಗಳಲ್ಲಿ ನಿಂತು ದೇಹ ಎತ್ತರಕ್ಕೆ ಹೊಂದಿಕೊಳ್ಳಲು ಬಿಡುವುದೇ ಉಪಾಯ. Crystal Creek Reservoir ನಲ್ಲಿ ನಿಂತು, ಕಾರಿನಲ್ಲಿ ಒಂದು audio tour ಹಾಕಿ, ಮುಂದುವರಿದೆವು. ತುದಿಯ ಬಳಿ ಆರ್ಯಳ ಕಿವಿ ಗುಂಯ್ ಎಂದವು, ಹೊಟ್ಟೆ ತೊಳಸಿತು, ನಾವು ಬಹುತೇಕ ಹಿಂತಿರುಗುವಷ್ಟಿದ್ದೆವು — ತುದಿ ತಲುಪಿ, ಅಲ್ಲಿ ಒಂದು ತುಂಡು cheese pizza ಮತ್ತು ಪ್ರಸಿದ್ಧ ಎತ್ತರದ donut ಎಲ್ಲವನ್ನೂ ಸರಿಪಡಿಸುವವರೆಗೆ; ತಾನು ತಿಂದದ್ದರಲ್ಲೇ ಅತ್ಯುತ್ತಮ pizza ಎಂದು ಅವಳು ಘೋಷಿಸಿದಳು. ಒಳಗೆ, ಪ್ರದರ್ಶನಗಳು ಹೇಳಿದವು: Pike ಸ್ವತಃ ಈ ತುದಿಗೆ ಎಂದೂ ಬರಲಿಲ್ಲ; ಇಲ್ಲಿ ಮೊದಲು ವಾಸಿಸಿದ ಜನ ಇದನ್ನು ಸೂರ್ಯನ ಬೆಟ್ಟ ಎಂದು ಕರೆದರು; ಮತ್ತು "America the Beautiful" ಈ ದೃಶ್ಯದಿಂದಲೇ ಬರೆಯಲ್ಪಟ್ಟಿತು. ಆ ಫಲಕದ ಬಳಿ ಒಂದು ಫೋಟೊ ತೆಗೆದೆವು. ತಿಳಿ ದಿನದಲ್ಲಿ ಕೆಳಗೆ ದೂರದಲ್ಲಿ Garden of the Gods ಕಾಣಿಸುತ್ತದೆ.</p>
+      <p>ಇಳಿಯುವಾಗ ಒಂದು ಕಡ್ಡಾಯ ನಿಲುಗಡೆ ಇದೆ, ಅಲ್ಲಿ ranger ನಿಮ್ಮ brake ಉಷ್ಣತೆ ಪರೀಕ್ಷಿಸುತ್ತಾನೆ — ಆ ಇಳಿಜಾರಿನಲ್ಲಿ ಅವು ಬಿಸಿಯಾಗುತ್ತವೆ — ಆಮೇಲೆ ನಾವು ವಿದಾಯ ಹೇಳಿದೆವು. ರೋಶನ್ ಕುಟುಂಬ Colorado Springs ನಲ್ಲಿ ಉಳಿಯಿತು; ನಾವು ಮತ್ತೆ Denver ಗೆ ಹೋಗಿ, ಪೆಟ್ರೋಲ್ ಮತ್ತು ಕೊನೆಯ ಕೆಲ ದಿನಸಿಗಾಗಿ ನಿಂತು, ವಿಮಾನ ನಿಲ್ದಾಣದ ಬಳಿಯ ಒಂದು ಹೋಟೆಲಿನಲ್ಲಿ ನಮ್ಮ ಕೊನೆಯ ರಾತ್ರಿ ಕಳೆದೆವು — ಒಂದು ಚಿಕ್ಕ ಅಡುಗೆಮನೆ ಮತ್ತು ಹಾಸಿಗೆಯ ಕಡೆಗೆ ತಿರುಗುವ ಒಂದು ಟಿವಿ, ಆರ್ಯಳ ಪ್ರಕಾರ ಅದೇ ಐಷಾರಾಮದ ಪರಮಾವಧಿ.</p>
+
+      <h2>ದಿನ 10 — ಮನೆಗೆ</h2>
+      <p>ಬೆಳಗಿನ ತಿಂಡಿ, ವಿಮಾನ ನಿಲ್ದಾಣಕ್ಕೆ ಪ್ರಯಾಣ, ಟರ್ಮಿನಲ್ ಬಳಿ ಊಟ, ಮತ್ತು ಮಧ್ಯಾಹ್ನದ ವಿಮಾನದಲ್ಲಿ ಮನೆಗೆ. ಆರು ರಾಷ್ಟ್ರೀಯ ಉದ್ಯಾನ ನಡಿಗೆಗಳು, ಒಂದು ಬಿಸಿನೀರ ಬುಗ್ಗೆ, ಒಂದು ಶಿಖರ, ಒಂದು Junior Ranger ಬ್ಯಾಡ್ಜ್, ಮತ್ತು ಹಿಕ್ಕೆಯನ್ನು "scat" ಎಂದೇ ಕರೆಯಬೇಕೆಂದು ಹಠ ಹಿಡಿಯುವ ಒಂದು ಮಗು.</p>
+
+      <p style="border-top:1px dashed var(--line);padding-top:14px;margin-top:18px;color:var(--muted);font-size:13px;">
+        ಪ್ರವಾಸದ ಒಂದು ಕ್ಷಣ, ನಾನು ಒಂದು ಪುಸ್ತಕವನ್ನು ಮೇಲುಮೇಲಕ್ಕೆ ನೋಡುತ್ತಿದ್ದಾಗ —<br>
+        <b>ಆರ್ಯ:</b> ಮೊದಲು ಎಡ ಪುಟ, ಆಮೇಲೆ ಬಲ ಪುಟ ಓದಬೇಕು ಅಂತ ಗೊತ್ತಾ ನಿಂಗೆ?<br>
+        <b>ನಾನು:</b> ನನಗೆ Master's ಇದೆ ಅಂತ ಗೊತ್ತಾ ನಿಂಗೆ?<br>
+        <b>ಆರ್ಯ:</b> ಅಂದ್ರೆ ಏನು?<br>
+        <b>ನಾನು:</b> ಅಂದ್ರೆ ನಾನು ಇಪ್ಪತ್ತು ವರ್ಷಕ್ಕಿಂತ ಹೆಚ್ಚು ಕಾಲದಿಂದ ಓದ್ತಾ ಇದೀನಿ ಅಂತ.<br>
+        <b>ಆರ್ಯ:</b> ಇನ್ನೂ ನಿಂಗೆ ಓದೋಕೆ ಬರಲ್ವಾ?
+      </p>
+      </div><!-- /story-kn -->
+    </div>
+    <div class="actions"><button class="save-btn" onclick="saveAsImage('capture-story','colorado-2026-story.png')">⬇ Save as image</button></div>
+    <div class="brand">ravikiran.us/trips</div>
+  </div>
+
+  <!-- MAGAZINE PANEL (single narrative feature) -->
+  <div class="panel" id="panel-magazine">
+    <div class="lang-toggle">
+      <button id="magazine-lang-en" class="lang-btn active" onclick="setMagazineLang('en')">English</button>
+      <button id="magazine-lang-kn" class="lang-btn" onclick="setMagazineLang('kn')">ಕನ್ನಡ</button>
+    </div>
+    <div id="capture-magazine">
+      <div id="magazine-en">
+      <p class="trip-title">📰 The Long Way Up</p>
+      <p class="trip-sub">Ten days chasing altitude through Colorado &middot; a magazine-style feature</p>
+
+      <p>We landed in Denver a little before midnight, into the kind of turbulence that keeps a flight crew belted in for the whole descent, and spent our first ninety minutes on the ground not in the mountains but in a rental lot — sent first to one open-bed pickup, then another, before someone finally produced the modest SUV we'd booked months earlier. It was not an auspicious start. It was, in hindsight, exactly right: this was a trip that never quite went the way it was planned, and was better for it.</p>
+      <p>Ravi, our daughter Arya, and I had come to loop counterclockwise out of Denver — up into Rocky Mountain National Park, down through Glenwood Springs to the Maroon Bells, across to the Black Canyon of the Gunnison, and back around by way of Pikes Peak and the Garden of the Gods. For much of the route we traveled alongside Ravi's cousin Roshan, his wife Priya, and their fifteen-month-old daughter Mudita — two families, one grade-schooler, one toddler, two grandparents, and a rhythm that set in almost immediately: drive somewhere high, hike until the legs gave out, find something hot to eat, sleep hard, repeat.</p>
+
+      <h2>What altitude actually does to a body</h2>
+      <p>Nobody had told us, in any way that landed, what nine or ten thousand feet would feel like. We found out on our second day, when a "short" hike into Rocky Mountain National Park — out to Ouzel Falls and back, past Calypso Cascades and its bridge over fallen logs — turned into six miles and four hours, in city clothes we'd packed for a gentle afternoon in Boulder. Arya's stomach turned queasy on every uphill push; my head swam whenever I moved too fast. We kept going anyway, because every hiker coming the other way swore we were "almost there," and because Ouzel Falls, when we reached it in a fine mist, was worth the argument with our own bodies to get there.</p>
+      <p>By dinner Arya was too sick to manage a single chip, until a waitress in Estes Park handed her a soda with fresh lime and a pinch of salt — a local trick that worked, every single time, for the rest of the trip. We never scheduled a hike that ambitious on an arrival day again. The mountains reward patience and punish confidence, and the first lesson of Colorado is to let your lungs and your itinerary catch up with each other.</p>
+
+      <h2>A ranger badge, a shed antler, and a marmot with no fear of people</h2>
+      <p>What redeemed the hard mornings were the small, specific wonders that a national park hands you without warning: a volunteer at Sheep Lakes letting Arya hold a thirty-pound shed elk antler and explaining, patiently, the difference between antlers that grow back every year carrying blood and the horns of bighorn sheep, which are keratin and stay for life. Arya recited the whole lesson back that evening, word for word, and finished her Junior Ranger booklet the same day — sworn in on the spot at the Alpine Visitor Center, the highest in the country, after a ranger talk on how far to stand from a moose.</p>
+      <p>Two days later, at Emerald Lake at the top of the Bear Lake Corridor, a marmot walked right up to where we sat and a pair of Clark's nutcrackers worked the rocks close enough to touch. We had earned the view — Nymph Lake's lily pads, then Dream Lake under the peaks, then the last rocky push to Emerald — and we sat there for the better part of an hour, not talking about much, which is its own kind of achievement with a seven-year-old.</p>
+
+      <h2>The bells, the burn, and the best evening of the trip</h2>
+      <p>Aspen's Maroon Bells are reached by shuttle, and the day we went it was ninety-five degrees at the trailhead. Three fourteen-thousand-foot peaks — Maroon Peak, North Maroon Peak, and Pyramid Peak — stood over Crater Lake, which in that dry summer had pulled back to a third of its usual size; it hardly mattered, with chipmunks running raids on our packed lunch and the peaks doing what they were there to do. We came down sunburnt and moved fast, an hour and twenty minutes on legs that had stopped complaining out of sheer resignation.</p>
+      <p>That evening undid all of it: Iron Mountain Hot Springs, a hillside of small pools each held at its own temperature, named for gemstones, the hottest near a hundred and eight degrees. We soaked for two hours and watched the sun go down over the Colorado River from the water. If the trip had a single hour worth repeating on its own, this was it.</p>
+
+      <h2>Two rims, a wildfire, and a bakery that felt like home</h2>
+      <p>The Black Canyon of the Gunnison split neatly into two moods. The North Rim, reached through the town of Paonia — where a closed Thai food truck sent us instead to a bakery called Clean Kitchen, run by a cook who had once lived a few miles from where I grew up in Hartford — was quiet almost to the point of solitude: a small ranger station staffed by a retired couple volunteering for the summer, a walk to Exclamation Point through sagebrush with Canada jays trailing us the whole way, and the smell of a wildfire burning near Lake City drifting faint through the canyon air. The South Rim, two and a half hours around by road though only a few miles across the gorge, was the famous side — Painted Wall, Rock Point, overlook after overlook onto the same impossible drop, each one demanding its own photograph.</p>
+
+      <h2>The summit, the donuts, and going home</h2>
+      <p>We closed the loop at Pikes Peak, driven rather than climbed, on a timed-entry ticket with a mandatory brake check on the way down — the descent runs hot enough to need it. Arya's ears popped and her stomach turned somewhere past twelve thousand feet, and we nearly gave up a few switchbacks from the top, until the summit produced a slice of cheese pizza and one of the mountain's famous high-altitude donuts and fixed everything at once. Inside the visitor center we learned that Zebulon Pike himself never reached this summit, that the people who lived here first called it the mountain of the sun, and that "America the Beautiful" was written from this exact view — a nice thing to learn standing in the wind, looking down at the Garden of the Gods far below.</p>
+      <p>Ten days, four mountain towns, roughly nine hundred miles on the odometer, six national park hikes, one hot spring, one summit, and a child who now insists, with the authority of a sworn Junior Ranger, that the correct word for animal droppings is "scat." We flew home still tasting the altitude — and already talking about where the next loop should go.</p>
+      </div><!-- /magazine-en -->
+
+      <div id="magazine-kn" hidden>
+      <p class="trip-title">📰 ದಿ ಲಾಂಗ್ ವೇ ಅಪ್</p>
+      <p class="trip-sub">ಕೊಲೊರಾಡೊ ಮೂಲಕ ಎತ್ತರವನ್ನು ಬೆನ್ನಟ್ಟಿದ ಹತ್ತು ದಿನಗಳು &middot; ಮ್ಯಾಗಜೀನ್-ಶೈಲಿಯ ಬರಹ</p>
+
+      <p>ನಾವು ಮಧ್ಯರಾತ್ರಿಯ ಸ್ವಲ್ಪ ಮುಂಚೆ ಡೆನ್ವರ್‌ನಲ್ಲಿ ಇಳಿದೆವು, ಅಂತಹ ಪ್ರಕ್ಷುಬ್ಧತೆಯು ಇಳಿಯುವಿಕೆ ಪೂರ್ಣಗೊಳ್ಳುವವರೆಗೂ ವಿಮಾನದ ಸಿಬ್ಬಂದಿಯನ್ನು ಬೆಲ್ಟ್ ಹಾಕಿಕೊಳ್ಳುವಂತೆ ಮಾಡುತ್ತದೆ, ಮತ್ತು ನಮ್ಮ ಮೊದಲ ತೊಂಬತ್ತು ನಿಮಿಷಗಳನ್ನು ಪರ್ವತಗಳಲ್ಲಿ ಅಲ್ಲ, ಬಾಡಿಗೆ ಜಾಗದಲ್ಲಿ ಕಳೆದೆವು — ಮೊದಲು ಓಪನ್-ಬೆಡ್ ಪಿಕಪ್‌ಗೆ, ನಂತರ ಇನ್ನೊಂದಕ್ಕೆ ಕಳುಹಿಸಲಾಯಿತು, ಕೊನೆಗೆ ನಾವು ತಿಂಗಳುಗಳ ಹಿಂದೆಯೇ ಬುಕ್ ಮಾಡಿದ್ದ ಸಾಧಾರಣ ಎಸ್‌ಯುವಿ ವಾಹನವನ್ನು ತರಲಾಯಿತು. ಇದು ಶುಭಾರಂಭವಾಗಿರಲಿಲ್ಲ. ಹಿಂದಿರುಗಿ ನೋಡಿದರೆ, ಇದು ಸರಿಯಾಗಿತ್ತು: ಇದು ಎಂದಿಗೂ ಯೋಜಿಸಿದಂತೆ ನಡೆಯದ ಮತ್ತು ಅದಕ್ಕಾಗಿಯೇ ಉತ್ತಮವಾಗಿದ್ದ ಪ್ರವಾಸವಾಗಿತ್ತು.</p>
+      <p>ರವಿ, ನಮ್ಮ ಮಗಳು ಆರ್ಯ, ಮತ್ತು ನಾನು ಡೆನ್ವರ್‌ನಿಂದ ಅಪ್ರದಕ್ಷಿಣಾಕಾರವಾಗಿ ಸುತ್ತಲು ಬಂದಿದ್ದೆವು — ರಾಕಿ ಮೌಂಟೇನ್ ನ್ಯಾಷನಲ್ ಪಾರ್ಕ್‌ಗೆ ಹೋಗಿ, ಅಲ್ಲಿಂದ ಕೆಳಗೆ ಗ್ಲೆನ್‌ವುಡ್ ಸ್ಪ್ರಿಂಗ್ಸ್ ಮೂಲಕ ಮರೂನ್ ಬೆಲ್ಸ್‌ಗೆ, ನಂತರ ಬ್ಲಾಕ್ ಕ್ಯಾನ್ಯನ್ ಆಫ್ ದಿ ಗುನ್ನಿಸನ್‌ಗೆ ಅಡ್ಡಲಾಗಿ, ಮತ್ತು ಪೈಕ್ಸ್ ಪೀಕ್ ಹಾಗೂ ಗಾರ್ಡನ್ ಆಫ್ ದಿ ಗಾಡ್ಸ್ ಮೂಲಕ ವಾಪಸ್ಸಾಗಲು ಬಂದಿದ್ದೆವು. ಮಾರ್ಗದ ಬಹುಪಾಲು ನಾವು ರವಿಯ ಸೋದರಸಂಬಂಧಿ ರೋಷನ್, ಅವರ ಪತ್ನಿ ಪ್ರಿಯಾ ಮತ್ತು ಅವರ ಹದಿನೈದು ತಿಂಗಳ ಮಗಳು ಮುದಿತಾ ಜೊತೆ ಪ್ರಯಾಣಿಸಿದೆವು — ಎರಡು ಕುಟುಂಬಗಳು, ಒಬ್ಬ ಶಾಲಾ ಬಾಲಕಿ, ಒಬ್ಬ ಕಂದಮ್ಮ, ಇಬ್ಬರು ಅಜ್ಜ-ಅಜ್ಜಿಯರು, ಮತ್ತು ತಕ್ಷಣವೇ ಪ್ರಾರಂಭವಾದ ದಿನಚರಿ: ಎತ್ತರದ ಜಾಗಕ್ಕೆ ಓಡಿಸಿ, ಕಾಲುಗಳು ಸೋಲುವವರೆಗೆ ಹತ್ತಿ, ಬಿಸಿಯಾದದ್ದೇನನ್ನಾದರೂ ತಿನ್ನಲು ಹುಡುಕಿ, ಚೆನ್ನಾಗಿ ನಿದ್ರಿಸಿ, ಪುನರಾವರ್ತಿಸಿ.</p>
+
+      <h2>ಎತ್ತರವು ನಿಜವಾಗಿ ದೇಹದ ಮೇಲೆ ಏನು ಮಾಡುತ್ತದೆ</h2>
+      <p>ಒಂಬತ್ತು ಅಥವಾ ಹತ್ತು ಸಾವಿರ ಅಡಿಗಳು ಹೇಗಿರುತ್ತದೆ ಎಂದು ಯಾರೂ ನಮಗೆ ಹೇಳಿರಲಿಲ್ಲ. ಎರಡನೇ ದಿನ ನಮಗೆ ಅದು ತಿಳಿಯಿತು, ರಾಕಿ ಮೌಂಟೇನ್ ನ್ಯಾಷನಲ್ ಪಾರ್ಕ್‌ಗೆ ಮಾಡಿದ &quot;ಸಣ್ಣ&quot; ಚಾರಣ — ಔಜೆಲ್ ಫಾಲ್ಸ್‌ಗೆ ಹೋಗಿ ಹಿಂತಿರುಗುವುದು, ಕ್ಯಾಲಿಪ್ಸೊ ಕ್ಯಾಸ್ಕೇಡ್ಸ್ ಮತ್ತು ಬಿದ್ದ ಮರದ ದಿಮ್ಮಿಗಳ ಮೇಲಿನ ಸೇತುವೆಯನ್ನು ದಾಟುವುದು — ನಾವು ಬೌಲ್ಡರ್‌ನಲ್ಲಿ ಆರಾಮದಾಯಕ ಮಧ್ಯಾಹ್ನಕ್ಕಾಗಿ ತಂದಿದ್ದ ನಗರದ ಬಟ್ಟೆಗಳಲ್ಲಿ, ಆರು ಮೈಲಿ ಮತ್ತು ನಾಲ್ಕು ಗಂಟೆಗಳ ಕಾಲ ನಡೆಯಿತು. ಆರ್ಯಳ ಹೊಟ್ಟೆ ಪ್ರತಿ ಬಾರಿ ಮೇಲಕ್ಕೆ ಹತ್ತುವಾಗಲೂ ತೊಳಸುತ್ತಿತ್ತು; ನಾನು ತುಂಬಾ ವೇಗವಾಗಿ ಚಲಿಸಿದಾಗಲೆಲ್ಲಾ ನನ್ನ ತಲೆ ತಿರುಗುತ್ತಿತ್ತು. ಆದರೂ ನಾವು ಮುಂದುವರಿಯುತ್ತಲೇ ಇದ್ದೆವು, ಏಕೆಂದರೆ ಎದುರಿನಿಂದ ಬರುತ್ತಿದ್ದ ಪ್ರತಿಯೊಬ್ಬ ಚಾರಣಿಗನೂ ನಾವು &quot;ಬಹುತೇಕ ಹತ್ತಿರದಲ್ಲಿದ್ದೇವೆ&quot; ಎಂದು ಹೇಳುತ್ತಿದ್ದರು, ಮತ್ತು ಮಂಜಿನ ನಡುವೆ ನಾವು ಔಜೆಲ್ ಫಾಲ್ಸ್ ತಲುಪಿದಾಗ, ಅಲ್ಲಿಗೆ ಹೋಗಲು ನಮ್ಮ ದೇಹಗಳೊಂದಿಗೆ ಮಾಡಿದ ಹೋರಾಟ ಸಾರ್ಥಕವೆನಿಸಿತು.</p>
+      <p>ರಾತ್ರಿ ಊಟದ ಹೊತ್ತಿಗೆ ಆರ್ಯಳಿಗೆ ಒಂದೇ ಒಂದು ಚಿಪ್ ಕೂಡ ತಿನ್ನಲು ಸಾಧ್ಯವಾಗದಷ್ಟು ಅನಾರೋಗ್ಯ ಉಂಟಾಗಿತ್ತು, ಎಸ್ಟೆಸ್ ಪಾರ್ಕ್‌ನಲ್ಲಿ ಒಬ್ಬ ಮಾಣಿಯು ಅವಳಿಗೆ ತಾಜಾ ನಿಂಬೆ ಮತ್ತು ಒಂದು ಚಿಟಿಕೆ ಉಪ್ಪು ಇರುವ ಸೋಡಾವನ್ನು ನೀಡುವವರೆಗೆ — ಇದು ಒಂದು ಸ್ಥಳೀಯ ತಂತ್ರವಾಗಿದ್ದು, ಅದು ಪ್ರವಾಸದುದ್ದಕ್ಕೂ ಪ್ರತಿ ಬಾರಿಯೂ ಕೆಲಸ ಮಾಡಿತು. ಆಗಮನದ ದಿನದಂದು ಅಷ್ಟು ದೊಡ್ಡ ಚಾರಣವನ್ನು ನಾವು ಮತ್ತೆಂದೂ ನಿಗದಿಪಡಿಸಲಿಲ್ಲ. ಪರ್ವತಗಳು ತಾಳ್ಮೆಗೆ ಪ್ರತಿಫಲ ನೀಡುತ್ತವೆ ಮತ್ತು ಅತಿಯಾದ ವಿಶ್ವಾಸವನ್ನು ಶಿಕ್ಷಿಸುತ್ತವೆ, ಮತ್ತು ಕೊಲೊರಾಡೊದ ಮೊದಲ ಪಾಠವೆಂದರೆ ನಿಮ್ಮ ಶ್ವಾಸಕೋಶಗಳು ಮತ್ತು ನಿಮ್ಮ ಪ್ರಯಾಣದ ಯೋಜನೆಯು ಪರಸ್ಪರ ಹೊಂದಿಕೊಳ್ಳಲು ಅವಕಾಶ ನೀಡುವುದು.</p>
+
+      <h2>ಒಂದು ರೇಂಜರ್ ಬ್ಯಾಡ್ಜ್, ಉದುರಿದ ಕೊಂಬು, ಮತ್ತು ಜನರ ಬಗ್ಗೆ ಯಾವುದೇ ಭಯವಿಲ್ಲದ ಮಾರ್ಮೋಟ್</h2>
+      <p>ಕಷ್ಟಕರವಾದ ಬೆಳಗಿನ ಜಾವವನ್ನು ಸರಿಪಡಿಸಿದ್ದು ಒಂದು ರಾಷ್ಟ್ರೀಯ ಉದ್ಯಾನವನವು ಯಾವುದೇ ಎಚ್ಚರಿಕೆಯಿಲ್ಲದೆ ನಿಮಗೆ ನೀಡುವ ಸಣ್ಣ, ನಿರ್ದಿಷ್ಟ ಅದ್ಭುತಗಳು: ಶೀಪ್ ಲೇಕ್ಸ್‌ನಲ್ಲಿರುವ ಒಬ್ಬ ಸ್ವಯಂಸೇವಕ ಆರ್ಯಳಿಗೆ ಮೂವತ್ತು ಪೌಂಡ್ ತೂಕದ ಉದುರಿದ ಎಲ್ಕ್ ಕೊಂಬನ್ನು ಹಿಡಿದುಕೊಳ್ಳಲು ಅವಕಾಶ ಮಾಡಿಕೊಟ್ಟನು ಮತ್ತು ರಕ್ತವನ್ನು ಹೊಂದಿರುವ, ಪ್ರತಿ ವರ್ಷ ಬೆಳೆಯುವ ಕೊಂಬುಗಳು ಹಾಗೂ ಕೆರಾಟಿನ್‌ನಿಂದ ಮಾಡಲ್ಪಟ್ಟಿರುವ, ಜೀವಿತಾವಧಿಯವರೆಗೆ ಉಳಿಯುವ ಬಿಗ್‌ಹಾರ್ನ್ ಕುರಿಗಳ ಕೊಂಬುಗಳ ನಡುವಿನ ವ್ಯತ್ಯಾಸವನ್ನು ತಾಳ್ಮೆಯಿಂದ ವಿವರಿಸಿದನು. ಆರ್ಯಳು ಆ ದಿನ ಸಂಜೆ ಇಡೀ ಪಾಠವನ್ನು ಯಥಾವತ್ತಾಗಿ ಒಪ್ಪಿಸಿದಳು, ಮತ್ತು ಅದೇ ದಿನ ತನ್ನ ಜೂನಿಯರ್ ರೇಂಜರ್ ಕಿರುಹೊತ್ತಿಗೆಯನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದಳು — ಮೂಸ್‌ನಿಂದ ಎಷ್ಟು ದೂರ ನಿಲ್ಲಬೇಕು ಎಂಬ ರೇಂಜರ್‌ನ ಭಾಷಣದ ನಂತರ, ದೇಶದ ಅತಿ ಎತ್ತರದಲ್ಲಿರುವ ಆಲ್ಪೈನ್ ವಿಸಿಟರ್ ಸೆಂಟರ್‌ನಲ್ಲಿ ಸ್ಥಳದಲ್ಲೇ ಪ್ರಮಾಣ ವಚನ ಸ್ವೀಕರಿಸಿದಳು.</p>
+      <p>ಎರಡು ದಿನಗಳ ನಂತರ, ಬೇರ್ ಲೇಕ್ ಕಾರಿಡಾರ್‌ನ ಮೇಲ್ಭಾಗದಲ್ಲಿರುವ ಎಮರಾಲ್ಡ್ ಸರೋವರದಲ್ಲಿ, ಒಂದು ಮಾರ್ಮೋಟ್ ನಾವು ಕುಳಿತಿದ್ದ ಸ್ಥಳಕ್ಕೆ ನೇರವಾಗಿ ನಡೆದುಕೊಂಡು ಬಂತು ಮತ್ತು ಒಂದು ಜೋಡಿ ಕ್ಲಾರ್ಕ್ ನಟ್‌ಕ್ರಾಕರ್‌ಗಳು ಮುಟ್ಟುವಷ್ಟು ಹತ್ತಿರದಲ್ಲಿ ಬಂಡೆಗಳ ಬಳಿ ಕೆಲಸ ಮಾಡುತ್ತಿದ್ದವು. ನಾವು ಆ ನೋಟವನ್ನು ಸಂಪಾದಿಸಿದ್ದೆವು — ನಿಂಫ್ ಸರೋವರದ ಕಮಲದ ಎಲೆಗಳು, ನಂತರ ಶಿಖರಗಳ ಅಡಿಯಲ್ಲಿ ಡ್ರೀಮ್ ಸರೋವರ, ನಂತರ ಎಮರಾಲ್ಡ್ ಕಡೆಗೆ ಕೊನೆಯ ಕಲ್ಲಿನ ತಳ್ಳುವಿಕೆ — ಮತ್ತು ನಾವು ಅಲ್ಲಿ ಮುಕ್ಕಾಲು ಗಂಟೆಗೂ ಹೆಚ್ಚು ಕಾಲ ಕುಳಿತಿದ್ದೆವು, ಹೆಚ್ಚು ಮಾತನಾಡದೆ, ಇದು ಏಳು ವರ್ಷದ ಮಗುವಿನೊಂದಿಗೆ ತನ್ನದೇ ಆದ ರೀತಿಯ ಸಾಧನೆಯಾಗಿದೆ.</p>
+
+      <h2>ಗಂಟೆಗಳು, ಸುಟ್ಟ ಗಾಯ ಮತ್ತು ಪ್ರವಾಸದ ಅತ್ಯುತ್ತಮ ಸಂಜೆ</h2>
+      <p>ಆಸ್ಪೆನ್ಸ್ ಮರೂನ್ ಬೆಲ್ಸ್ ಅನ್ನು ಶಟಲ್ ಮೂಲಕ ತಲುಪಬಹುದು, ಮತ್ತು ನಾವು ಹೋದ ದಿನ ಟ್ರೇಲ್‌ಹೆಡ್‌ನಲ್ಲಿ ತೊಂಬತ್ತೈದು ಡಿಗ್ರಿ ಉಷ್ಣಾಂಶವಿತ್ತು. ಮೂರು ಹದಿನಾಲ್ಕು-ಸಾವಿರ-ಅಡಿಗಳ ಶಿಖರಗಳು — ಮರೂನ್ ಪೀಕ್, ನಾರ್ತ್ ಮರೂನ್ ಪೀಕ್ ಮತ್ತು ಪಿರಮಿಡ್ ಪೀಕ್ — ಕ್ರೇಟರ್ ಸರೋವರದ ಮೇಲೆ ನಿಂತಿದ್ದವು, ಆ ಒಣ ಬೇಸಿಗೆಯಲ್ಲಿ ಸರೋವರವು ತನ್ನ ಸಾಮಾನ್ಯ ಗಾತ್ರದ ಮೂರನೇ ಒಂದು ಭಾಗಕ್ಕೆ ಕುಗ್ಗಿತ್ತು; ಅಳಿಲುಗಳು ನಾವು ಕಟ್ಟಿದ ಊಟದ ಮೇಲೆ ದಾಳಿ ಮಾಡುತ್ತಿದ್ದರಿಂದ ಮತ್ತು ಶಿಖರಗಳು ತಾವು ಮಾಡಬೇಕಾದದ್ದನ್ನು ಮಾಡುತ್ತಿದ್ದರಿಂದ ಅದು ಅಷ್ಟೇನೂ ಲೆಕ್ಕಕ್ಕಿರಲಿಲ್ಲ. ನಾವು ಬಿಸಿಲಿಗೆ ಸುಟ್ಟುಕೊಂಡು ಕೆಳಗೆ ಬಂದೆವು ಮತ್ತು ವೇಗವಾಗಿ ಚಲಿಸಿದೆವು, ಕೇವಲ ರಾಜೀನಾಮೆ ನೀಡಿದ ಕಾರಣದಿಂದಾಗಿ ದೂರು ನೀಡುವುದನ್ನು ನಿಲ್ಲಿಸಿದ ಕಾಲುಗಳ ಮೇಲೆ ಒಂದು ಗಂಟೆ ಮತ್ತು ಇಪ್ಪತ್ತು ನಿಮಿಷಗಳು.</p>
+      <p>ಆ ಸಂಜೆ ಇದೆಲ್ಲವನ್ನೂ ಮರೆಸಿತು: ಐರನ್ ಮೌಂಟೇನ್ ಹಾಟ್ ಸ್ಪ್ರಿಂಗ್ಸ್, ಬೆಟ್ಟದ ಮೇಲಿರುವ ಸಣ್ಣ ಕೊಳಗಳು, ಪ್ರತಿಯೊಂದೂ ತನ್ನದೇ ಆದ ಉಷ್ಣತೆಯನ್ನು ಕಾಪಾಡಿಕೊಂಡಿದ್ದು, ರತ್ನದ ಕಲ್ಲುಗಳ ಹೆಸರನ್ನಿಡಲಾಗಿದೆ, ಅತ್ಯಂತ ಬಿಸಿಯಾದ ಕೊಳವು ನೂರ ಎಂಟು ಡಿಗ್ರಿಗಳಷ್ಟಿತ್ತು. ನಾವು ಎರಡು ಗಂಟೆಗಳ ಕಾಲ ನೆನೆದೆವು ಮತ್ತು ನೀರಿನಿಂದ ಕೊಲೊರಾಡೊ ನದಿಯ ಮೇಲೆ ಸೂರ್ಯಾಸ್ತವಾಗುವುದನ್ನು ವೀಕ್ಷಿಸಿದೆವು. ಪ್ರವಾಸದಲ್ಲಿ ಒಂದು ಗಂಟೆಯಷ್ಟಾದರೂ ಮತ್ತೆ ಪುನರಾವರ್ತಿಸಲು ಯೋಗ್ಯವಾಗಿದ್ದರೆ, ಅದು ಇದೇ ಆಗಿತ್ತು.</p>
+
+      <h2>ಎರಡು ಅಂಚುಗಳು, ಕಾಡ್ಗಿಚ್ಚು ಮತ್ತು ಮನೆಯಂತೆ ಭಾಸವಾಗುವ ಬೇಕರಿ</h2>
+      <p>ಬ್ಲಾಕ್ ಕ್ಯಾನ್ಯನ್ ಆಫ್ ದಿ ಗುನ್ನಿಸನ್ ಅನ್ನು ಅಚ್ಚುಕಟ್ಟಾಗಿ ಎರಡು ಮನಸ್ಥಿತಿಗಳಾಗಿ ವಿಂಗಡಿಸಲಾಗಿದೆ. ಪಾಯೋನಿಯಾ ಪಟ್ಟಣದ ಮೂಲಕ ತಲುಪುವ ನಾರ್ತ್ ರಿಮ್ — ಅಲ್ಲಿ ಮುಚ್ಚಲ್ಪಟ್ಟ ಥಾಯ್ ಫುಡ್ ಟ್ರಕ್ ನಮ್ಮನ್ನು ಕ್ಲೀನ್ ಕಿಚನ್ ಎಂಬ ಬೇಕರಿಗೆ ಕಳುಹಿಸಿತು, ಇದನ್ನು ಒಮ್ಮೆ ನಾನು ಹಾರ್ಟ್‌ಫೋರ್ಡ್‌ನಲ್ಲಿ ಬೆಳೆದ ಸ್ಥಳದಿಂದ ಕೆಲವು ಮೈಲುಗಳಷ್ಟು ದೂರದಲ್ಲಿ ವಾಸಿಸುತ್ತಿದ್ದ ಅಡುಗೆಯವನೊಬ್ಬ ನಡೆಸುತ್ತಿದ್ದನು — ಇದು ಏಕಾಂತದ ಹಂತದವರೆಗೆ ಶಾಂತವಾಗಿತ್ತು: ಬೇಸಿಗೆಯಲ್ಲಿ ಸ್ವಯಂಸೇವಕರಾಗಿ ಕೆಲಸ ಮಾಡುವ ನಿವೃತ್ತ ದಂಪತಿಗಳು ಇರುವ ಸಣ್ಣ ರೇಂಜರ್ ಸ್ಟೇಷನ್, ದಾರಿಯುದ್ದಕ್ಕೂ ನಮ್ಮನ್ನು ಹಿಂಬಾಲಿಸುತ್ತಿದ್ದ ಕೆನಡಾ ಜೇಸ್‌ನೊಂದಿಗೆ ಸೇಜ್‌ಬ್ರಷ್ ಮೂಲಕ ಎಕ್ಸ್‌ಕ್ಲಮೇಶನ್ ಪಾಯಿಂಟ್‌ಗೆ ಒಂದು ನಡಿಗೆ, ಮತ್ತು ಲೇಕ್ ಸಿಟಿಯ ಬಳಿ ಹೊತ್ತಿ ಉರಿಯುತ್ತಿರುವ ಕಾಡ್ಗಿಚ್ಚಿನ ವಾಸನೆ ಕ್ಯಾನ್ಯನ್ ಗಾಳಿಯಲ್ಲಿ ಮಸುಕಾಗಿ ತೇಲುತ್ತಿತ್ತು. ದಕ್ಷಿಣದ ಅಂಚು, ಕಮರಿಯಾದ್ಯಂತ ಕೇವಲ ಕೆಲವು ಮೈಲುಗಳಷ್ಟಿದ್ದರೂ ರಸ್ತೆಯ ಮೂಲಕ ಎರಡೂವರೆ ಗಂಟೆಗಳ ಪ್ರಯಾಣವಿತ್ತು, ಇದು ಪ್ರಸಿದ್ಧವಾದ ಭಾಗವಾಗಿತ್ತು — ಪೇಂಟೆಡ್ ವಾಲ್, ರಾಕ್ ಪಾಯಿಂಟ್, ಒಂದೇ ಅಸಾಧ್ಯವಾದ ಇಳಿಜಾರಿನ ಮೇಲೆ ಒಂದಾದ ಮೇಲೊಂದು ನೋಟ, ಪ್ರತಿಯೊಂದಕ್ಕೂ ತನ್ನದೇ ಆದ ಛಾಯಾಚಿತ್ರ ಬೇಕಾಗುತ್ತದೆ.</p>
+
+      <h2>ಶಿಖರ, ಡೊನಟ್ಸ್ ಮತ್ತು ಮನೆಗೆ ಹೋಗುವುದು</h2>
+      <p>ನಾವು ಪೈಕ್ಸ್ ಪೀಕ್‌ನಲ್ಲಿ ಲೂಪ್ ಅನ್ನು ಮುಚ್ಚಿದೆವು, ಹತ್ತುವ ಬದಲು ಡ್ರೈವ್ ಮಾಡಿದೆವು, ಟೈಮ್-ಎಂಟ್ರಿ ಟಿಕೆಟ್‌ನೊಂದಿಗೆ ಕೆಳಗೆ ಬರುವಾಗ ಕಡ್ಡಾಯ ಬ್ರೇಕ್ ಚೆಕ್ ಇತ್ತು — ಇಳಿಯುವಿಕೆಯು ಬಿಸಿಯಾಗುವುದರಿಂದ ಅದರ ಅಗತ್ಯವಿತ್ತು. ಹನ್ನೆರಡು ಸಾವಿರ ಅಡಿಗಳಷ್ಟು ಎತ್ತರದಲ್ಲಿ ಆರ್ಯಳ ಕಿವಿಗಳು ಸದ್ದು ಮಾಡಿದವು ಮತ್ತು ಅವಳ ಹೊಟ್ಟೆ ತೊಳಸಿತು, ಮತ್ತು ನಾವು ಮೇಲಿನಿಂದ ಕೆಲವು ಸ್ವಿಚ್‌ಬ್ಯಾಕ್‌ಗಳನ್ನು ಬಿಟ್ಟುಕೊಡುವ ಹಂತದಲ್ಲಿದ್ದೆವು, ಆಗ ಶಿಖರವು ಒಂದು ತುಂಡು ಚೀಸ್ ಪಿಜ್ಜಾ ಮತ್ತು ಪರ್ವತದ ಪ್ರಸಿದ್ಧ ಎತ್ತರದ ಡೊನಟ್‌ಗಳಲ್ಲಿ ಒಂದನ್ನು ನೀಡಿ ಎಲ್ಲವನ್ನೂ ಏಕಕಾಲದಲ್ಲಿ ಸರಿಪಡಿಸಿತು. ಸಂದರ್ಶಕರ ಕೇಂದ್ರದೊಳಗೆ ನಾವು ಜೆಬುಲಾನ್ ಪೈಕ್ ಸ್ವತಃ ಈ ಶಿಖರವನ್ನು ತಲುಪಲಿಲ್ಲ, ಮೊದಲು ಇಲ್ಲಿ ವಾಸಿಸುತ್ತಿದ್ದ ಜನರು ಇದನ್ನು ಸೂರ್ಯನ ಪರ್ವತ ಎಂದು ಕರೆಯುತ್ತಿದ್ದರು ಮತ್ತು &quot;ಅಮೆರಿಕಾ ದಿ ಬ್ಯೂಟಿಫುಲ್&quot; ಅನ್ನು ಇದೇ ನೋಟದಿಂದ ಬರೆಯಲಾಗಿದೆ ಎಂದು ತಿಳಿದುಕೊಂಡೆವು — ಕೆಳಗೆ ಬಹಳ ದೂರದಲ್ಲಿರುವ ಗಾರ್ಡನ್ ಆಫ್ ದಿ ಗಾಡ್ಸ್ ಅನ್ನು ನೋಡುತ್ತಾ, ಗಾಳಿಯಲ್ಲಿ ನಿಂತು ಕಲಿಯಲು ಇದೊಂದು ಉತ್ತಮ ವಿಷಯ.</p>
+      <p>ಹತ್ತು ದಿನಗಳು, ನಾಲ್ಕು ಪರ್ವತ ಪಟ್ಟಣಗಳು, ಓಡೋಮೀಟರ್‌ನಲ್ಲಿ ಸುಮಾರು ಒಂಬೈನೂರು ಮೈಲುಗಳು, ಆರು ರಾಷ್ಟ್ರೀಯ ಉದ್ಯಾನವನದ ಚಾರಣಗಳು, ಒಂದು ಬಿಸಿನೀರಿನ ಬುಗ್ಗೆ, ಒಂದು ಶಿಖರ, ಮತ್ತು ಈಗ ಪ್ರಾಣಿಗಳ ಹಿಕ್ಕೆಗಳಿಗೆ ಸರಿಯಾದ ಪದ &quot;ಸ್ಕ್ಯಾಟ್&quot; ಎಂದು ಪ್ರಮಾಣವಚನ ಸ್ವೀಕರಿಸಿದ ಜೂನಿಯರ್ ರೇಂಜರ್‌ನ ಅಧಿಕಾರದೊಂದಿಗೆ ಒತ್ತಾಯಿಸುವ ಮಗು. ನಾವು ಇನ್ನೂ ಎತ್ತರದ ರುಚಿಯನ್ನು ಸವಿಯುತ್ತಲೇ ಮನೆಗೆ ಹಾರಿದೆವು — ಮತ್ತು ಮುಂದಿನ ಲೂಪ್ ಎಲ್ಲಿಗೆ ಹೋಗಬೇಕು ಎಂಬುದರ ಬಗ್ಗೆ ಈಗಾಗಲೇ ಮಾತನಾಡುತ್ತಿದ್ದೇವೆ.</p>
+      </div><!-- /magazine-kn -->
+    </div>
+    <div class="actions"><button class="save-btn" onclick="saveAsImage('capture-magazine','colorado-2026-magazine.png')">⬇ Save as image</button></div>
+    <div class="brand">ravikiran.us/trips</div>
+  </div>
+
   <!-- ITINERARY PANEL -->
-  <div class="panel active" id="panel-itinerary">
+  <div class="panel" id="panel-itinerary">
     <div id="capture-itinerary">
       <p class="trip-title">🏔️ Colorado Road Trip</p>
-      <p class="trip-sub">Jul 31 – Aug 9, 2026</p>
+      <p class="trip-sub">Jul 31 – Aug 9, 2026 &middot; as originally planned</p>
 
       <div class="day">
         <div class="day-date">FRI<br><b>Jul 31</b></div>
@@ -454,7 +804,7 @@
   <div class="panel" id="panel-hotels">
     <div id="capture-hotels">
       <p class="trip-title">🏨 Colorado Road Trip · Full Plan</p>
-      <p class="trip-sub">Jul 31 – Aug 9, 2026 &middot; day-by-day with overnight stays</p>
+      <p class="trip-sub">Jul 31 – Aug 9, 2026 &middot; day-by-day with overnight stays, as originally planned</p>
 
       <div class="stay">
         <div class="stay-date-hd">📅 Fri, Jul 31</div>
@@ -600,7 +950,7 @@
   <div class="panel" id="panel-details">
     <div id="capture-details">
       <p class="trip-title">📋 Colorado Road Trip · Full Detail</p>
-      <p class="trip-sub">Jul 31 – Aug 9, 2026 &middot; complete day-by-day plan</p>
+      <p class="trip-sub">Jul 31 – Aug 9, 2026 &middot; complete day-by-day plan, as originally drafted</p>
 
       <div class="detail-day">
         <div class="detail-day-title">Friday, July 31</div>
@@ -802,6 +1152,206 @@
     <div class="brand">ravikiran.us/trips</div>
   </div>
 
+  <!-- PLAN vs DID PANEL -->
+  <div class="panel" id="panel-compare">
+    <div id="capture-compare">
+      <p class="trip-title">🔀 Plan vs. What We Did</p>
+      <p class="trip-sub">The Detail-tab itinerary against the actual trip, from the voice notes</p>
+
+      <div class="cmp-legend">
+        <span>✅ done</span>
+        <span>🔁 done, different day</span>
+        <span>✏️ changed</span>
+        <span>❌ not done</span>
+        <span>➕ extra (not in the plan)</span>
+      </div>
+
+      <p class="trip-sub" style="margin-bottom:16px">The plan appears to <b>blend both families' intentions</b> — clearest on the Aug&nbsp;8 overnight (Colorado Springs in the Detail tab; Denver for us, which is what we did and always intended).</p>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Fri, Jul 31 — Arrive Denver</div>
+        <ul class="cmp-list">
+          <li><span class="st">✅</span>Fly in: Hartford → Chicago (O'Hare) → Denver; landed ~midnight</li>
+          <li><span class="st">✅</span>Check in to Sleep Inn &amp; Suites Denver Int'l Airport</li>
+          <li class="extra"><span class="st">➕</span>~1.5 hr Hertz rental fiasco (booked a midsize SUV, offered two open-bed pickups, finally a Jeep Compass); asleep ~3am</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Sat, Aug 1 — Boulder → Estes Park</div>
+        <ul class="cmp-list">
+          <li class="miss"><span class="st">❌</span>Edgewater / lunch at Gladys — skipped</li>
+          <li><span class="st">✅</span>Drive to Boulder</li>
+          <li class="miss"><span class="st">❌</span>Shop Costco / Whole Foods — not done / not recorded</li>
+          <li><span class="st">✅</span>Boulder sightseeing — Chautauqua Park (photo-booth van, partial climb toward the Flatirons, cold spring water at the trailhead)</li>
+          <li><span class="st">✏️</span>Dinner in Boulder → <b>lunch</b> at <b>Gurkhas</b> (Nepali/Indian) instead; dinner ended up in Estes</li>
+          <li><span class="st">✅</span>Drive to Estes Park; check in to Alpine Trail Ridge Inn (arrived late)</li>
+          <li class="extra"><span class="st">➕</span><b>Wild Basin → Calypso Cascades → Ouzel Falls, ~6 mi round trip</b>, 4:15pm–~8pm — a major unplanned hike on arrival day; Arya altitude-sick</li>
+          <li class="extra"><span class="st">➕</span>Dinner at <b>La Cocina de Mama</b>, Estes; the lime + salt soda trick from the hostess</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Sun, Aug 2 — RMNP  <span style="font-weight:400;color:var(--muted)">(activities swapped with Aug 3)</span></div>
+        <ul class="cmp-list">
+          <li><span class="st">🔁</span>Bear Lake Corridor — Nymph / Dream / Emerald / Haiyaha → moved to Aug 3 (Haiyaha dropped)</li>
+          <li><span class="st">🔁</span>Bear Lake hike (0.7 mi) → moved to Aug 3 (photo stop only)</li>
+          <li class="miss"><span class="st">❌</span><b>Sprague Lake hike (0.8 mi)</b> — never done</li>
+          <li class="miss"><span class="st">❌</span>Lunch pickup at Scratch / Notchtop — breakfast at <b>Bird's Nest Bakery</b> instead</li>
+          <li><span class="st">✅</span>Dinner — <b>Nepal's Café</b></li>
+          <li><span class="st">🔁</span><i>From the Aug 3 plan, done today:</i> Old Fall River Rd (Alluvial Fan, Chasm Falls), Alpine Visitor Center + Alpine Ridge Trail steps to 12,000 ft</li>
+          <li><span class="st">🔁</span><i>From the Aug 3 plan, done today:</i> ~4 mi partial toward Cub Lake on a 2pm combined entry, turned back after ~2 hrs</li>
+          <li class="extra"><span class="st">➕</span>Entered before 8:45am at Beaver Meadows; <b>Sheep Lakes / Horseshoe Park</b> — moose + calf, elk, ranger antler-and-horn talk</li>
+          <li class="extra"><span class="st">➕</span><b>Junior Ranger</b> — ranger session, booklet finished, Arya sworn in</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Mon, Aug 3 — RMNP  <span style="font-weight:400;color:var(--muted)">(activities swapped with Aug 2)</span></div>
+        <ul class="cmp-list">
+          <li class="miss"><span class="st">❌</span><b>Cub Lake hike (5.2–6.2 mi)</b> — full hike never done, only the Aug 2 partial</li>
+          <li><span class="st">🔁</span>Old Fall River Rd / Trail Ridge Rd → done Aug 2 and Aug 4</li>
+          <li><span class="st">✅</span>Visitor center (Alpine / Beaver Meadows) — done Aug 2</li>
+          <li class="miss"><span class="st">❌</span>Lunch pickup at Scratch / Notchtop</li>
+          <li><span class="st">✏️</span>Dinner → <b>India Bites</b> (weak service) — but packed <b>aloo paratha + fried rice</b> for the next day</li>
+          <li><span class="st">🔁</span><i>From the Aug 2 plan, done today:</i> Nymph → Dream → Emerald Lakes, ~3 hrs up; <b>Haiyaha skipped</b></li>
+          <li class="extra"><span class="st">➕</span>Turned away at the Bear Lake lot, circled back via Glacier Gorge</li>
+          <li class="extra"><span class="st">➕</span>Marmot + Clark's nutcrackers at Emerald Lake</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Tue, Aug 4 — Trail Ridge Road → Glenwood Springs</div>
+        <ul class="cmp-list">
+          <li><span class="st">✏️</span>Check out of Estes by 10:30am → left ~11 (slow morning)</li>
+          <li><span class="st">✅</span>Trail Ridge Rd — <b>Tundra Communities hike (~1 mi)</b>, 15–20 mph wind</li>
+          <li class="miss"><span class="st">❌</span>Holzwarth Historic Site — skipped (was "can skip")</li>
+          <li><span class="st">✅</span>Kawuneeche Valley — moose + calf roadside again, pika, drove the East Troublesome burn scar</li>
+          <li class="miss"><span class="st">❌</span>Adams Falls hike (was tentative)</li>
+          <li class="miss"><span class="st">❌</span><b>Hanging Lake trail (3.1 mi)</b> — not done; drive was ~4 hrs</li>
+          <li class="miss"><span class="st">❌</span>Lunch pickup at Scratch / Notchtop — ate leftovers in the car</li>
+          <li><span class="st">✅</span>Check in to Glenwood Springs (Silver Spruce Inn)</li>
+          <li><span class="st">✏️</span>Dinner (Masala &amp; Curry / Zheng) → <b>Taco Bell</b> #1 of 2</li>
+          <li class="extra"><span class="st">➕</span><b>Hidden Valley Junior Ranger HQ</b> (loaner binoculars, scat/pine/lichen scavenging)</li>
+          <li class="extra"><span class="st">➕</span>Milner Pass / Poudre Lake / Continental Divide stop; golden-hour overlook with a train winding the mountainside</li>
+          <li class="extra"><span class="st">➕</span>Long t-shirt shopping + huckleberry candy at Alpine VC; the two families split up here</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Wed, Aug 5 — Maroon Bells + Hot Springs</div>
+        <ul class="cmp-list">
+          <li><span class="st">✅</span>Free breakfast in hotel (pancakes, waffles, toast)</li>
+          <li><span class="st">✅</span>Lunch pickup at Bluebird Café ("Bluebells" in the notes) — wrap + burrito</li>
+          <li><span class="st">✅</span>Drive to Maroon Bells — took the <b>Aspen shuttle</b></li>
+          <li><span class="st">✅</span><b>Crater Lake hike (~3.7 mi)</b> — ~2 hrs up, 95°F, very rocky; lake drought-shrunk to ~⅓; three 14ers</li>
+          <li><span class="st">✅</span><b>Iron Mountain Hot Springs</b> — family section, gem-named pools, sunset, ~2 hrs</li>
+          <li><span class="st">✏️</span>Dinner (Masala &amp; Curry / Zheng) → <b>Taco Bell</b> #2 of 2 — Ravi fetched it for Arya</li>
+          <li class="extra"><span class="st">➕</span>Sunburned faces + aloe at the bus stop</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Thu, Aug 6 — Black Canyon North Rim → Montrose</div>
+        <ul class="cmp-list">
+          <li><span class="st">✅</span>Free breakfast; check out of Glenwood by 11am</li>
+          <li><span class="st">✏️</span>Lunch pickup at Bluebird → Thai food truck in <b>Paonia</b> was closed; found <b>Clean Kitchen</b> bakery — three hand pies (potato-curry "Farmer", mushroom "Forager", bean-and-cheese "Scout")</li>
+          <li><span class="st">✅</span><b>Exclamation Point hike (~3 mi)</b> — started ~5:30pm; sage, oak, serviceberry, Canada jay</li>
+          <li class="miss"><span class="st">❌</span>Chasm View hike (0.6 mi)</li>
+          <li><span class="st">✅</span>Balanced Rock View — plus Big Island View and Kneeling Camel View</li>
+          <li><span class="st">✅</span>Drive to Montrose; dinner at <b>Camp Robber</b> (3 vegan items); check in to Hampton Inn</li>
+          <li class="extra"><span class="st">➕</span><b>Wildfire smoke</b> from a fire near Lake City filling the canyon</li>
+          <li class="extra"><span class="st">➕</span>Junior Ranger badge; retired-volunteer rangers; <b>hotel pool</b> — Arya's first pool time of the trip</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Fri, Aug 7 — Black Canyon South Rim → Colorado Springs</div>
+        <ul class="cmp-list">
+          <li><span class="st">✅</span>Free breakfast; check out of Montrose by 11am; drive to South Rim</li>
+          <li><span class="st">✅</span><b>Warner Point hike (~1.6 mi)</b> — done first (1:30–3:30pm) to protect check-in time</li>
+          <li class="miss"><span class="st">❌</span>Oak Flat Loop (1.5 / 3 mi)</li>
+          <li><span class="st">✅</span>Painted Wall View — plus Rock Point, Devils Lookout, a "balanced rock" overlook</li>
+          <li class="miss"><span class="st">❌</span>Pulpit Rock Overlook — ran out of time</li>
+          <li><span class="st">✅</span>Drive to Colorado Springs; dinner at <b>The Burrowing Owl</b> — Mudita finally came to the narrator without crying; check in to Spark by Hilton</li>
+          <li class="extra"><span class="st">➕</span><b>US-50 protruding-rock pullout</b> (Agate Creek area, Gunnison NF — wrecked car debris below); golden-hour overlook with a passing train</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Sat, Aug 8 — Garden of the Gods + Pikes Peak → Denver</div>
+        <ul class="cmp-list">
+          <li><span class="st">✅</span>Free breakfast in hotel (cereal, waffle)</li>
+          <li><span class="st">🔁</span><b>Order reversed</b> — Garden of the Gods in the morning, Pikes Peak in the afternoon (plan had Pikes Peak first)</li>
+          <li><span class="st">✅</span>Pikes Peak by car on a timed-entry window (rebooked 12–1 → 1–2); walked the summit for photos rather than the formal Summit Loop. <b>Seniors did <i>not</i> skip</b> — auntie got badly altitude-sick</li>
+          <li><span class="st">✏️</span>Lunch at Burrowing Owl / Santana's → <b>$14 cheese pizza + the famous donuts at the summit</b> instead</li>
+          <li><span class="st">✏️</span>Garden of the Gods 4.3-mi loop → mostly wandering; got lost hunting for the Siamese Twins, a cycling guide near <b>parking lot 6</b> set them straight</li>
+          <li><span class="st">✅</span>Siamese Twins Loop (0.6 mi) — eventually</li>
+          <li class="miss"><span class="st">❌</span>Dinner at Burrowing Owl / Santana's — said goodbyes at Pikes Peak, drove to Denver</li>
+          <li><span class="st">✏️</span><i>Plan assumes Colorado Springs overnight (Roshan's plan).</i> <b>Our plan: sleep in Denver</b> — Sam's Club + gas → <b>Hyatt House Denver Airport</b></li>
+          <li class="extra"><span class="st">➕</span>Crystal Creek Reservoir stop; "Hello Ranger / Travel Tales" audio app; <b>mandatory brake-temp check</b> on the descent (Roshan's car overheated)</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Sun, Aug 9 — Home</div>
+        <ul class="cmp-list">
+          <li><span class="st">✏️</span>Check out by noon — from <b>Denver</b> (Hyatt House), not Colorado Springs</li>
+          <li class="miss"><span class="st">❌</span>1.25 hr to Edgewater; lunch at Gladys — not recorded (already next to the airport)</li>
+          <li><span class="st">✅</span>Denver airport; flight ~4:30pm</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Patterns</div>
+        <ul class="detail-list">
+          <li><b>Aug 2 and Aug 3 activities are essentially swapped</b> — the Bear Lake lakes hike (planned Aug 2) happened Aug 3; the Old Fall River Rd / Trail Ridge / Cub Lake block (planned Aug 3) happened Aug 2.</li>
+          <li><b>The arrival day picked up a big hike</b> — Wild Basin → Ouzel Falls (~6 mi) was not in the plan for Aug 1.</li>
+          <li><b>Sit-down Indian/Asian dinners in Glenwood became Taco Bell</b> both nights.</li>
+          <li><b>The plan blended Roshan's itinerary</b> — clearest on the Aug 8 overnight (Colorado Springs in the plan; Denver for us).</li>
+          <li><b>Aug 8 order reversed</b> — Garden of the Gods before Pikes Peak.</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Planned but never done</div>
+        <ul class="detail-list">
+          <li>Sprague Lake hike (0.8 mi)</li>
+          <li>Lake Haiyaha (the 5th lake on the Bear Lake Corridor hike)</li>
+          <li>Cub Lake — the full 5–6 mi hike (only a ~4 mi partial)</li>
+          <li>Adams Falls hike (was tentative)</li>
+          <li>Hanging Lake trail (3.1 mi — also permit-only and often closed)</li>
+          <li>Holzwarth Historic Site (was "can skip")</li>
+          <li>Chasm View hike, North Rim (0.6 mi)</li>
+          <li>Oak Flat Loop, South Rim (1.5 / 3 mi)</li>
+          <li>Pulpit Rock Overlook, South Rim</li>
+          <li>Pikes Peak Summit Loop as a formal hike</li>
+          <li>Edgewater / Gladys meals (both the Aug 1 and Aug 9 stops)</li>
+          <li>Costco / Whole Foods shopping in Boulder</li>
+          <li>Trail-lunch pickups at Scratch / Notchtop Bakery (Estes)</li>
+        </ul>
+      </div>
+
+      <div class="detail-day">
+        <div class="detail-day-title">Done but not in the plan</div>
+        <ul class="detail-list">
+          <li>Wild Basin → Calypso Cascades → Ouzel Falls, ~6 mi (Aug 1)</li>
+          <li>Sheep Lakes / Horseshoe Park wildlife + ranger antler talk (Aug 2)</li>
+          <li>Junior Ranger program — session + swearing-in (Aug 2), Hidden Valley HQ (Aug 4), badges at both Black Canyon rims</li>
+          <li>Milner Pass / Poudre Lake / Continental Divide stop (Aug 4)</li>
+          <li>Golden-hour train overlooks (Aug 4 and Aug 7)</li>
+          <li>Paonia detour + Clean Kitchen bakery (Aug 6)</li>
+          <li>Wildfire-smoke canyon (Aug 6)</li>
+          <li>US-50 protruding-rock pullout with the car-wreck debris (Aug 7)</li>
+          <li>Crystal Creek Reservoir + brake-temp check on Pikes Peak (Aug 8)</li>
+          <li>Sam's Club stop en route to Denver (Aug 8)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="actions"><button class="save-btn" onclick="saveAsImage('capture-compare','colorado-2026-plan-vs-did.png')">⬇ Save as image</button></div>
+    <div class="brand">ravikiran.us/trips</div>
+  </div>
+
   <!-- MAP PANEL -->
   <div class="panel" id="panel-map">
     <p class="trip-title">🗺️ Colorado Road Trip · Map</p>
@@ -872,7 +1422,7 @@
 </script>
 <script>
   function showTab(name) {
-    ['itinerary', 'hotels', 'details', 'map'].forEach(function (n) {
+    ['recap', 'story', 'magazine', 'itinerary', 'hotels', 'details', 'compare', 'map'].forEach(function (n) {
       document.getElementById('panel-' + n).classList.toggle('active', n === name);
       document.getElementById('tab-btn-' + n).classList.toggle('active', n === name);
     });
@@ -889,6 +1439,34 @@
       link.click();
     });
   }
+
+  function setStoryLang(lang) {
+    document.getElementById('story-en').hidden = (lang !== 'en');
+    document.getElementById('story-kn').hidden = (lang !== 'kn');
+    document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+    document.getElementById('lang-kn').classList.toggle('active', lang === 'kn');
+    try { localStorage.setItem('co2026-story-lang', lang); } catch (e) {}
+  }
+
+  (function () {
+    var saved;
+    try { saved = localStorage.getItem('co2026-story-lang'); } catch (e) {}
+    if (saved === 'kn') setStoryLang('kn');
+  })();
+
+  function setMagazineLang(lang) {
+    document.getElementById('magazine-en').hidden = (lang !== 'en');
+    document.getElementById('magazine-kn').hidden = (lang !== 'kn');
+    document.getElementById('magazine-lang-en').classList.toggle('active', lang === 'en');
+    document.getElementById('magazine-lang-kn').classList.toggle('active', lang === 'kn');
+    try { localStorage.setItem('co2026-magazine-lang', lang); } catch (e) {}
+  }
+
+  (function () {
+    var saved;
+    try { saved = localStorage.getItem('co2026-magazine-lang'); } catch (e) {}
+    if (saved === 'kn') setMagazineLang('kn');
+  })();
 </script>
 </body>
 </html>
