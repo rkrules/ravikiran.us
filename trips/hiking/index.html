@@ -693,11 +693,16 @@ function switchTab(tab, btn) {
   }
 }
 
-// Init — Full Table is the default view
+// Init — List view on mobile, Full Table on desktop
 document.getElementById('f-selected').classList.add('active');
 document.getElementById('t-sel').classList.add('active');
-document.getElementById('tab-btn-table').classList.add('active');
-renderTable();
+const isMobile = window.matchMedia('(max-width: 768px)').matches;
+if (isMobile) {
+  switchTab('list', document.getElementById('tab-btn-list'));
+} else {
+  document.getElementById('tab-btn-table').classList.add('active');
+  renderTable();
+}
 </script>
 </body>
 </html>
