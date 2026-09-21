@@ -191,11 +191,13 @@ Two tabs: **Work** and **Personal**. Both are hand-edited HTML — do NOT regene
 - `equity-comp-history` *(hidden)* — Equity compensation history rebuild
 - `meridian` — Meridian personal finance dashboard (local file, no link)
 - `nadamaya` — Nadamaya, privacy-oriented Granola alternative (nadamaya.lovable.app)
+- `sonicscroll` — SonicScroll e-reader/audiobook app with ORP speed reading (sonicscroll.lovable.app)
+- `giggles-galore` *(hidden)* — Giggles Galore themed joke app (gigglesgalore.lovable.app)
 
 Each card has a **front** (`.card-front`) with `.card-desc` and a **back** (`.card-back`) with `.card-story-text`.
 Story texts are now filled with real content from `personal_projects_stories.txt`.
 To add a new card, copy an existing card block and update the `id`, title, tags, desc, link, and story text.
-The "Show hidden projects (5)" toggle is controlled by `toggleHidden('personal-grid', 'personal-toggle', 5)`.
+The "Show hidden projects (6)" toggle is controlled by `toggleHidden('personal-grid', 'personal-toggle', 6)`.
 
 **Work tab cards** additionally include `internal-link-analyzer`, `competitive-traffic-dashboard`,
 and `dashboard-design-system` — generic, no-link cards genericized from internal work tooling

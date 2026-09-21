@@ -212,5 +212,17 @@ An interactive mobile app UI demo built when I was teaching myself CSS — and q
 https://ravikiran.us
 My personal site — 23 years of writing, projects, and things I don't want to lose. Rebuilt with Claude from a 70MB WordPress database. The domain finally earns its keep.
 
+---
+
+**SonicScroll**
+https://sonicscroll.lovable.app
+I wanted to experiment with speed reading — ORP flashes one word at a time at its optimal recognition point, so your eye never has to hunt across a line. I also wanted my own audiobook library instead of relying on a subscription app, and a way to pull straight from Project Gutenberg instead of hunting down files. It's mostly a personal testbed for both ideas at once.
+
+---
+
+**Giggles Galore**
+https://gigglesgalore.lovable.app
+My daughter had a running list of jokes sorted by holiday — Holi, Halloween, Valentine's Day, Christmas — and kept pitching new ones. Instead of a notes app list, I turned it into something she could actually open and flip through by season. It's her idea end to end; I just built the app around it.
+
 ___
 
